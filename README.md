@@ -2,6 +2,7 @@
 A messenger for PC, created on the basis of various Internet projects and adapted to the Russian language.
 
 This product is an entertainment program, most of the code is taken from the Internet and adapted in one project. All copyrights belong to the developers of the code. All images are taken from the Internet, copyright remains with the creators of the images.
+
 Данный продукт является развлекательной программой, большая часть кода взята из интернета и адаптированна в одном проекте. Все авторские права принадлежат разработчикам кода. Все картинки взяты из интернета, авторские права остаются за создателями изображений.
 
 v1.0
