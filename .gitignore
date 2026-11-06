@@ -259,6 +259,3 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
-# Rust build output and local config
-/target/
-/config.toml
