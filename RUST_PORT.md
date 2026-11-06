@@ -19,6 +19,7 @@ The initial desktop client is built with Rust, egui/eframe, Tokio and SQLx. Impl
 - Insert the original 16 smiley shortcodes into the message composer.
 - Send private messages, view the inbox, and mark received messages as read.
 - Toggle light and dark themes.
+- Draw in a Paint-style notes window with adjustable brush size/color, clear canvas, and export to PNG.
 
 ## Build and run
 
@@ -42,23 +43,21 @@ legacy client. The next migration stages are:
 1. Native rendering of the original 16 emoticon images and rich-text message formatting.
 2. Image attachments (the legacy attachment button was commented out in the VB.NET source).
 3. Complete profile preferences and settings persistence for chat colors/fonts.
-3. Notes/drawing.
 4. Radio streaming and media controls.
 5. Speech commands.
-6. Automated tests and a Windows release build.
+6. Automated tests against a disposable MySQL database and a Windows release build.
 
 The VB.NET client uses .NET Framework 4.5, Windows Forms, MySQL Connector/NET,
 Windows Media Player COM components, and Microsoft Speech SDK. The GUI and platform
 integrations therefore need idiomatic Rust equivalents rather than line-by-line
 translation.
 
-## Password compatibility warning
+## Password compatibility
 
-The login digest temporarily reproduces the legacy MD5 + `ZUBI` transformation so
-existing accounts can be tested. This is cryptographically weak and must not be used
-for new production accounts. Before a public release, migrate to Argon2id using a
-password-reset or one-time rehash flow. This compatibility digest is not a security
-upgrade.
+New registrations and password changes use Argon2id. On successful login, a legacy MD5
++ `ZUBI` password hash is transparently upgraded to Argon2id. The old digest remains
+only for compatibility with existing accounts. Test this migration with a disposable
+copy of the database before using the client with real accounts.
 
 All SQL statements in the Rust client use bound parameters. Test using a disposable
 copy of the original database before connecting to production data.
