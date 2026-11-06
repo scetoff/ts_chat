@@ -8,7 +8,7 @@ is preserved in the default branch and in the repository root.
 The initial desktop client is built with Rust, egui/eframe, Tokio and SQLx. Implemented:
 
 - Connect to an existing MySQL database using local `config.toml`.
-- Create the original TSchat tables when they do not exist.
+- Verify the existing TSchat tables in read-only mode on connection; normal startup does not create tables or insert data.
 - Authenticate against the existing `tb_users` table.
 - Register users using the original user table columns.
 - Read and send messages using the legacy shared `tb_chat` record.
@@ -34,9 +34,10 @@ cargo test
 cargo run
 ```
 
-The configured database must already exist and the supplied MySQL user must have
-permissions to create the three TSchat tables when the app initializes. Do not commit
-`config.toml`.
+The configured database and the original `tb_users`, `tb_chat`, and `tb_pm` tables
+must already exist. Normal startup only verifies the schema and does not require CREATE
+or INSERT permissions. The optional bootstrap method is not called during normal login.
+Do not commit `config.toml`.
 
 ### Verify an existing test database safely
 
