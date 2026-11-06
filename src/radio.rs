@@ -1,4 +1,5 @@
 use anyhow::{Context, Result};
+use std::io::BufReader;
 use rodio::{Decoder, DeviceSinkBuilder, MixerDeviceSink, Player};
 use std::num::NonZeroUsize;
 use stream_download::{storage::{adaptive::AdaptiveStorageProvider, temp::TempStorageProvider}, Settings, StreamDownload};
@@ -27,7 +28,7 @@ impl RadioPlayback {
         .await
         .map_err(|error| anyhow::anyhow!("Не удалось подключить радиопоток: {error}"))?;
 
-        let decoder = Decoder::try_from(reader)
+        let decoder = Decoder::try_from(BufReader::new(reader))
             .context("Не удалось определить или декодировать аудиоформат радиостанции")?;
 
         let output = DeviceSinkBuilder::open_default_sink()
