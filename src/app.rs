@@ -42,6 +42,85 @@ pub struct TsChatApp {
     repeat_password: String,
     friend_profile: Option<User>,
     show_friend_profile: bool,
+    notes_open: bool,
+    note_strokes: Vec<DrawStroke>,
+    note_current_stroke: Option<DrawStroke>,
+    note_brush_color: egui::Color32,
+    note_brush_width: f32,
+    note_background: egui::Color32,
+}
+
+
+#[derive(Clone)]
+struct DrawStroke {
+    points: Vec<egui::Vec2>,
+    color: egui::Color32,
+    width: f32,
+}
+
+fn paint_stroke(painter: &egui::Painter, rect: egui::Rect, stroke: &DrawStroke) {
+    let to_screen = |p: egui::Vec2| egui::pos2(rect.left() + p.x, rect.top() + p.y);
+    match stroke.points.as_slice() {
+        [] => {}
+        [point] => { painter.circle_filled(to_screen(*point), stroke.width * 0.5, stroke.color); }
+        points => {
+            for pair in points.windows(2) {
+                painter.line_segment(
+                    [to_screen(pair[0]), to_screen(pair[1])],
+                    egui::Stroke::new(stroke.width, stroke.color),
+                );
+            }
+        }
+    }
+}
+
+fn stamp_brush(image: &mut image::RgbaImage, cx: i32, cy: i32, radius: i32, color: image::Rgba<u8>) {
+    let r2 = radius * radius;
+    for y in (cy - radius)..=(cy + radius) {
+        for x in (cx - radius)..=(cx + radius) {
+            if (x - cx) * (x - cx) + (y - cy) * (y - cy) <= r2
+                && x >= 0 && y >= 0
+                && (x as u32) < image.width() && (y as u32) < image.height()
+            {
+                image.put_pixel(x as u32, y as u32, color);
+            }
+        }
+    }
+}
+
+fn render_strokes_png(
+    strokes: &[DrawStroke],
+    background: egui::Color32,
+    width: u32,
+    height: u32,
+) -> image::RgbaImage {
+    let [br, bg, bb, ba] = background.to_array();
+    let mut output = image::RgbaImage::from_pixel(width, height, image::Rgba([br, bg, bb, ba]));
+    for stroke in strokes {
+        let [r, g, b, a] = stroke.color.to_array();
+        let color = image::Rgba([r, g, b, a]);
+        let radius = (stroke.width * 0.5).ceil().max(1.0) as i32;
+        match stroke.points.as_slice() {
+            [] => {}
+            [point] => stamp_brush(&mut output, point.x.round() as i32, point.y.round() as i32, radius, color),
+            points => {
+                for pair in points.windows(2) {
+                    let start = pair[0];
+                    let end = pair[1];
+                    let dx = end.x - start.x;
+                    let dy = end.y - start.y;
+                    let steps = dx.abs().max(dy.abs()).ceil().max(1.0) as u32;
+                    for step in 0..=steps {
+                        let t = step as f32 / steps as f32;
+                        let x = (start.x + dx * t).round() as i32;
+                        let y = (start.y + dy * t).round() as i32;
+                        stamp_brush(&mut output, x, y, radius, color);
+                    }
+                }
+            }
+        }
+    }
+    output
 }
 
 impl Default for TsChatApp {
@@ -62,6 +141,9 @@ impl Default for TsChatApp {
             friend_avatar_texture: None, friend_avatar_cache_key: None,
             new_password: String::new(), repeat_password: String::new(),
             friend_profile: None, show_friend_profile: false,
+            notes_open: false, note_strokes: Vec::new(), note_current_stroke: None,
+            note_brush_color: egui::Color32::BLACK, note_brush_width: 6.0,
+            note_background: egui::Color32::WHITE,
         }
     }
 }
@@ -290,6 +372,106 @@ impl TsChatApp {
         self.draft.push_str(code);
     }
 
+
+    fn save_notes_png(&mut self) {
+        let Some(path) = rfd::FileDialog::new()
+            .set_file_name("tschat-notes.png")
+            .add_filter("PNG image", &["png"])
+            .save_file() else { return; };
+        let image = render_strokes_png(&self.note_strokes, self.note_background, 760, 460);
+        match image.save(&path) {
+            Ok(()) => self.status = format!("Рисунок сохранён: {}", path.display()),
+            Err(error) => self.status = format!("Не удалось сохранить PNG: {error}"),
+        }
+    }
+
+    fn show_notes_window(&mut self, ctx: &egui::Context) {
+        if !self.notes_open { return; }
+        let mut clear_requested = false;
+        let mut save_requested = false;
+        let notes_open = &mut self.notes_open;
+        let strokes = &mut self.note_strokes;
+        let current = &mut self.note_current_stroke;
+        let brush_color = &mut self.note_brush_color;
+        let brush_width = &mut self.note_brush_width;
+        let background = &mut self.note_background;
+
+        egui::Window::new("Заметки — Paint")
+            .open(notes_open)
+            .default_size([820.0, 560.0])
+            .resizable(true)
+            .show(ctx, |ui| {
+                ui.horizontal(|ui| {
+                    ui.label("Цвет кисти");
+                    ui.color_edit_button_srgba(brush_color);
+                    ui.add(egui::Slider::new(brush_width, 1.0..=36.0).text("Размер"));
+                    if ui.button("Очистить").clicked() { clear_requested = true; }
+                    if ui.button("Сохранить PNG").clicked() { save_requested = true; }
+                });
+                ui.horizontal(|ui| {
+                    ui.label("Фон");
+                    if ui.selectable_label(*background == egui::Color32::WHITE, "Белый").clicked() {
+                        *background = egui::Color32::WHITE;
+                    }
+                    if ui.selectable_label(*background == egui::Color32::BLACK, "Чёрный").clicked() {
+                        *background = egui::Color32::BLACK;
+                    }
+                });
+
+                let canvas_size = egui::vec2(760.0, 460.0);
+                let (canvas_rect, response) = ui.allocate_exact_size(canvas_size, egui::Sense::drag());
+                let painter = ui.painter_at(canvas_rect);
+                painter.rect_filled(canvas_rect, 2.0, *background);
+
+                if response.drag_started() {
+                    if let Some(pointer) = response.interact_pointer_pos() {
+                        *current = Some(DrawStroke {
+                            points: vec![pointer - canvas_rect.min],
+                            color: *brush_color,
+                            width: *brush_width,
+                        });
+                    }
+                }
+                if response.dragged() {
+                    if let Some(pointer) = response.interact_pointer_pos() {
+                        let point = pointer - canvas_rect.min;
+                        if current.is_none() {
+                            *current = Some(DrawStroke {
+                                points: vec![point],
+                                color: *brush_color,
+                                width: *brush_width,
+                            });
+                        } else if let Some(stroke) = current.as_mut() {
+                            let should_add = stroke.points.last()
+                                .map(|last| last.distance(point) >= 1.0)
+                                .unwrap_or(true);
+                            if should_add { stroke.points.push(point); }
+                        }
+                    }
+                }
+                if response.drag_stopped() {
+                    if let Some(stroke) = current.take() {
+                        strokes.push(stroke);
+                    }
+                }
+
+                for stroke in strokes.iter() { paint_stroke(&painter, canvas_rect, stroke); }
+                if let Some(stroke) = current.as_ref() { paint_stroke(&painter, canvas_rect, stroke); }
+                ui.label("Зажми левую кнопку мыши и рисуй. Рисунок сохраняется в PNG.");
+            });
+
+        if clear_requested {
+            self.note_strokes.clear();
+            self.note_current_stroke = None;
+        }
+        if save_requested {
+            if let Some(stroke) = self.note_current_stroke.take() {
+                self.note_strokes.push(stroke);
+            }
+            self.save_notes_png();
+        }
+    }
+
     fn refresh_chat(&mut self) {
         if let Ok(chat) = self.run_db(|rt, db| rt.block_on(db.read_chat())) { self.chat_text = chat; }
     }
@@ -409,6 +591,7 @@ impl eframe::App for TsChatApp {
                     ui.horizontal(|ui| {
                         ui.heading(format!("Чат — {}", self.current_user.as_ref().map(|u| u.username.as_str()).unwrap_or("")));
                         if ui.button("Входящие").clicked() { self.load_inbox(); }
+                        if ui.button("Заметки / Paint").clicked() { self.notes_open = true; }
                         if ui.button("Выйти").clicked() { self.current_user = None; self.screen = Screen::Login; }
                     });
                     ui.columns(2, |cols| {
@@ -519,5 +702,6 @@ impl eframe::App for TsChatApp {
             }
             if !self.status.is_empty() { ui.separator(); ui.label(&self.status); }
         });
+        self.show_notes_window(ctx);
     }
 }
