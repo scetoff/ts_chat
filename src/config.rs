@@ -108,13 +108,23 @@ impl Config {
         let username = Self::env_value("DB_USERNAME").unwrap_or_else(|| self.database.user.clone());
         let password = Self::env_value("DB_PASSWORD").unwrap_or_else(|| self.database.password.clone());
 
+        Self::build_mysql_url(&host, port, &database, &username, &password)
+    }
+
+    fn build_mysql_url(host: &str, port: u16, database: &str, username: &str, password: &str) -> String {
+        let formatted_host = if host.contains(':') && !host.starts_with('[') {
+            format!("[{host}]")
+        } else {
+            host.to_string()
+        };
+
         format!(
             "mysql://{}:{}@{}:{}/{}",
-            urlencoding::encode(&username),
-            urlencoding::encode(&password),
-            host,
+            urlencoding::encode(username),
+            urlencoding::encode(password),
+            formatted_host,
             port,
-            urlencoding::encode(&database)
+            urlencoding::encode(database)
         )
     }
 
@@ -124,6 +134,44 @@ impl Config {
                 anyhow::bail!("DB_CONNECTION='{driver}' is not supported; this Rust port currently requires mysql");
             }
         }
+        if let Some(port) = Self::env_value("DB_PORT") {
+            let parsed: u16 = port.parse()
+                .map_err(|_| anyhow::anyhow!("DB_PORT must be an integer between 1 and 65535"))?;
+            if parsed == 0 {
+                anyhow::bail!("DB_PORT must be between 1 and 65535");
+            }
+        }
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Config;
+
+    #[test]
+    fn mysql_url_encodes_credentials_and_database_name() {
+        let url = Config::build_mysql_url(
+            "db.example.test",
+            3307,
+            "chat database",
+            "user@example.test",
+            "p@ss:word /?#",
+        );
+        let parsed = url::Url::parse(&url).expect("valid MySQL URL");
+        assert_eq!(parsed.scheme(), "mysql");
+        assert_eq!(parsed.host_str(), Some("db.example.test"));
+        assert_eq!(parsed.port(), Some(3307));
+        assert_eq!(parsed.username(), "user@example.test");
+        assert_eq!(parsed.password(), Some("p@ss:word /?#"));
+        assert_eq!(parsed.path(), "/chat%20database");
+    }
+
+    #[test]
+    fn mysql_url_formats_ipv6_host() {
+        let url = Config::build_mysql_url("::1", 3306, "tschat", "user", "pass");
+        let parsed = url::Url::parse(&url).expect("valid IPv6 MySQL URL");
+        assert_eq!(parsed.host_str(), Some("::1"));
+        assert_eq!(parsed.port(), Some(3306));
     }
 }
