@@ -40,8 +40,10 @@ Radio station URLs can be entered in the Radio window and saved to the local
 `config.toml`. The original repository did not include its `База/URL.txt` stream
 list, so the station names are restored but stream URLs are intentionally blank.
 The native player supports HTTP/HTTPS live audio streams using Rodio and
-stream-download; playback depends on the URL being a compatible audio stream and
-the Windows audio output device being available.
+stream-download. It uses a bounded adaptive cache for live streams and performs
+the network connection in the background so the UI remains responsive. Playback
+depends on the URL being a compatible audio stream and the Windows audio output
+device being available.
 
 ## Compatibility and remaining work
 
