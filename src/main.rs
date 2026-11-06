@@ -4,6 +4,7 @@ mod app;
 mod config;
 mod db;
 mod models;
+mod radio;
 
 fn main() -> eframe::Result<()> {
     let options = eframe::NativeOptions {
