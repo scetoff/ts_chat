@@ -24,3 +24,5 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: Check
         run: cargo check
+      - name: Unit tests
+        run: cargo test
