@@ -60,6 +60,7 @@ pub struct TsChatApp {
     smiley_textures: Vec<(String, egui::TextureHandle)>,
     command_input: String,
     command_status: String,
+    show_clear_chat_confirmation: bool,
     radio_autoplay_pending: Option<usize>,
     chat_styles: std::collections::HashMap<String, ChatStyle>,
     chat_style_color: egui::Color32,
@@ -278,6 +279,7 @@ impl Default for TsChatApp {
             smiley_textures: Vec::new(),
             command_input: String::new(),
             command_status: String::new(),
+            show_clear_chat_confirmation: false,
             radio_autoplay_pending: None,
             chat_styles: std::collections::HashMap::new(),
             chat_style_color: egui::Color32::BLACK,
@@ -742,6 +744,10 @@ impl TsChatApp {
                 self.notes_open = false;
                 self.command_status = "Окно заметок закрыто.".into();
             }
+            ChatCommand::RequestClearChat => {
+                self.show_clear_chat_confirmation = true;
+                self.command_status = "Подтвердите очистку общего чата.".into();
+            }
             ChatCommand::SelectStation(index) => {
                 self.selected_radio_station = index;
                 self.radio_open = true;
@@ -922,6 +928,47 @@ impl TsChatApp {
             self.voice_recorder = None;
             self.voice_recording_started = None;
             self.voice_status = "Запись отменена; микрофон выключен.".into();
+        }
+    }
+
+
+    fn clear_shared_chat(&mut self) {
+        const WELCOME: &str = "Добро пожаловать в Таверну Странника";
+        match self.run_db(|rt, db| rt.block_on(db.write_chat(WELCOME))) {
+            Ok(()) => {
+                self.chat_text = WELCOME.into();
+                self.status = "Общий чат очищен.".into();
+                self.command_status = "Общий чат очищен.".into();
+            }
+            Err(error) => {
+                self.status = format!("Не удалось очистить общий чат: {error:#}");
+                self.command_status = self.status.clone();
+            }
+        }
+    }
+
+    fn show_clear_chat_confirmation(&mut self, ctx: &egui::Context) {
+        if !self.show_clear_chat_confirmation { return; }
+        let mut confirm = false;
+        let mut cancel = false;
+        egui::Window::new("Очистить общий чат?")
+            .open(&mut self.show_clear_chat_confirmation)
+            .collapsible(false)
+            .resizable(false)
+            .show(ctx, |ui| {
+                ui.label("История общего чата будет заменена приветственным сообщением.");
+                ui.label("Это действие необратимо для текущей истории.");
+                ui.horizontal(|ui| {
+                    if ui.button("Очистить чат").clicked() { confirm = true; }
+                    if ui.button("Отмена").clicked() { cancel = true; }
+                });
+            });
+        if confirm {
+            self.show_clear_chat_confirmation = false;
+            self.clear_shared_chat();
+        } else if cancel {
+            self.show_clear_chat_confirmation = false;
+            self.command_status = "Очистка чата отменена.".into();
         }
     }
 
@@ -1330,6 +1377,7 @@ impl eframe::App for TsChatApp {
         });
         self.show_notes_window(ctx);
         self.show_radio_window(ctx);
+        self.show_clear_chat_confirmation(ctx);
         #[cfg(feature = "voice")]
         self.show_voice_window(ctx);
     }
