@@ -4,7 +4,7 @@ use argon2::{
     Argon2,
     password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString, rand_core::OsRng},
 };
-use crate::{config::{Config, RadioStation}, db::Database, models::User, radio::RadioPlayback};
+use crate::{commands::{parse_command, ChatCommand}, config::{Config, RadioStation}, db::Database, models::User, radio::RadioPlayback};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 enum Screen { Login, Register, Chat }
@@ -56,6 +56,9 @@ pub struct TsChatApp {
     radio_player: Option<RadioPlayback>,
     radio_pending: Option<(std::sync::mpsc::Receiver<Result<RadioPlayback, String>>, String)>,
     smiley_textures: Vec<(String, egui::TextureHandle)>,
+    command_input: String,
+    command_status: String,
+    radio_autoplay_pending: Option<usize>,
 }
 
 
@@ -202,6 +205,9 @@ impl Default for TsChatApp {
             radio_player: None,
             radio_pending: None,
             smiley_textures: Vec::new(),
+            command_input: String::new(),
+            command_status: String::new(),
+            radio_autoplay_pending: None,
         }
     }
 }
@@ -566,6 +572,64 @@ impl TsChatApp {
     }
 
 
+
+    fn execute_command(&mut self, input: &str) {
+        match parse_command(input) {
+            ChatCommand::OpenRadio => {
+                self.radio_open = true;
+                self.command_status = "Открыто радио.".into();
+            }
+            ChatCommand::CloseRadio => {
+                self.radio_open = false;
+                self.command_status = "Окно радио закрыто; воспроизведение не остановлено.".into();
+            }
+            ChatCommand::PlayRadio => {
+                self.radio_open = true;
+                if let Some(player) = self.radio_player.as_ref() {
+                    if player.is_paused() {
+                        player.toggle_pause();
+                        self.radio_status = "Воспроизведение продолжено.".into();
+                    }
+                    self.command_status = "Команда воспроизведения выполнена.".into();
+                } else {
+                    self.command_status = "Выберите станцию в окне радио.".into();
+                }
+            }
+            ChatCommand::PauseRadio => {
+                if let Some(player) = self.radio_player.as_ref() {
+                    if !player.is_paused() { player.toggle_pause(); }
+                    self.command_status = "Радио поставлено на паузу.".into();
+                } else {
+                    self.command_status = "Радио сейчас не воспроизводится.".into();
+                }
+            }
+            ChatCommand::StopRadio => {
+                self.radio_pending = None;
+                self.radio_autoplay_pending = None;
+                if let Some(player) = self.radio_player.take() { player.stop(); }
+                self.radio_status = "Радио остановлено.".into();
+                self.command_status = "Радио остановлено.".into();
+            }
+            ChatCommand::OpenNotes => {
+                self.notes_open = true;
+                self.command_status = "Открыты заметки.".into();
+            }
+            ChatCommand::CloseNotes => {
+                self.notes_open = false;
+                self.command_status = "Окно заметок закрыто.".into();
+            }
+            ChatCommand::SelectStation(index) => {
+                self.selected_radio_station = index;
+                self.radio_open = true;
+                self.radio_autoplay_pending = Some(index);
+                self.command_status = format!("Выбрана станция: {}.", self.radio_stations.get(index).map(|s| s.name.as_str()).unwrap_or("неизвестно"));
+            }
+            ChatCommand::Unknown => {
+                self.command_status = "Команда не распознана или не поддерживается.".into();
+            }
+        }
+    }
+
     fn save_radio_settings(&mut self) {
         self.config.radio.stations = self.radio_stations.clone();
         match self.config.save() {
@@ -600,7 +664,9 @@ impl TsChatApp {
 
         if !self.radio_open { return; }
 
-        let mut start_request: Option<(String, String)> = None;
+        let mut start_request: Option<(String, String)> = self.radio_autoplay_pending
+            .take()
+            .and_then(|index| self.radio_stations.get(index).map(|station| (station.url.trim().to_string(), station.name.clone())));
         let mut stop_requested = false;
         let mut pause_requested = false;
         let mut save_requested = false;
@@ -823,6 +889,18 @@ impl eframe::App for TsChatApp {
                         if ui.button("Заметки / Paint").clicked() { self.notes_open = true; }
                         if ui.button("Радио").clicked() { self.radio_open = true; }
                         if ui.button("Выйти").clicked() { self.current_user = None; self.screen = Screen::Login; }
+                    });
+                    ui.horizontal(|ui| {
+                        ui.label("Команда");
+                        ui.add(egui::TextEdit::singleline(&mut self.command_input)
+                            .hint_text("Например: Включи Европу")
+                            .desired_width(240.0));
+                        if ui.button("Выполнить").clicked() {
+                            let input = self.command_input.clone();
+                            self.execute_command(&input);
+                            self.command_input.clear();
+                        }
+                        ui.label(&self.command_status);
                     });
                     ui.columns(2, |cols| {
                         cols[0].group(|ui| {
