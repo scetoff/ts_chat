@@ -4,3 +4,64 @@ port = 3306
 user = "tschat"
 password = "change-me"
 name = "db_TSchat"
+
+[radio]
+[[radio.stations]]
+name = "Музыка без АП"
+url = ""
+
+[[radio.stations]]
+name = "Русский рок"
+url = ""
+
+[[radio.stations]]
+name = "Европа Плюс"
+url = ""
+
+[[radio.stations]]
+name = "Radio Cafe"
+url = ""
+
+[[radio.stations]]
+name = "Дорожное радио"
+url = ""
+
+[[radio.stations]]
+name = "Старое Радио"
+url = ""
+
+[[radio.stations]]
+name = "VIP MIX Radio"
+url = ""
+
+[[radio.stations]]
+name = "Record Dubstep"
+url = ""
+
+[[radio.stations]]
+name = "Chillout Radio"
+url = ""
+
+[[radio.stations]]
+name = "Радио Джаз"
+url = ""
+
+[[radio.stations]]
+name = "Радио Книга"
+url = ""
+
+[[radio.stations]]
+name = "Супердискотека 90-х"
+url = ""
+
+[[radio.stations]]
+name = "Ambient Sleeping Pill"
+url = ""
+
+[[radio.stations]]
+name = "DrumandBass.FM"
+url = ""
+
+[[radio.stations]]
+name = "Tecktonik"
+url = ""
