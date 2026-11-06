@@ -16,7 +16,7 @@ The initial desktop client is built with Rust, egui/eframe, Tokio and SQLx. Impl
 - List registered users, view friend profiles, and show their avatars.
 - Edit own nickname, display name, email and phone; change the password.
 - Choose and upload a PNG/JPEG/GIF avatar (normalized to PNG, max 640×480).
-- Insert the original 16 smiley shortcodes into the message composer.
+- Import and render all 16 original PNG smileys in the composer and message history; shortcode compatibility is retained.
 - Send private messages, view the inbox, and mark received messages as read.
 - Toggle light and dark themes.
 - Draw in a Paint-style notes window with adjustable brush size/color, clear canvas, and export to PNG.
@@ -50,10 +50,10 @@ device being available.
 The current code is a functional starting point, not a complete recreation of the
 legacy client. The next migration stages are:
 
-1. Native rendering of the original 16 emoticon images and rich-text message formatting.
+1. Rich-text per-user message formatting and persistent chat font/color preferences.
 2. Image attachments (the legacy attachment button was commented out in the VB.NET source).
 3. Complete profile preferences and settings persistence for chat colors/fonts.
-4. Voice recognition and command integration (the legacy app used Microsoft Speech SDK).
+4. Russian speech recognition and command integration (the legacy app used Microsoft Speech SDK).
 5. Automated tests against a disposable MySQL database and a Windows release build.
 
 The VB.NET client uses .NET Framework 4.5, Windows Forms, MySQL Connector/NET,
