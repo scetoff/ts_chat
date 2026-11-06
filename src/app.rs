@@ -372,7 +372,16 @@ impl eframe::App for TsChatApp {
                     ui.columns(2, |cols| {
                         cols[0].group(|ui| {
                             ui.label("Общий чат");
-                            ui.add(egui::TextEdit::multiline(&mut self.chat_text).desired_rows(23).desired_width(f32::INFINITY).interactive(false));
+                            let mut readable_chat = self.chat_text.clone();
+                            for (code, glyph) in [
+                                (":fuu:", "😠"), (":beer:", "🍺"), (":sorry:", "🙏"), (":read:", "📖"),
+                                (":girl:", "👧"), (":lich:", "🧙"), (":sing:", "🎤"), (":haha:", "😂"),
+                                (":allbear:", "🐻"), (":say:", "💬"), (":money:", "💰"), (":no:", "⛔"),
+                                (":king:", "👑"), (":go:", "🚀"), (":good:", "👍"), (":nice:", "😎"),
+                            ] {
+                                readable_chat = readable_chat.replace(code, glyph);
+                            }
+                            ui.add(egui::TextEdit::multiline(&mut readable_chat).desired_rows(23).desired_width(f32::INFINITY).interactive(false));
                             ui.add(egui::TextEdit::singleline(&mut self.draft).hint_text("Сообщение...").desired_width(f32::INFINITY));
                             if ui.button("Отправить").clicked() { self.send_chat(); }
                             ui.collapsing("Смайлики", |ui| {
