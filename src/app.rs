@@ -498,10 +498,11 @@ impl TsChatApp {
     }
 
     fn show_radio_window(&mut self, ctx: &egui::Context) {
-        if let Some((receiver, station_name)) = self.radio_pending.as_ref() {
-            match receiver.try_recv() {
+        let pending_result = self.radio_pending.as_ref()
+            .map(|(receiver, station_name)| (receiver.try_recv(), station_name.clone()));
+        if let Some((result, station_name)) = pending_result {
+            match result {
                 Ok(Ok(player)) => {
-                    let station_name = station_name.clone();
                     self.radio_player = Some(player);
                     self.radio_pending = None;
                     self.radio_status = format!("Сейчас играет: {station_name}");
