@@ -13,8 +13,6 @@ sqlx = { version = "0.8", features = ["runtime-tokio-rustls", "mysql"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
 serde = { version = "1", features = ["derive"] }
 toml = "0.8"
-rfd = "0.15"
-image = { version = "0.25", default-features = false, features = ["png", "jpeg", "gif"] }
 base64 = "0.22"
 md5 = "0.7"
-dotenvy = "0.15"
+urlencoding = "2"
