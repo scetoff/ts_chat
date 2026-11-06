@@ -1,6 +1,7 @@
 use anyhow::{Context, Result};
 use rodio::{Decoder, DeviceSinkBuilder, MixerDeviceSink, Player};
-use stream_download::{storage::temp::TempStorageProvider, Settings, StreamDownload};
+use std::num::NonZeroUsize;
+use stream_download::{storage::{adaptive::AdaptiveStorageProvider, temp::TempStorageProvider}, Settings, StreamDownload};
 
 /// Keeps both the operating-system audio device and player alive while a radio stream plays.
 pub struct RadioPlayback {
@@ -17,7 +18,10 @@ impl RadioPlayback {
 
         let reader = StreamDownload::new_http(
             parsed,
-            TempStorageProvider::default(),
+            AdaptiveStorageProvider::new(
+                TempStorageProvider::default(),
+                NonZeroUsize::new(1024 * 1024).expect("non-zero radio buffer"),
+            ),
             Settings::default(),
         )
         .await
