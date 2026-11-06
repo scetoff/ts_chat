@@ -262,3 +262,8 @@ __pycache__/
 # Rust build output and local config
 /target/
 /config.toml
+
+# Local environment variables and secrets
+/.env
+/.env.*
+!/.env.example
