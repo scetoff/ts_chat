@@ -1,14 +1,13 @@
 name: Rust checks
 
 on:
-  push:
-    branches: [rust-port]
   pull_request:
     branches: [master]
     paths:
       - "Cargo.toml"
       - "Cargo.lock"
       - "src/**"
+      - "RUST_PORT.md"
       - ".github/workflows/rust.yml"
   workflow_dispatch:
 
