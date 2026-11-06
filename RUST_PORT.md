@@ -29,13 +29,30 @@ Install stable Rust and Cargo, then:
 ```sh
 cp config.example.toml config.toml
 # Set database credentials in config.toml.
-cargo check
+cargo check --all-targets
 cargo test
 cargo run
 ```
 
 The configured database must already exist and the supplied MySQL user must have
-permissions to create the three TSchat tables. Do not commit `config.toml`.
+permissions to create the three TSchat tables when the app initializes. Do not commit
+`config.toml`.
+
+### Verify an existing test database safely
+
+A read-only smoke checker is available:
+
+```powershell
+$env:TSCHAT_TEST_DATABASE_URL = "mysql://user:password@host:3306/db_name"
+cargo run --bin db_smoke
+```
+
+It verifies the expected columns in `tb_users`, `tb_chat`, and `tb_pm`, then reads
+only the registered-user count and the shared-chat row. It does not create tables or
+modify data. For GitHub Actions, add a repository secret named
+`TSCHAT_TEST_DATABASE_URL` containing the test database connection URL, then run
+the `Rust checks` workflow manually. The manual database job is skipped when the
+secret is absent. Use only the disposable test database, not production.
 
 Radio station URLs can be entered in the Radio window and saved to the local
 `config.toml`. The original repository did not include its `База/URL.txt` stream
