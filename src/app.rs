@@ -32,6 +32,8 @@ pub struct TsChatApp {
     profile_mobile: String,
     avatar_texture: Option<egui::TextureHandle>,
     avatar_cache_key: Option<String>,
+    friend_avatar_texture: Option<egui::TextureHandle>,
+    friend_avatar_cache_key: Option<String>,
     new_password: String,
     repeat_password: String,
     friend_profile: Option<User>,
@@ -53,6 +55,7 @@ impl Default for TsChatApp {
             last_refresh: Instant::now(),
             profile_username: String::new(), profile_name: String::new(), profile_email: String::new(), profile_mobile: String::new(),
             avatar_texture: None, avatar_cache_key: None,
+            friend_avatar_texture: None, friend_avatar_cache_key: None,
             new_password: String::new(), repeat_password: String::new(),
             friend_profile: None, show_friend_profile: false,
         }
@@ -219,6 +222,27 @@ impl TsChatApp {
         self.avatar_cache_key = Some(encoded);
     }
 
+
+    fn ensure_friend_avatar_texture(&mut self, ctx: &egui::Context) {
+        let encoded = self.friend_profile.as_ref()
+            .map(|u| u.avatar_base64.clone()).unwrap_or_default();
+        if encoded.is_empty() || self.friend_avatar_cache_key.as_deref() == Some(encoded.as_str()) {
+            return;
+        }
+        use base64::Engine;
+        let texture = base64::engine::general_purpose::STANDARD.decode(&encoded)
+            .ok()
+            .and_then(|bytes| image::load_from_memory(&bytes).ok())
+            .map(|img| {
+                let rgba = img.to_rgba8();
+                let size = [rgba.width() as usize, rgba.height() as usize];
+                let color = egui::ColorImage::from_rgba_unmultiplied(size, rgba.as_raw());
+                ctx.load_texture("tschat-friend-avatar", color, egui::TextureOptions::LINEAR)
+            });
+        self.friend_avatar_texture = texture;
+        self.friend_avatar_cache_key = Some(encoded);
+    }
+
     fn add_smiley(&mut self, code: &str) {
         if !self.draft.is_empty() { self.draft.push(' '); }
         self.draft.push_str(code);
@@ -255,7 +279,12 @@ impl TsChatApp {
             return;
         };
         match self.run_db(|rt, db| rt.block_on(db.user_by_name(&name))) {
-            Ok(Some(user)) => { self.friend_profile = Some(user); self.show_friend_profile = true; }
+            Ok(Some(user)) => {
+                self.friend_profile = Some(user);
+                self.friend_avatar_texture = None;
+                self.friend_avatar_cache_key = None;
+                self.show_friend_profile = true;
+            }
             Ok(None) => self.status = "Пользователь не найден.".into(),
             Err(e) => self.status = format!("Не удалось загрузить профиль: {e:#}"),
         }
@@ -294,6 +323,7 @@ impl eframe::App for TsChatApp {
         }
 
         self.ensure_avatar_texture(ctx);
+        if self.show_friend_profile { self.ensure_friend_avatar_texture(ctx); }
         if self.dark_theme { ctx.set_visuals(egui::Visuals::dark()); } else { ctx.set_visuals(egui::Visuals::light()); }
 
         egui::TopBottomPanel::top("top").show(ctx, |ui| {
@@ -402,6 +432,9 @@ impl eframe::App for TsChatApp {
                     if self.show_friend_profile {
                         let mut close_profile = false;
                         egui::Window::new("Профиль пользователя").show(ctx, |ui| {
+                            if let Some(texture) = &self.friend_avatar_texture {
+                                ui.add(egui::Image::new((texture.id(), egui::vec2(120.0, 120.0))));
+                            }
                             if let Some(profile) = &self.friend_profile {
                                 ui.heading(&profile.display_name);
                                 ui.label(format!("Никнейм: {}", profile.username));
