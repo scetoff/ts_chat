@@ -42,11 +42,11 @@ impl Config {
     pub fn mysql_url(&self) -> String {
         format!(
             "mysql://{}:{}@{}:{}/{}",
-            self.database.user,
+            urlencoding::encode(&self.database.user),
             urlencoding::encode(&self.database.password),
             self.database.host,
             self.database.port,
-            self.database.name
+            urlencoding::encode(&self.database.name)
         )
     }
 }
