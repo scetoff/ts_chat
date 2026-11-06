@@ -35,8 +35,8 @@ permissions to create the three TSchat tables. Do not commit `config.toml`.
 The current code is a functional starting point, not a complete recreation of the
 legacy client. The next migration stages are:
 
-1. Avatar display/upload, image attachments, and the original 16 chat emoticons.
-2. User profile and friend-profile screens, font/color preferences and editing.
+1. Image attachments and native rendering of the original emoticon images.
+2. Rich-text per-user formatting preferences and complete friend-profile presentation.
 3. Notes/drawing.
 4. Radio streaming and media controls.
 5. Speech commands.
