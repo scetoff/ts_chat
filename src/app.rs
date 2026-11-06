@@ -1,5 +1,9 @@
 use eframe::egui;
 use std::{io::Cursor, time::{Duration, Instant}};
+use argon2::{
+    Argon2,
+    password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString, rand_core::OsRng},
+};
 use crate::{config::Config, db::Database, models::User};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -74,14 +78,31 @@ impl TsChatApp {
         }
     }
 
-    fn password_digest(password: &str) -> String {
-        // Legacy compatibility only: original VB.NET added ASCII "ZUBI" before and after MD5 bytes.
+    fn legacy_password_digest(password: &str) -> String {
+        // Compatibility with old VB.NET accounts only: MD5(password + ASCII "ZUBI") + "ZUBI", then Base64.
         let mut input = password.as_bytes().to_vec();
         input.extend_from_slice(b"ZUBI");
         let mut digest = md5::compute(input).0.to_vec();
         digest.extend_from_slice(b"ZUBI");
         use base64::Engine;
         base64::engine::general_purpose::STANDARD.encode(digest)
+    }
+
+    fn hash_password(password: &str) -> anyhow::Result<String> {
+        let salt = SaltString::generate(&mut OsRng);
+        Argon2::default()
+            .hash_password(password.as_bytes(), &salt)
+            .map(|hash| hash.to_string())
+            .map_err(|error| anyhow::anyhow!("Не удалось создать Argon2id-хеш: {error}"))
+    }
+
+    fn verify_password(password: &str, stored_hash: &str) -> bool {
+        if stored_hash.starts_with("$argon2") {
+            let Ok(parsed) = PasswordHash::new(stored_hash) else { return false; };
+            Argon2::default().verify_password(password.as_bytes(), &parsed).is_ok()
+        } else {
+            stored_hash == Self::legacy_password_digest(password)
+        }
     }
 
     fn run_db<T>(&mut self, f: impl FnOnce(&tokio::runtime::Runtime, &Database) -> anyhow::Result<T>) -> anyhow::Result<T> {
@@ -94,9 +115,24 @@ impl TsChatApp {
             self.status = "Укажите никнейм и пароль.".into(); return;
         }
         let username = self.username.clone();
-        let hash = Self::password_digest(&self.password);
-        match self.run_db(|rt, db| rt.block_on(db.authenticate(&username, &hash))) {
-            Ok(Some(user)) => {
+        let password = self.password.clone();
+        match self.run_db(|rt, db| rt.block_on(db.user_with_password(&username))) {
+            Ok(Some((user, stored_hash))) => {
+                if !Self::verify_password(&password, &stored_hash) {
+                    self.status = "Проверьте никнейм и пароль.".into();
+                    return;
+                }
+                if !stored_hash.starts_with("$argon2") {
+                    match Self::hash_password(&password) {
+                        Ok(new_hash) => {
+                            let account_name = user.username.clone();
+                            if let Err(error) = self.run_db(|rt, db| rt.block_on(db.update_password(&account_name, &new_hash))) {
+                                self.status = format!("Вход выполнен, но не удалось обновить защиту пароля: {error:#}");
+                            }
+                        }
+                        Err(error) => self.status = format!("Вход выполнен, но обновление хеша не удалось: {error:#}"),
+                    }
+                }
                 let name = user.username.clone();
                 let friends = self.run_db(|rt, db| rt.block_on(db.users_except(&name))).unwrap_or_default();
                 let chat = self.run_db(|rt, db| rt.block_on(db.read_chat())).unwrap_or_default();
@@ -119,8 +155,11 @@ impl TsChatApp {
             self.status = "Заполните никнейм, пароль и почту.".into(); return;
         }
         let username = self.username.clone(); let email = self.email.clone();
-        let hash = Self::password_digest(&self.password);
-        // The old application shipped a users.png default avatar; empty data preserves DB schema but should be replaced.
+        let hash = match Self::hash_password(&self.password) {
+            Ok(hash) => hash,
+            Err(error) => { self.status = format!("Не удалось защитить пароль: {error:#}"); return; }
+        };
+        // Empty avatar is allowed by the legacy schema; the user can upload one from profile settings.
         match self.run_db(|rt, db| rt.block_on(db.register(&username, &hash, &email, ""))) {
             Ok(()) => { self.status = "Аккаунт создан. Теперь выполните вход.".into(); self.screen = Screen::Login; }
             Err(e) => self.status = format!("Не удалось создать аккаунт: {e:#}"),
@@ -154,7 +193,10 @@ impl TsChatApp {
                     user.mobile = mobile.clone();
                 }
                 if !password.is_empty() {
-                    let hash = Self::password_digest(&password);
+                    let hash = match Self::hash_password(&password) {
+                        Ok(hash) => hash,
+                        Err(error) => { self.status = format!("Профиль сохранён, но пароль захэшировать не удалось: {error:#}"); return; }
+                    };
                     match self.run_db(|rt, db| rt.block_on(db.update_password(&new_username, &hash))) {
                         Ok(()) => self.status = "Профиль и пароль сохранены.".into(),
                         Err(e) => self.status = format!("Профиль сохранён, но пароль обновить не удалось: {e:#}"),
