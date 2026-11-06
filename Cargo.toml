@@ -20,6 +20,6 @@ password-hash = { version = "0.5", features = ["rand_core", "getrandom"] }
 urlencoding = "2"
 rfd = "0.15"
 image = { version = "0.25", default-features = false, features = ["png", "jpeg", "gif"] }
-rodio = "0.22.2"
+rodio = { version = "0.22.2", features = ["playback"] }
 stream-download = { version = "0.24.4", default-features = false, features = ["http", "reqwest-rustls", "temp-storage"] }
 url = "2"
