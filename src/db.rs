@@ -76,12 +76,12 @@ impl Database {
     }
 
     pub async fn register(&self, username: &str, password_hash: &str, email: &str, avatar_base64: &str) -> Result<()> {
-        let username_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users WHERE username = ?")
+        let username_count: u64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users WHERE username = ?")
             .bind(username).fetch_one(&self.pool).await?;
         if username_count > 0 {
             anyhow::bail!("Никнейм уже занят");
         }
-        let email_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users WHERE email = ?")
+        let email_count: u64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users WHERE email = ?")
             .bind(email).fetch_one(&self.pool).await?;
         if email_count > 0 {
             anyhow::bail!("Эта почта уже используется");
@@ -157,12 +157,12 @@ impl Database {
         display_name: &str,
         mobile: &str,
     ) -> Result<()> {
-        let username_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users WHERE username = ? AND username <> ?")
+        let username_count: u64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users WHERE username = ? AND username <> ?")
             .bind(username).bind(old_username).fetch_one(&self.pool).await?;
         if username_count > 0 {
             anyhow::bail!("Никнейм уже занят");
         }
-        let email_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users WHERE email = ? AND username <> ?")
+        let email_count: u64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users WHERE email = ? AND username <> ?")
             .bind(email).bind(old_username).fetch_one(&self.pool).await?;
         if email_count > 0 {
             anyhow::bail!("Эта почта уже используется");
