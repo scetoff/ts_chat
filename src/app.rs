@@ -400,20 +400,23 @@ impl eframe::App for TsChatApp {
                         });
                     });
                     if self.show_friend_profile {
-                        egui::Window::new("Профиль пользователя")
-                            .open(&mut self.show_friend_profile)
-                            .show(ctx, |ui| {
-                                if let Some(profile) = &self.friend_profile {
-                                    ui.heading(&profile.display_name);
-                                    ui.label(format!("Никнейм: {}", profile.username));
-                                    ui.label(format!("Почта: {}", profile.email));
-                                    ui.label(format!("Телефон: {}", profile.mobile));
-                                }
-                            });
+                        let mut close_profile = false;
+                        egui::Window::new("Профиль пользователя").show(ctx, |ui| {
+                            if let Some(profile) = &self.friend_profile {
+                                ui.heading(&profile.display_name);
+                                ui.label(format!("Никнейм: {}", profile.username));
+                                ui.label(format!("Почта: {}", profile.email));
+                                ui.label(format!("Телефон: {}", profile.mobile));
+                            }
+                            if ui.button("Закрыть").clicked() { close_profile = true; }
+                        });
+                        if close_profile { self.show_friend_profile = false; }
                     }
                     if self.show_inbox {
                         let inbox_items = self.inbox.clone();
-                        egui::Window::new("Входящие сообщения").open(&mut self.show_inbox).show(ctx, |ui| {
+                        let mut close_inbox = false;
+                        egui::Window::new("Входящие сообщения").show(ctx, |ui| {
+                            if ui.button("Закрыть").clicked() { close_inbox = true; }
                             for m in inbox_items {
                                 ui.collapsing(
                                     format!("{} — {}{}", m.from_user, m.subject, if m.is_read { "" } else { " • новое" }),
@@ -426,6 +429,7 @@ impl eframe::App for TsChatApp {
                                 );
                             }
                         });
+                        if close_inbox { self.show_inbox = false; }
                     }
                 }
             }
