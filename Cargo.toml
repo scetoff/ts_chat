@@ -16,3 +16,5 @@ toml = "0.8"
 base64 = "0.22"
 md5 = "0.7"
 urlencoding = "2"
+rfd = "0.15"
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "gif"] }
