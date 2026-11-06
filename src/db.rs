@@ -100,6 +100,13 @@ impl Database {
         Ok(())
     }
 
+    pub async fn mark_message_read(&self, message_id: i64, username: &str) -> Result<()> {
+        sqlx::query("UPDATE tb_pm SET isread = 1 WHERE id = ? AND username = ?")
+            .bind(message_id).bind(username)
+            .execute(&self.pool).await?;
+        Ok(())
+    }
+
     pub async fn inbox(&self, username: &str) -> Result<Vec<PrivateMessage>> {
         let rows = sqlx::query("SELECT id,fromuser,subject,message,isread FROM tb_pm WHERE username = ? ORDER BY id DESC")
             .bind(username).fetch_all(&self.pool).await?;
