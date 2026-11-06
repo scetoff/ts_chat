@@ -20,3 +20,11 @@ pub struct PrivateMessage {
     pub message: String,
     pub is_read: bool,
 }
+
+#[derive(Debug, Clone)]
+pub struct ChatStyle {
+    pub color: String,
+    pub font: String,
+    pub font_size: i32,
+    pub font_style: String,
+}
