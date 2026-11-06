@@ -33,6 +33,7 @@ cp config.example.toml config.toml
 # Optional: copy .env.example to .env and fill in DB settings.
 cargo check --all-targets
 cargo test
+cargo build --release --bin tschat
 cargo run
 ```
 
