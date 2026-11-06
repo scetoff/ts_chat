@@ -446,43 +446,72 @@ impl TsChatApp {
         let email = self.profile_email.trim().to_string();
         let name = self.profile_name.trim().to_string();
         let mobile = self.profile_mobile.trim().to_string();
+
         if new_username.is_empty() || email.is_empty() || name.is_empty() {
             self.status = "Имя, никнейм и почта не должны быть пустыми.".into();
             return;
         }
+
         let password = self.new_password.clone();
-        let repeat = self.repeat_password.clone();
-        if !password.is_empty() && password != repeat {
+        if !password.is_empty() && password != self.repeat_password {
             self.status = "Новые пароли не совпадают.".into();
             return;
         }
-        match self.run_db(|rt, db| rt.block_on(db.update_profile(&old_username, &new_username, &email, &name, &mobile))) {
+
+        let password_hash = if password.is_empty() {
+            None
+        } else {
+            match Self::hash_password(&password) {
+                Ok(hash) => Some(hash),
+                Err(error) => {
+                    self.status = format!("Не удалось защитить новый пароль: {error:#}");
+                    return;
+                }
+            }
+        };
+
+        match self.run_db(|rt, db| {
+            rt.block_on(db.update_profile_with_messages(
+                &old_username,
+                &new_username,
+                &email,
+                &name,
+                &mobile,
+                password_hash.as_deref(),
+            ))
+        }) {
             Ok(()) => {
                 if let Some(user) = self.current_user.as_mut() {
                     user.username = new_username.clone();
                     user.email = email.clone();
                     user.display_name = name.clone();
                     user.mobile = mobile.clone();
-                }
-                if !password.is_empty() {
-                    let hash = match Self::hash_password(&password) {
-                        Ok(hash) => hash,
-                        Err(error) => { self.status = format!("Профиль сохранён, но пароль захэшировать не удалось: {error:#}"); return; }
-                    };
-                    match self.run_db(|rt, db| rt.block_on(db.update_password(&new_username, &hash))) {
-                        Ok(()) => self.status = "Профиль и пароль сохранены.".into(),
-                        Err(e) => self.status = format!("Профиль сохранён, но пароль обновить не удалось: {e:#}"),
+                    if let Some(hash) = password_hash.as_ref() {
+                        // The password hash is stored in the DB; no password value is retained in UI state.
+                        let _ = hash;
                     }
-                } else {
-                    self.status = "Профиль сохранён.".into();
                 }
+                // Preserve the old username's style for historical chat lines and copy it to the new name.
+                if let Some(style) = self.chat_styles.get(&old_username).cloned() {
+                    self.chat_styles.insert(new_username.clone(), style);
+                }
+                self.status = if password_hash.is_some() {
+                    "Профиль, никнейм, личные сообщения и пароль сохранены.".into()
+                } else if old_username != new_username {
+                    "Профиль обновлён; старые личные сообщения перенесены на новый никнейм.".into()
+                } else {
+                    "Профиль сохранён.".into()
+                };
+
                 self.new_password.clear();
                 self.repeat_password.clear();
                 if let Ok(friends) = self.run_db(|rt, db| rt.block_on(db.users_except(&new_username))) {
                     self.friends = friends;
                 }
             }
-            Err(e) => self.status = format!("Не удалось сохранить профиль: {e:#}"),
+            Err(error) => {
+                self.status = format!("Не удалось сохранить профиль: {error:#}");
+            }
         }
     }
 
