@@ -55,6 +55,7 @@ pub struct TsChatApp {
     radio_status: String,
     radio_player: Option<RadioPlayback>,
     radio_pending: Option<(std::sync::mpsc::Receiver<Result<RadioPlayback, String>>, String)>,
+    smiley_textures: Vec<(String, egui::TextureHandle)>,
 }
 
 
@@ -130,6 +131,46 @@ fn render_strokes_png(
     output
 }
 
+
+const SMILEY_CODES: [&str; 16] = [
+    ":fuu:", ":beer:", ":sorry:", ":read:", ":girl:", ":lich:", ":sing:", ":haha:",
+    ":allbear:", ":say:", ":money:", ":no:", ":king:", ":go:", ":good:", ":nice:",
+];
+
+fn show_chat_line(ui: &mut egui::Ui, line: &str, smileys: &[(String, egui::TextureHandle)]) {
+    ui.horizontal_wrapped(|ui| {
+        let mut rest = line;
+        loop {
+            let mut next: Option<(usize, &str)> = None;
+            for code in SMILEY_CODES {
+                if let Some(position) = rest.find(code) {
+                    if next.map(|(current, _)| position < current).unwrap_or(true) {
+                        next = Some((position, code));
+                    }
+                }
+            }
+
+            match next {
+                Some((position, code)) => {
+                    if position > 0 {
+                        ui.label(&rest[..position]);
+                    }
+                    if let Some((_, texture)) = smileys.iter().find(|(candidate, _)| candidate == code) {
+                        ui.add(egui::Image::new((texture.id(), egui::vec2(28.0, 28.0))));
+                    } else {
+                        ui.label(code);
+                    }
+                    rest = &rest[position + code.len()..];
+                }
+                None => {
+                    if !rest.is_empty() { ui.label(rest); }
+                    break;
+                }
+            }
+        }
+    });
+}
+
 impl Default for TsChatApp {
     fn default() -> Self {
         let config = Config::load();
@@ -160,6 +201,7 @@ impl Default for TsChatApp {
             radio_status: "Выберите станцию и укажите её URL в настройках.".into(),
             radio_player: None,
             radio_pending: None,
+            smiley_textures: Vec::new(),
         }
     }
 }
@@ -381,6 +423,41 @@ impl TsChatApp {
             });
         self.friend_avatar_texture = texture;
         self.friend_avatar_cache_key = Some(encoded);
+    }
+
+
+    fn ensure_smiley_textures(&mut self, ctx: &egui::Context) {
+        if self.smiley_textures.len() == SMILEY_CODES.len() { return; }
+        let assets: [(&str, &[u8]); 16] = [
+            (":fuu:", include_bytes!("../assets/smileys/1.png")),
+            (":beer:", include_bytes!("../assets/smileys/2.png")),
+            (":sorry:", include_bytes!("../assets/smileys/3.png")),
+            (":read:", include_bytes!("../assets/smileys/4.png")),
+            (":girl:", include_bytes!("../assets/smileys/5.png")),
+            (":lich:", include_bytes!("../assets/smileys/6.png")),
+            (":sing:", include_bytes!("../assets/smileys/7.png")),
+            (":haha:", include_bytes!("../assets/smileys/8.png")),
+            (":allbear:", include_bytes!("../assets/smileys/9.png")),
+            (":say:", include_bytes!("../assets/smileys/10.png")),
+            (":money:", include_bytes!("../assets/smileys/11.png")),
+            (":no:", include_bytes!("../assets/smileys/12.png")),
+            (":king:", include_bytes!("../assets/smileys/13.png")),
+            (":go:", include_bytes!("../assets/smileys/14.png")),
+            (":good:", include_bytes!("../assets/smileys/15.png")),
+            (":nice:", include_bytes!("../assets/smileys/16.png")),
+        ];
+
+        let mut textures = Vec::with_capacity(assets.len());
+        for (code, bytes) in assets {
+            let Ok(decoded) = image::load_from_memory(bytes) else { continue; };
+            let rgba = decoded.to_rgba8();
+            let size = [rgba.width() as usize, rgba.height() as usize];
+            let color = egui::ColorImage::from_rgba_unmultiplied(size, rgba.as_raw());
+            let name = format!("tschat-smiley-{code}");
+            let texture = ctx.load_texture(name, color, egui::TextureOptions::LINEAR);
+            textures.push((code.to_string(), texture));
+        }
+        self.smiley_textures = textures;
     }
 
     fn add_smiley(&mut self, code: &str) {
@@ -698,6 +775,7 @@ impl eframe::App for TsChatApp {
         }
 
         self.ensure_avatar_texture(ctx);
+        self.ensure_smiley_textures(ctx);
         if self.show_friend_profile { self.ensure_friend_avatar_texture(ctx); }
         if self.dark_theme { ctx.set_visuals(egui::Visuals::dark()); } else { ctx.set_visuals(egui::Visuals::light()); }
 
@@ -749,24 +827,22 @@ impl eframe::App for TsChatApp {
                     ui.columns(2, |cols| {
                         cols[0].group(|ui| {
                             ui.label("Общий чат");
-                            let mut readable_chat = self.chat_text.clone();
-                            for (code, glyph) in [
-                                (":fuu:", "😠"), (":beer:", "🍺"), (":sorry:", "🙏"), (":read:", "📖"),
-                                (":girl:", "👧"), (":lich:", "🧙"), (":sing:", "🎤"), (":haha:", "😂"),
-                                (":allbear:", "🐻"), (":say:", "💬"), (":money:", "💰"), (":no:", "⛔"),
-                                (":king:", "👑"), (":go:", "🚀"), (":good:", "👍"), (":nice:", "😎"),
-                            ] {
-                                readable_chat = readable_chat.replace(code, glyph);
-                            }
-                            ui.add(egui::TextEdit::multiline(&mut readable_chat).desired_rows(23).desired_width(f32::INFINITY).interactive(false));
+                            let smiley_items = self.smiley_textures.clone();
+                            egui::ScrollArea::vertical().max_height(470.0).show(ui, |ui| {
+                                for line in self.chat_text.split('\n') {
+                                    show_chat_line(ui, line, &smiley_items);
+                                }
+                            });
                             ui.add(egui::TextEdit::singleline(&mut self.draft).hint_text("Сообщение...").desired_width(f32::INFINITY));
                             if ui.button("Отправить").clicked() { self.send_chat(); }
                             ui.collapsing("Смайлики", |ui| {
-                                let smileys = [":fuu:", ":beer:", ":sorry:", ":read:", ":girl:", ":lich:", ":sing:", ":haha:",
-                                    ":allbear:", ":say:", ":money:", ":no:", ":king:", ":go:", ":good:", ":nice:"];
                                 egui::Grid::new("smiley-grid").num_columns(4).show(ui, |ui| {
-                                    for (index, code) in smileys.iter().enumerate() {
-                                        if ui.button(*code).clicked() { self.add_smiley(code); }
+                                    for (index, (code, texture)) in smiley_items.iter().enumerate() {
+                                        let image = egui::Image::new((texture.id(), egui::vec2(48.0, 48.0)))
+                                            .sense(egui::Sense::click());
+                                        if ui.add(image).on_hover_text(code).clicked() {
+                                            self.add_smiley(code);
+                                        }
                                         if (index + 1) % 4 == 0 { ui.end_row(); }
                                     }
                                 });
