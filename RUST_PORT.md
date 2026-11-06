@@ -30,6 +30,7 @@ Install stable Rust and Cargo, then:
 cp config.example.toml config.toml
 # Set database credentials in config.toml.
 cargo check
+cargo test
 cargo run
 ```
 
@@ -50,11 +51,12 @@ device being available.
 The current code is a functional starting point, not a complete recreation of the
 legacy client. The next migration stages are:
 
-1. Rich-text per-user message formatting and persistent chat font/color preferences.
-2. Image attachments (the legacy attachment button was commented out in the VB.NET source).
-3. Complete profile preferences and settings persistence for chat colors/fonts.
-4. Russian speech recognition and command integration (the legacy app used Microsoft Speech SDK).
-5. Automated tests against a disposable MySQL database and a Windows release build.
+1. Russian speech recognition from a microphone and continuous voice-command activation; the legacy app used Microsoft Speech SDK.
+2. Rich-text per-user message formatting and persistent chat font/color preferences.
+3. Image attachments (the legacy attachment button was commented out in the VB.NET source).
+4. Automated tests against a disposable MySQL database and a Windows release build.
+
+The command parser has unit tests for legacy station aliases, radio/notes actions, and unsupported phrases. It is separate from speech-to-text so an offline recognizer can feed the same dispatcher later. The current command field is manual input; the microphone is not activated.
 
 The VB.NET client uses .NET Framework 4.5, Windows Forms, MySQL Connector/NET,
 Windows Media Player COM components, and Microsoft Speech SDK. The GUI and platform
