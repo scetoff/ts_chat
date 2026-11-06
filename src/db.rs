@@ -32,6 +32,29 @@ impl Database {
         Ok(())
     }
 
+
+    pub async fn user_with_password(&self, username: &str) -> Result<Option<(User, String)>> {
+        let row = sqlx::query(
+            "SELECT id, username, password, email, name, dp, mobile, chatcolor, chatfont, chatfontsize, chatfontstyle FROM tb_users WHERE username = ?"
+        ).bind(username).fetch_optional(&self.pool).await?;
+        Ok(row.map(|r| {
+            let user = User {
+                id: r.get("id"),
+                username: r.get("username"),
+                email: r.get("email"),
+                display_name: r.get("name"),
+                avatar_base64: r.get("dp"),
+                mobile: r.get("mobile"),
+                chat_color: r.get("chatcolor"),
+                chat_font: r.get("chatfont"),
+                chat_font_size: r.get("chatfontsize"),
+                chat_font_style: r.get("chatfontstyle"),
+            };
+            let password_hash: String = r.get("password");
+            (user, password_hash)
+        }))
+    }
+
     pub async fn authenticate(&self, username: &str, password_hash: &str) -> Result<Option<User>> {
         let row = sqlx::query(
             "SELECT id, username, email, name, dp, mobile, chatcolor, chatfont, chatfontsize, chatfontstyle FROM tb_users WHERE username = ? AND password = ?"
