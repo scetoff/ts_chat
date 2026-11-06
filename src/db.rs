@@ -9,6 +9,7 @@ pub struct Database {
 
 impl Database {
     pub async fn connect(config: &Config) -> Result<Self> {
+        Config::validate_database_driver()?;
         let pool = MySqlPoolOptions::new()
             .max_connections(8)
             .connect(&config.mysql_url())
