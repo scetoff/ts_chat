@@ -9,6 +9,7 @@ The initial desktop client is built with Rust, egui/eframe, Tokio and SQLx. Impl
 
 - Connect to an existing MySQL database using `DATABASE_URL`, individual `DB_*` environment variables, local `.env`, or `config.toml`.
 - Verify the existing TSchat tables in read-only mode on connection; normal startup does not create tables or insert data.
+- Check that `tb_users.password` can hold Argon2id hashes, the `tb_users` and `tb_pm` IDs are auto-incrementing, and the shared-chat row `tb_chat.id=1` exists.
 - Authenticate against the existing `tb_users` table.
 - Register users using the original user table columns.
 - Read and send messages using the legacy shared `tb_chat` record.
@@ -64,9 +65,10 @@ $env:DB_PASSWORD = "replace-locally"
 cargo run --bin db_smoke
 ```
 
-It verifies the expected columns in `tb_users`, `tb_chat`, and `tb_pm`, then reads
-only the registered-user count and the shared-chat row. It does not create tables or
-modify data. For GitHub Actions, add either a `DATABASE_URL` repository secret or the separate
+It verifies the expected columns, password-hash capacity, auto-increment IDs, and
+shared-chat seed row, then reads only the registered-user count and the shared-chat
+row. It also prints table collations (the original VB.NET DDL used `latin1`). It does
+not create tables or modify data. For GitHub Actions, add either a `DATABASE_URL` repository secret or the separate
 `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD` secrets
 (optionally `DB_CONNECTION`). The smoke test then runs automatically on this
 repository's pull requests or can be started by manually dispatching the workflow.
