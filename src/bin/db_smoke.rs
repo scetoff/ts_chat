@@ -6,6 +6,7 @@ use std::env;
 /// This tool never creates, inserts, updates, or deletes any database object or row.
 #[tokio::main]
 async fn main() -> Result<()> {
+    let _ = dotenvy::dotenv();
     let url = database_url_from_env()
         .context("Set DATABASE_URL or DB_HOST/DB_PORT/DB_DATABASE/DB_USERNAME for the disposable test database")?;
 
