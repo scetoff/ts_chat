@@ -27,16 +27,47 @@ jobs:
         run: cargo check --all-targets
       - name: Unit tests
         run: cargo test
+      - name: Build Windows release executable
+        run: cargo build --release --bin tschat
+      - name: Upload Windows executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: tschat-windows-x64
+          path: target/release/tschat.exe
+          if-no-files-found: error
+          retention-days: 14
 
   mysql-smoke:
     # Also run for same-repository PRs when DB secrets are configured.
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Check whether database credentials are configured
+        id: database
+        env:
+          TSCHAT_TEST_DATABASE_URL: ${{ secrets.TSCHAT_TEST_DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+        shell: pwsh
+        run: |
+          $hasUrl = -not [string]::IsNullOrWhiteSpace($env:DATABASE_URL) -or -not [string]::IsNullOrWhiteSpace($env:TSCHAT_TEST_DATABASE_URL)
+          $hasParts = -not [string]::IsNullOrWhiteSpace($env:DB_HOST) -and -not [string]::IsNullOrWhiteSpace($env:DB_DATABASE) -and -not [string]::IsNullOrWhiteSpace($env:DB_USERNAME)
+          if ($hasUrl -or $hasParts) {
+            "configured=true" >> $env:GITHUB_OUTPUT
+          } else {
+            Write-Host "Database smoke test skipped: no DATABASE_URL or DB_* repository secrets are configured."
+            "configured=false" >> $env:GITHUB_OUTPUT
+          }
+      - name: Checkout
+        if: steps.database.outputs.configured == 'true'
+        uses: actions/checkout@v4
       - name: Install stable Rust
+        if: steps.database.outputs.configured == 'true'
         uses: dtolnay/rust-toolchain@stable
       - name: Read-only TSchat MySQL schema check
+        if: steps.database.outputs.configured == 'true'
         env:
           TSCHAT_TEST_DATABASE_URL: ${{ secrets.TSCHAT_TEST_DATABASE_URL }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -47,11 +78,4 @@ jobs:
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         shell: pwsh
-        run: |
-          $hasUrl = -not [string]::IsNullOrWhiteSpace($env:DATABASE_URL) -or -not [string]::IsNullOrWhiteSpace($env:TSCHAT_TEST_DATABASE_URL)
-          $hasParts = -not [string]::IsNullOrWhiteSpace($env:DB_HOST) -and -not [string]::IsNullOrWhiteSpace($env:DB_DATABASE) -and -not [string]::IsNullOrWhiteSpace($env:DB_USERNAME)
-          if (-not $hasUrl -and -not $hasParts) {
-            Write-Host "Skipped: configure DATABASE_URL or DB_HOST/DB_PORT/DB_DATABASE/DB_USERNAME repository secrets."
-            exit 0
-          }
-          cargo run --bin db_smoke
+        run: cargo run --bin db_smoke
