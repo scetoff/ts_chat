@@ -37,6 +37,37 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  voice-build:
+    needs: cargo-check
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install stable Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install CMake and LLVM/Clang
+        shell: pwsh
+        run: |
+          choco install cmake llvm --yes --no-progress
+          $llvmBin = "C:\Program Files\LLVM\bin"
+          if (-not (Test-Path "$llvmBin\libclang.dll")) {
+            throw "libclang.dll not found under $llvmBin"
+          }
+          "LIBCLANG_PATH=$llvmBin" >> $env:GITHUB_ENV
+          "$llvmBin" >> $env:GITHUB_PATH
+      - name: Check voice feature
+        run: cargo check --all-targets --features voice
+      - name: Unit tests with voice feature
+        run: cargo test --features voice
+      - name: Build voice-enabled Windows executable
+        run: cargo build --release --features voice --bin tschat
+      - name: Upload voice-enabled Windows executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: tschat-windows-x64-voice
+          path: target/release/tschat.exe
+          if-no-files-found: error
+          retention-days: 14
+
   mysql-smoke:
     # Also run for same-repository PRs when DB secrets are configured.
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
