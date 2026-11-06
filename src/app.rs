@@ -755,8 +755,41 @@ impl TsChatApp {
     }
 
 
+
+    #[cfg(feature = "voice")]
+    fn finish_voice_recording(&mut self) {
+        self.voice_recording_started = None;
+        let Some(recorder) = self.voice_recorder.take() else { return; };
+        let Some(model) = self.voice_model.clone() else {
+            self.voice_status = "Сначала загрузите модель Whisper.".into();
+            return;
+        };
+
+        match recorder.finish() {
+            Ok(audio) => {
+                let (sender, receiver) = std::sync::mpsc::channel();
+                self.runtime.spawn_blocking(move || {
+                    let result = voice::transcribe(model, &audio)
+                        .map_err(|error| format!("{error:#}"));
+                    let _ = sender.send(result);
+                });
+                self.voice_transcription_pending = Some(receiver);
+                self.voice_status = "Распознаю русскую команду…".into();
+            }
+            Err(error) => self.voice_status = format!("Не удалось завершить запись: {error:#}"),
+        }
+    }
+
     #[cfg(feature = "voice")]
     fn show_voice_window(&mut self, ctx: &egui::Context) {
+        // Always stop the capture device automatically after the 12-second limit.
+        if self.voice_recording_started
+            .map(|started| started.elapsed() >= Duration::from_secs(12))
+            .unwrap_or(false)
+        {
+            self.finish_voice_recording();
+        }
+
         let model_result = self.voice_model_pending.as_ref().map(|receiver| receiver.try_recv());
         if let Some(result) = model_result {
             match result {
@@ -873,31 +906,22 @@ impl TsChatApp {
             match MicrophoneRecorder::start() {
                 Ok(recorder) => {
                     self.voice_recorder = Some(recorder);
-                    self.voice_status = "Запись началась. Скажите одну команду и нажмите «Остановить и распознать».".into();
+                    self.voice_recording_started = Some(Instant::now());
+                    self.voice_status = "Запись началась. Скажите одну команду; через 12 секунд она остановится автоматически.".into();
                 }
                 Err(error) => self.voice_status = format!("Не удалось включить микрофон: {error:#}"),
             }
         }
 
         if stop_recording {
-            if let (Some(recorder), Some(model)) = (self.voice_recorder.take(), self.voice_model.clone()) {
-                match recorder.finish() {
-                    Ok(audio) => {
-                        let (sender, receiver) = std::sync::mpsc::channel();
-                        self.runtime.spawn_blocking(move || {
-                            let result = voice::transcribe(model, &audio)
-                                .map_err(|error| format!("{error:#}"));
-                            let _ = sender.send(result);
-                        });
-                        self.voice_transcription_pending = Some(receiver);
-                        self.voice_status = "Распознаю русскую команду…".into();
-                    }
-                    Err(error) => self.voice_status = format!("Не удалось завершить запись: {error:#}"),
-                }
-            } else {
-                self.voice_recorder = None;
-                self.voice_status = "Сначала загрузите модель Whisper.".into();
-            }
+            self.finish_voice_recording();
+        }
+
+        // Closing the voice window cancels an active recording and releases the microphone.
+        if !self.voice_open && self.voice_recorder.is_some() {
+            self.voice_recorder = None;
+            self.voice_recording_started = None;
+            self.voice_status = "Запись отменена; микрофон выключен.".into();
         }
     }
 
