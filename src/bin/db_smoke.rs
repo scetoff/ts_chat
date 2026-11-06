@@ -6,8 +6,8 @@ use std::env;
 /// This tool never creates, inserts, updates, or deletes any database object or row.
 #[tokio::main]
 async fn main() -> Result<()> {
-    let url = env::var("TSCHAT_TEST_DATABASE_URL")
-        .context("Set TSCHAT_TEST_DATABASE_URL to the disposable test database URL")?;
+    let url = database_url_from_env()
+        .context("Set DATABASE_URL or DB_HOST/DB_PORT/DB_DATABASE/DB_USERNAME for the disposable test database")?;
 
     let pool = MySqlPoolOptions::new()
         .max_connections(2)
@@ -60,4 +60,37 @@ async fn main() -> Result<()> {
 
     pool.close().await;
     Ok(())
+}
+
+fn non_empty_env(name: &str) -> Option<String> {
+    env::var(name).ok().filter(|value| !value.trim().is_empty())
+}
+
+fn database_url_from_env() -> Result<String> {
+    if let Some(url) = non_empty_env("TSCHAT_TEST_DATABASE_URL")
+        .or_else(|| non_empty_env("DATABASE_URL"))
+    {
+        return Ok(url);
+    }
+
+    let driver = non_empty_env("DB_CONNECTION").unwrap_or_else(|| "mysql".into());
+    if driver != "mysql" && driver != "mariadb" {
+        anyhow::bail!("DB_CONNECTION='{driver}' is not supported; expected mysql");
+    }
+
+    let host = non_empty_env("DB_HOST").context("DB_HOST is required")?;
+    let port = non_empty_env("DB_PORT").unwrap_or_else(|| "3306".into());
+    let database = non_empty_env("DB_DATABASE").context("DB_DATABASE is required")?;
+    let username = non_empty_env("DB_USERNAME").context("DB_USERNAME is required")?;
+    let password = non_empty_env("DB_PASSWORD").unwrap_or_default();
+    let port: u16 = port.parse().context("DB_PORT must be a valid TCP port")?;
+
+    Ok(format!(
+        "mysql://{}:{}@{}:{}/{}",
+        urlencoding::encode(&username),
+        urlencoding::encode(&password),
+        host,
+        port,
+        urlencoding::encode(&database)
+    ))
 }
