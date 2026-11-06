@@ -1,6 +1,6 @@
 use anyhow::{Context, Result};
 use sqlx::{mysql::MySqlPoolOptions, MySqlPool, Row};
-use crate::{config::Config, models::{PrivateMessage, User}};
+use crate::{config::Config, models::{ChatStyle, PrivateMessage, User}};
 
 #[derive(Clone)]
 pub struct Database {
@@ -186,6 +186,46 @@ impl Database {
         sqlx::query("UPDATE tb_users SET username = ?, email = ?, name = ?, mobile = ? WHERE username = ?")
             .bind(username).bind(email).bind(display_name).bind(mobile).bind(old_username)
             .execute(&self.pool).await?;
+        Ok(())
+    }
+
+
+    pub async fn chat_styles(&self) -> Result<std::collections::HashMap<String, ChatStyle>> {
+        let rows = sqlx::query(
+            "SELECT username, chatcolor, chatfont, chatfontsize, chatfontstyle FROM tb_users"
+        ).fetch_all(&self.pool).await?;
+        let mut styles = std::collections::HashMap::with_capacity(rows.len());
+        for row in rows {
+            let username: String = row.get("username");
+            let style = ChatStyle {
+                color: row.get("chatcolor"),
+                font: row.get("chatfont"),
+                font_size: row.get("chatfontsize"),
+                font_style: row.get("chatfontstyle"),
+            };
+            styles.insert(username, style);
+        }
+        Ok(styles)
+    }
+
+    pub async fn update_chat_style(
+        &self,
+        username: &str,
+        color: &str,
+        font: &str,
+        font_size: i32,
+        font_style: &str,
+    ) -> Result<()> {
+        sqlx::query(
+            "UPDATE tb_users SET chatcolor = ?, chatfont = ?, chatfontsize = ?, chatfontstyle = ? WHERE username = ?"
+        )
+        .bind(color)
+        .bind(font)
+        .bind(font_size)
+        .bind(font_style)
+        .bind(username)
+        .execute(&self.pool)
+        .await?;
         Ok(())
     }
 
