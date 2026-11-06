@@ -31,6 +31,28 @@ impl Database {
         sqlx::query("SELECT id, username, fromuser, subject, message, isread FROM tb_pm LIMIT 0")
             .fetch_all(&self.pool).await.context("Таблица tb_pm отсутствует или её структура несовместима")?;
 
+        // Ensure Argon2id can be stored before upgrading a legacy password hash.
+        let password_capacity: Option<u64> = sqlx::query_scalar(
+            "SELECT CHARACTER_MAXIMUM_LENGTH FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tb_users' AND COLUMN_NAME = 'password'"
+        ).fetch_one(&self.pool).await.context("Не удалось проверить длину tb_users.password")?;
+        if password_capacity.unwrap_or(0) < 100 {
+            anyhow::bail!("tb_users.password слишком короткий для Argon2id (нужно минимум 100 символов); сначала проверьте тестовую БД и выполните миграцию столбца");
+        }
+
+        let auto_increment_ids: u64 = sqlx::query_scalar(
+            "SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND ((TABLE_NAME = 'tb_users' AND COLUMN_NAME = 'id') OR (TABLE_NAME = 'tb_pm' AND COLUMN_NAME = 'id')) AND EXTRA LIKE '%auto_increment%'"
+        ).fetch_one(&self.pool).await.context("Не удалось проверить автоинкремент ID")?;
+        if auto_increment_ids != 2 {
+            anyhow::bail!("В tb_users.id и tb_pm.id должен быть включён AUTO_INCREMENT; проверьте DDL тестовой БД");
+        }
+
+        let chat_row_exists: bool = sqlx::query_scalar(
+            "SELECT EXISTS(SELECT 1 FROM tb_chat WHERE id = 1)"
+        ).fetch_one(&self.pool).await.context("Не удалось проверить стартовую запись tb_chat")?;
+        if !chat_row_exists {
+            anyhow::bail!("В tb_chat отсутствует строка id=1; заполните её в тестовой БД после проверки резервной копии");
+        }
+
         Ok(())
     }
 
