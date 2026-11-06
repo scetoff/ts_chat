@@ -46,10 +46,10 @@ impl Database {
             anyhow::bail!("В tb_users.id и tb_pm.id должен быть включён AUTO_INCREMENT; проверьте DDL тестовой БД");
         }
 
-        let chat_row_exists: bool = sqlx::query_scalar(
-            "SELECT EXISTS(SELECT 1 FROM tb_chat WHERE id = 1)"
+        let chat_row_count: u64 = sqlx::query_scalar(
+            "SELECT COUNT(*) FROM tb_chat WHERE id = 1"
         ).fetch_one(&self.pool).await.context("Не удалось проверить стартовую запись tb_chat")?;
-        if !chat_row_exists {
+        if chat_row_count == 0 {
             anyhow::bail!("В tb_chat отсутствует строка id=1; заполните её в тестовой БД после проверки резервной копии");
         }
 
