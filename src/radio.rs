@@ -23,7 +23,7 @@ impl RadioPlayback {
         .await
         .map_err(|error| anyhow::anyhow!("Не удалось подключить радиопоток: {error}"))?;
 
-        let decoder = Decoder::new(reader)
+        let decoder = Decoder::try_from(reader)
             .context("Не удалось определить или декодировать аудиоформат радиостанции")?;
 
         let output = DeviceSinkBuilder::open_default_sink()
