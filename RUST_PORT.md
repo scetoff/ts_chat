@@ -13,7 +13,11 @@ The initial desktop client is built with Rust, egui/eframe, Tokio and SQLx. Impl
 - Register users using the original user table columns.
 - Read and send messages using the legacy shared `tb_chat` record.
 - Poll the shared chat every two seconds while the chat screen is open.
-- List registered users, send personal messages, and view the inbox.
+- List registered users, view friend profiles, and show their avatars.
+- Edit own nickname, display name, email and phone; change the password.
+- Choose and upload a PNG/JPEG/GIF avatar (normalized to PNG, max 640×480).
+- Insert the original 16 smiley shortcodes into the message composer.
+- Send private messages, view the inbox, and mark received messages as read.
 - Toggle light and dark themes.
 
 ## Build and run
@@ -35,8 +39,9 @@ permissions to create the three TSchat tables. Do not commit `config.toml`.
 The current code is a functional starting point, not a complete recreation of the
 legacy client. The next migration stages are:
 
-1. Image attachments and native rendering of the original emoticon images.
-2. Rich-text per-user formatting preferences and complete friend-profile presentation.
+1. Native rendering of the original 16 emoticon images and rich-text message formatting.
+2. Image attachments (the legacy attachment button was commented out in the VB.NET source).
+3. Complete profile preferences and settings persistence for chat colors/fonts.
 3. Notes/drawing.
 4. Radio streaming and media controls.
 5. Speech commands.
