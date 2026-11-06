@@ -76,6 +76,16 @@ impl Database {
     }
 
     pub async fn register(&self, username: &str, password_hash: &str, email: &str, avatar_base64: &str) -> Result<()> {
+        let username_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users WHERE username = ?")
+            .bind(username).fetch_one(&self.pool).await?;
+        if username_count > 0 {
+            anyhow::bail!("Никнейм уже занят");
+        }
+        let email_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users WHERE email = ?")
+            .bind(email).fetch_one(&self.pool).await?;
+        if email_count > 0 {
+            anyhow::bail!("Эта почта уже используется");
+        }
         sqlx::query(
             "INSERT INTO tb_users (username,password,email,name,dp,mobile,chatcolor,chatfont,chatfontsize,chatfontstyle) VALUES (?,?,?,?,?,?,?,?,?,?)"
         )
@@ -147,6 +157,16 @@ impl Database {
         display_name: &str,
         mobile: &str,
     ) -> Result<()> {
+        let username_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users WHERE username = ? AND username <> ?")
+            .bind(username).bind(old_username).fetch_one(&self.pool).await?;
+        if username_count > 0 {
+            anyhow::bail!("Никнейм уже занят");
+        }
+        let email_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users WHERE email = ? AND username <> ?")
+            .bind(email).bind(old_username).fetch_one(&self.pool).await?;
+        if email_count > 0 {
+            anyhow::bail!("Эта почта уже используется");
+        }
         sqlx::query("UPDATE tb_users SET username = ?, email = ?, name = ?, mobile = ? WHERE username = ?")
             .bind(username).bind(email).bind(display_name).bind(mobile).bind(old_username)
             .execute(&self.pool).await?;
