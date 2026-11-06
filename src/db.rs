@@ -108,4 +108,32 @@ impl Database {
             message: r.get("message"), is_read: r.get::<i32,_>("isread") != 0
         }).collect())
     }
+
+    pub async fn update_profile(
+        &self,
+        old_username: &str,
+        username: &str,
+        email: &str,
+        display_name: &str,
+        mobile: &str,
+    ) -> Result<()> {
+        sqlx::query("UPDATE tb_users SET username = ?, email = ?, name = ?, mobile = ? WHERE username = ?")
+            .bind(username).bind(email).bind(display_name).bind(mobile).bind(old_username)
+            .execute(&self.pool).await?;
+        Ok(())
+    }
+
+    pub async fn update_avatar(&self, username: &str, avatar_base64: &str) -> Result<()> {
+        sqlx::query("UPDATE tb_users SET dp = ? WHERE username = ?")
+            .bind(avatar_base64).bind(username)
+            .execute(&self.pool).await?;
+        Ok(())
+    }
+
+    pub async fn update_password(&self, username: &str, password_hash: &str) -> Result<()> {
+        sqlx::query("UPDATE tb_users SET password = ? WHERE username = ?")
+            .bind(password_hash).bind(username)
+            .execute(&self.pool).await?;
+        Ok(())
+    }
 }
