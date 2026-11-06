@@ -4,7 +4,7 @@ use argon2::{
     Argon2,
     password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString, rand_core::OsRng},
 };
-use crate::{config::Config, db::Database, models::User};
+use crate::{config::{Config, RadioStation}, db::Database, models::User, radio::RadioPlayback};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 enum Screen { Login, Register, Chat }
@@ -48,6 +48,12 @@ pub struct TsChatApp {
     note_brush_color: egui::Color32,
     note_brush_width: f32,
     note_background: egui::Color32,
+    radio_open: bool,
+    radio_stations: Vec<RadioStation>,
+    selected_radio_station: usize,
+    radio_volume: f32,
+    radio_status: String,
+    radio_player: Option<RadioPlayback>,
 }
 
 
@@ -125,8 +131,10 @@ fn render_strokes_png(
 
 impl Default for TsChatApp {
     fn default() -> Self {
+        let config = Config::load();
+        let radio_stations = config.radio.stations.clone();
         Self {
-            config: Config::load(),
+            config,
             runtime: tokio::runtime::Builder::new_multi_thread().enable_all().build().expect("Не удалось создать async runtime"),
             db: None, screen: Screen::Login,
             username: String::new(), password: String::new(), email: String::new(),
@@ -144,6 +152,12 @@ impl Default for TsChatApp {
             notes_open: false, note_strokes: Vec::new(), note_current_stroke: None,
             note_brush_color: egui::Color32::BLACK, note_brush_width: 6.0,
             note_background: egui::Color32::WHITE,
+            radio_open: false,
+            radio_stations,
+            selected_radio_station: 0,
+            radio_volume: 0.75,
+            radio_status: "Выберите станцию и укажите её URL в настройках.".into(),
+            radio_player: None,
         }
     }
 }
@@ -443,7 +457,7 @@ impl TsChatApp {
                             });
                         } else if let Some(stroke) = current.as_mut() {
                             let should_add = stroke.points.last()
-                                .map(|last| last.distance(point) >= 1.0)
+                                .map(|last| (*last - point).length() >= 1.0)
                                 .unwrap_or(true);
                             if should_add { stroke.points.push(point); }
                         }
@@ -469,6 +483,113 @@ impl TsChatApp {
                 self.note_strokes.push(stroke);
             }
             self.save_notes_png();
+        }
+    }
+
+
+    fn save_radio_settings(&mut self) {
+        self.config.radio.stations = self.radio_stations.clone();
+        match self.config.save() {
+            Ok(()) => self.radio_status = "Список станций сохранён в config.toml.".into(),
+            Err(error) => self.radio_status = format!("Не удалось сохранить config.toml: {error:#}"),
+        }
+    }
+
+    fn show_radio_window(&mut self, ctx: &egui::Context) {
+        if !self.radio_open { return; }
+
+        let mut start_request: Option<(String, String)> = None;
+        let mut stop_requested = false;
+        let mut pause_requested = false;
+        let mut save_requested = false;
+        let paused = self.radio_player.as_ref().map(RadioPlayback::is_paused).unwrap_or(true);
+        let radio_open = &mut self.radio_open;
+        let stations = &mut self.radio_stations;
+        let selected = &mut self.selected_radio_station;
+        let volume = &mut self.radio_volume;
+
+        egui::Window::new("Радио онлайн")
+            .open(radio_open)
+            .default_size([520.0, 520.0])
+            .resizable(true)
+            .show(ctx, |ui| {
+                ui.label("Список станций из оригинальной версии TSchat");
+                ui.label("URL потоков не входят в репозиторий — добавьте свои адреса ниже.");
+                ui.separator();
+
+                egui::ScrollArea::vertical().max_height(220.0).show(ui, |ui| {
+                    for (index, station) in stations.iter().enumerate() {
+                        if ui.selectable_label(*selected == index, &station.name).clicked() {
+                            *selected = index;
+                        }
+                    }
+                });
+
+                ui.separator();
+                if let Some(station) = stations.get_mut(*selected) {
+                    ui.label(format!("Адрес потока: {}", station.name));
+                    ui.add(
+                        egui::TextEdit::singleline(&mut station.url)
+                            .hint_text("https://example.org/live.mp3")
+                            .desired_width(f32::INFINITY),
+                    );
+                    if ui.button("▶ Воспроизвести выбранную станцию").clicked() {
+                        start_request = Some((station.url.trim().to_string(), station.name.clone()));
+                    }
+                }
+
+                ui.horizontal(|ui| {
+                    ui.label("Громкость");
+                    ui.add(egui::Slider::new(volume, 0.0..=1.0).show_value(true));
+                });
+                ui.horizontal(|ui| {
+                    if ui.button(if paused { "▶ Продолжить" } else { "Ⅱ Пауза" }).clicked() {
+                        pause_requested = true;
+                    }
+                    if ui.button("■ Остановить").clicked() { stop_requested = true; }
+                    if ui.button("Сохранить URL станций").clicked() { save_requested = true; }
+                });
+                ui.separator();
+                ui.label(if self.radio_player.is_some() { "Плеер запущен или подключается." } else { "Плеер остановлен." });
+                ui.label(&self.radio_status);
+            });
+
+        if save_requested {
+            self.save_radio_settings();
+        }
+        if let Some(player) = self.radio_player.as_ref() {
+            player.set_volume(self.radio_volume);
+        }
+        if pause_requested {
+            if let Some(player) = self.radio_player.as_ref() {
+                player.toggle_pause();
+                self.radio_status = if player.is_paused() { "Воспроизведение приостановлено.".into() } else { "Воспроизведение продолжено.".into() };
+            }
+        }
+        if stop_requested {
+            if let Some(player) = self.radio_player.take() {
+                player.stop();
+            }
+            self.radio_status = "Радио остановлено.".into();
+        }
+        if let Some((url, station_name)) = start_request {
+            if url.is_empty() {
+                self.radio_status = "У этой станции нет URL. Заполните адрес потока и сохраните настройки.".into();
+            } else {
+                self.radio_player = None;
+                self.radio_status = format!("Подключение к станции «{station_name}»...");
+                ctx.request_repaint();
+                match self.runtime.block_on(RadioPlayback::connect_and_play(&url, self.radio_volume)) {
+                    Ok(player) => {
+                        self.radio_player = Some(player);
+                        self.radio_status = format!("Сейчас играет: {station_name}");
+                    }
+                    Err(error) => {
+                        self.radio_player = None;
+                        self.radio_status = format!("Не удалось запустить «{station_name}»: {error:#}");
+                    }
+                }
+            }
         }
     }
 
@@ -592,6 +713,7 @@ impl eframe::App for TsChatApp {
                         ui.heading(format!("Чат — {}", self.current_user.as_ref().map(|u| u.username.as_str()).unwrap_or("")));
                         if ui.button("Входящие").clicked() { self.load_inbox(); }
                         if ui.button("Заметки / Paint").clicked() { self.notes_open = true; }
+                        if ui.button("Радио").clicked() { self.radio_open = true; }
                         if ui.button("Выйти").clicked() { self.current_user = None; self.screen = Screen::Login; }
                     });
                     ui.columns(2, |cols| {
@@ -703,5 +825,6 @@ impl eframe::App for TsChatApp {
             if !self.status.is_empty() { ui.separator(); ui.label(&self.status); }
         });
         self.show_notes_window(ctx);
+        self.show_radio_window(ctx);
     }
 }
