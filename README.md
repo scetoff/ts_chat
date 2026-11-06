@@ -69,16 +69,3 @@ v3.0.3
 "Включи Тектоник", "Включи радио", "Выключи радио", "Отключи радио", "Закрой радио", "Открой радио", "Запусти радио", "Кинь сморча в чат", "Отправь сморча в чат",
 "Кинь какаху в чат", "Отправь какаху в чат", "Открой заметки", "Закрой заметки", "Очисти чат",
 "Очисти весь чат"
-
-
-## Rust rewrite (initial migration branch)
-
-An initial Rust desktop implementation is being developed on the `rust-port` branch.
-It introduces a Cargo project with an egui desktop UI, MySQL access via sqlx, and
-baseline login/registration, shared chat, user listing, private-message sending,
-and inbox viewing.
-
-This is a migration scaffold rather than a feature-complete replacement. Radio,
-speech recognition, notes/drawing, avatar and attachment handling, profile editing,
-and rich-text chat formatting remain to be ported. See the branch README for build
-and compatibility notes. The original VB.NET project remains in the default branch.
