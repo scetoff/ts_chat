@@ -216,9 +216,13 @@ impl TsChatApp {
     fn connect(&mut self) {
         let cfg = self.config.clone();
         match self.runtime.block_on(Database::connect(&cfg)) {
-            Ok(db) => match self.runtime.block_on(db.initialize()) {
-                Ok(()) => { self.db = Some(db); self.connected = true; self.status = "Подключено к MySQL.".into(); }
-                Err(e) => self.status = format!("Ошибка инициализации БД: {e:#}"),
+            Ok(db) => match self.runtime.block_on(db.verify_schema()) {
+                Ok(()) => {
+                    self.db = Some(db);
+                    self.connected = true;
+                    self.status = "Подключено к существующей БД TSchat. Структура проверена; данные не изменялись.".into();
+                }
+                Err(e) => self.status = format!("Структура тестовой БД не прошла проверку: {e:#}"),
             },
             Err(e) => self.status = format!("{e:#}"),
         }
