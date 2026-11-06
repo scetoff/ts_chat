@@ -17,7 +17,23 @@ impl Database {
         Ok(Self { pool })
     }
 
-    /// Creates tables compatible with the original TSchat data layout.
+
+    /// Verify the legacy tables without changing schema or data.
+    pub async fn verify_schema(&self) -> Result<()> {
+        sqlx::query(
+            "SELECT id, username, password, email, name, dp, mobile, chatcolor, chatfont, chatfontsize, chatfontstyle FROM tb_users LIMIT 0"
+        ).fetch_all(&self.pool).await.context("Таблица tb_users отсутствует или её структура несовместима")?;
+
+        sqlx::query("SELECT id, chat FROM tb_chat LIMIT 0")
+            .fetch_all(&self.pool).await.context("Таблица tb_chat отсутствует или её структура несовместима")?;
+
+        sqlx::query("SELECT id, username, fromuser, subject, message, isread FROM tb_pm LIMIT 0")
+            .fetch_all(&self.pool).await.context("Таблица tb_pm отсутствует или её структура несовместима")?;
+
+        Ok(())
+    }
+
+    /// Optional bootstrap for an empty database. Never called during normal login.
     pub async fn initialize(&self) -> Result<()> {
         let statements = [
             "CREATE TABLE IF NOT EXISTS tb_chat (id INT NOT NULL PRIMARY KEY, chat LONGTEXT NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
