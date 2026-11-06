@@ -26,6 +26,7 @@ pub struct TsChatApp {
     connected: bool,
     show_inbox: bool,
     last_refresh: Instant,
+    profile_username: String,
     profile_name: String,
     profile_email: String,
     profile_mobile: String,
@@ -33,6 +34,8 @@ pub struct TsChatApp {
     avatar_cache_key: Option<String>,
     new_password: String,
     repeat_password: String,
+    friend_profile: Option<User>,
+    show_friend_profile: bool,
 }
 
 impl Default for TsChatApp {
@@ -48,9 +51,10 @@ impl Default for TsChatApp {
             status: "Введите параметры MySQL в config.toml и нажмите «Подключиться».".into(),
             dark_theme: true, connected: false, show_inbox: false,
             last_refresh: Instant::now(),
-            profile_name: String::new(), profile_email: String::new(), profile_mobile: String::new(),
+            profile_username: String::new(), profile_name: String::new(), profile_email: String::new(), profile_mobile: String::new(),
             avatar_texture: None, avatar_cache_key: None,
             new_password: String::new(), repeat_password: String::new(),
+            friend_profile: None, show_friend_profile: false,
         }
     }
 }
@@ -93,6 +97,7 @@ impl TsChatApp {
                 let name = user.username.clone();
                 let friends = self.run_db(|rt, db| rt.block_on(db.users_except(&name))).unwrap_or_default();
                 let chat = self.run_db(|rt, db| rt.block_on(db.read_chat())).unwrap_or_default();
+                self.profile_username = user.username.clone();
                 self.profile_name = user.display_name.clone();
                 self.profile_email = user.email.clone();
                 self.profile_mobile = user.mobile.clone();
@@ -123,8 +128,7 @@ impl TsChatApp {
     fn save_profile(&mut self) {
         let Some(user) = self.current_user.as_ref() else { return; };
         let old_username = user.username.clone();
-        let username = old_username.clone();
-        let new_username = username.trim().to_string();
+        let new_username = self.profile_username.trim().to_string();
         let email = self.profile_email.trim().to_string();
         let name = self.profile_name.trim().to_string();
         let mobile = self.profile_mobile.trim().to_string();
@@ -245,6 +249,30 @@ impl TsChatApp {
         }
     }
 
+    fn load_selected_profile(&mut self) {
+        let Some(name) = self.selected_friend.clone() else {
+            self.status = "Сначала выберите пользователя.".into();
+            return;
+        };
+        match self.run_db(|rt, db| rt.block_on(db.user_by_name(&name))) {
+            Ok(Some(user)) => { self.friend_profile = Some(user); self.show_friend_profile = true; }
+            Ok(None) => self.status = "Пользователь не найден.".into(),
+            Err(e) => self.status = format!("Не удалось загрузить профиль: {e:#}"),
+        }
+    }
+
+    fn mark_message_read(&mut self, message_id: i64) {
+        let Some(username) = self.current_user.as_ref().map(|u| u.username.clone()) else { return; };
+        match self.run_db(|rt, db| rt.block_on(db.mark_message_read(message_id, &username))) {
+            Ok(()) => {
+                if let Some(message) = self.inbox.iter_mut().find(|m| m.id == message_id) {
+                    message.is_read = true;
+                }
+            }
+            Err(e) => self.status = format!("Не удалось отметить сообщение прочитанным: {e:#}"),
+        }
+    }
+
     fn load_inbox(&mut self) {
         let Some(user) = self.current_user.as_ref() else { return; };
         let name = user.username.clone();
@@ -341,7 +369,7 @@ impl eframe::App for TsChatApp {
                                 ui.label("Имя");
                                 ui.text_edit_singleline(&mut self.profile_name);
                                 ui.label("Никнейм");
-                                ui.label(self.current_user.as_ref().map(|u| u.username.as_str()).unwrap_or(""));
+                                ui.text_edit_singleline(&mut self.profile_username);
                                 ui.label("Почта");
                                 ui.text_edit_singleline(&mut self.profile_email);
                                 ui.label("Телефон");
@@ -361,6 +389,9 @@ impl eframe::App for TsChatApp {
                                     }
                                 }
                             });
+                            if ui.button("Показать профиль выбранного пользователя").clicked() {
+                                self.load_selected_profile();
+                            }
                             ui.separator();
                             ui.label("Личное сообщение");
                             ui.add(egui::TextEdit::singleline(&mut self.private_subject).hint_text("Тема"));
@@ -368,10 +399,31 @@ impl eframe::App for TsChatApp {
                             if ui.button("Отправить личное").clicked() { self.send_private(); }
                         });
                     });
+                    if self.show_friend_profile {
+                        egui::Window::new("Профиль пользователя")
+                            .open(&mut self.show_friend_profile)
+                            .show(ctx, |ui| {
+                                if let Some(profile) = &self.friend_profile {
+                                    ui.heading(&profile.display_name);
+                                    ui.label(format!("Никнейм: {}", profile.username));
+                                    ui.label(format!("Почта: {}", profile.email));
+                                    ui.label(format!("Телефон: {}", profile.mobile));
+                                }
+                            });
+                    }
                     if self.show_inbox {
+                        let inbox_items = self.inbox.clone();
                         egui::Window::new("Входящие сообщения").open(&mut self.show_inbox).show(ctx, |ui| {
-                            for m in &self.inbox {
-                                ui.collapsing(format!("{} — {}", m.from_user, m.subject), |ui| { ui.label(&m.message); });
+                            for m in inbox_items {
+                                ui.collapsing(
+                                    format!("{} — {}{}", m.from_user, m.subject, if m.is_read { "" } else { " • новое" }),
+                                    |ui| {
+                                        ui.label(&m.message);
+                                        if !m.is_read && ui.button("Отметить прочитанным").clicked() {
+                                            self.mark_message_read(m.id);
+                                        }
+                                    },
+                                );
                             }
                         });
                     }
