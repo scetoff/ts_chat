@@ -1,5 +1,5 @@
 use eframe::egui;
-use std::time::{Duration, Instant};
+use std::{io::Cursor, time::{Duration, Instant}};
 use crate::{config::Config, db::Database, models::User};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -26,6 +26,13 @@ pub struct TsChatApp {
     connected: bool,
     show_inbox: bool,
     last_refresh: Instant,
+    profile_name: String,
+    profile_email: String,
+    profile_mobile: String,
+    avatar_texture: Option<egui::TextureHandle>,
+    avatar_cache_key: Option<String>,
+    new_password: String,
+    repeat_password: String,
 }
 
 impl Default for TsChatApp {
@@ -41,6 +48,9 @@ impl Default for TsChatApp {
             status: "Введите параметры MySQL в config.toml и нажмите «Подключиться».".into(),
             dark_theme: true, connected: false, show_inbox: false,
             last_refresh: Instant::now(),
+            profile_name: String::new(), profile_email: String::new(), profile_mobile: String::new(),
+            avatar_texture: None, avatar_cache_key: None,
+            new_password: String::new(), repeat_password: String::new(),
         }
     }
 }
@@ -83,6 +93,11 @@ impl TsChatApp {
                 let name = user.username.clone();
                 let friends = self.run_db(|rt, db| rt.block_on(db.users_except(&name))).unwrap_or_default();
                 let chat = self.run_db(|rt, db| rt.block_on(db.read_chat())).unwrap_or_default();
+                self.profile_name = user.display_name.clone();
+                self.profile_email = user.email.clone();
+                self.profile_mobile = user.mobile.clone();
+                self.avatar_cache_key = None;
+                self.avatar_texture = None;
                 self.current_user = Some(user); self.friends = friends;
                 self.chat_text = chat; self.screen = Screen::Chat; self.status.clear();
             }
@@ -102,6 +117,107 @@ impl TsChatApp {
             Ok(()) => { self.status = "Аккаунт создан. Теперь выполните вход.".into(); self.screen = Screen::Login; }
             Err(e) => self.status = format!("Не удалось создать аккаунт: {e:#}"),
         }
+    }
+
+
+    fn save_profile(&mut self) {
+        let Some(user) = self.current_user.as_ref() else { return; };
+        let old_username = user.username.clone();
+        let username = old_username.clone();
+        let new_username = username.trim().to_string();
+        let email = self.profile_email.trim().to_string();
+        let name = self.profile_name.trim().to_string();
+        let mobile = self.profile_mobile.trim().to_string();
+        if new_username.is_empty() || email.is_empty() || name.is_empty() {
+            self.status = "Имя, никнейм и почта не должны быть пустыми.".into();
+            return;
+        }
+        let password = self.new_password.clone();
+        let repeat = self.repeat_password.clone();
+        if !password.is_empty() && password != repeat {
+            self.status = "Новые пароли не совпадают.".into();
+            return;
+        }
+        match self.run_db(|rt, db| rt.block_on(db.update_profile(&old_username, &new_username, &email, &name, &mobile))) {
+            Ok(()) => {
+                if let Some(user) = self.current_user.as_mut() {
+                    user.username = new_username.clone();
+                    user.email = email.clone();
+                    user.display_name = name.clone();
+                    user.mobile = mobile.clone();
+                }
+                if !password.is_empty() {
+                    let hash = Self::password_digest(&password);
+                    match self.run_db(|rt, db| rt.block_on(db.update_password(&new_username, &hash))) {
+                        Ok(()) => self.status = "Профиль и пароль сохранены.".into(),
+                        Err(e) => self.status = format!("Профиль сохранён, но пароль обновить не удалось: {e:#}"),
+                    }
+                } else {
+                    self.status = "Профиль сохранён.".into();
+                }
+                self.new_password.clear();
+                self.repeat_password.clear();
+                if let Ok(friends) = self.run_db(|rt, db| rt.block_on(db.users_except(&new_username))) {
+                    self.friends = friends;
+                }
+            }
+            Err(e) => self.status = format!("Не удалось сохранить профиль: {e:#}"),
+        }
+    }
+
+    fn choose_avatar(&mut self) {
+        let Some(path) = rfd::FileDialog::new()
+            .add_filter("Изображения", &["png", "jpg", "jpeg", "gif"])
+            .pick_file() else { return; };
+        let result = (|| -> anyhow::Result<String> {
+            let bytes = std::fs::read(&path)?;
+            let image = image::load_from_memory(&bytes)?;
+            let resized = image.thumbnail(640, 480);
+            let mut png = Cursor::new(Vec::new());
+            resized.write_to(&mut png, image::ImageFormat::Png)?;
+            use base64::Engine;
+            Ok(base64::engine::general_purpose::STANDARD.encode(png.into_inner()))
+        })();
+        match result {
+            Ok(encoded) => {
+                let Some(username) = self.current_user.as_ref().map(|u| u.username.clone()) else { return; };
+                match self.run_db(|rt, db| rt.block_on(db.update_avatar(&username, &encoded))) {
+                    Ok(()) => {
+                        if let Some(user) = self.current_user.as_mut() {
+                            user.avatar_base64 = encoded;
+                        }
+                        self.avatar_cache_key = None;
+                        self.status = "Аватар обновлён.".into();
+                    }
+                    Err(e) => self.status = format!("Не удалось сохранить аватар: {e:#}"),
+                }
+            }
+            Err(e) => self.status = format!("Не удалось прочитать изображение: {e:#}"),
+        }
+    }
+
+    fn ensure_avatar_texture(&mut self, ctx: &egui::Context) {
+        let encoded = self.current_user.as_ref().map(|u| u.avatar_base64.clone()).unwrap_or_default();
+        if encoded.is_empty() || self.avatar_cache_key.as_deref() == Some(encoded.as_str()) {
+            return;
+        }
+        use base64::Engine;
+        let texture = base64::engine::general_purpose::STANDARD.decode(&encoded)
+            .ok()
+            .and_then(|bytes| image::load_from_memory(&bytes).ok())
+            .map(|img| {
+                let rgba = img.to_rgba8();
+                let size = [rgba.width() as usize, rgba.height() as usize];
+                let color = egui::ColorImage::from_rgba_unmultiplied(size, rgba.as_raw());
+                ctx.load_texture("tschat-avatar", color, egui::TextureOptions::LINEAR)
+            });
+        self.avatar_texture = texture;
+        self.avatar_cache_key = Some(encoded);
+    }
+
+    fn add_smiley(&mut self, code: &str) {
+        if !self.draft.is_empty() { self.draft.push(' '); }
+        self.draft.push_str(code);
     }
 
     fn refresh_chat(&mut self) {
@@ -149,6 +265,7 @@ impl eframe::App for TsChatApp {
             }
         }
 
+        self.ensure_avatar_texture(ctx);
         if self.dark_theme { ctx.set_visuals(egui::Visuals::dark()); } else { ctx.set_visuals(egui::Visuals::light()); }
 
         egui::TopBottomPanel::top("top").show(ctx, |ui| {
@@ -200,8 +317,42 @@ impl eframe::App for TsChatApp {
                             ui.add(egui::TextEdit::multiline(&mut self.chat_text).desired_rows(23).desired_width(f32::INFINITY).interactive(false));
                             ui.add(egui::TextEdit::singleline(&mut self.draft).hint_text("Сообщение...").desired_width(f32::INFINITY));
                             if ui.button("Отправить").clicked() { self.send_chat(); }
+                            ui.collapsing("Смайлики", |ui| {
+                                let smileys = [":fuu:", ":beer:", ":sorry:", ":read:", ":girl:", ":lich:", ":sing:", ":haha:",
+                                    ":allbear:", ":say:", ":money:", ":no:", ":king:", ":go:", ":good:", ":nice:"];
+                                egui::Grid::new("smiley-grid").num_columns(4).show(ui, |ui| {
+                                    for (index, code) in smileys.iter().enumerate() {
+                                        if ui.button(*code).clicked() { self.add_smiley(code); }
+                                        if (index + 1) % 4 == 0 { ui.end_row(); }
+                                    }
+                                });
+                            });
                         });
                         cols[1].group(|ui| {
+                            ui.horizontal(|ui| {
+                                if let Some(texture) = &self.avatar_texture {
+                                    ui.add(egui::Image::new((texture.id(), egui::vec2(88.0, 88.0))));
+                                } else {
+                                    ui.label("Аватар не задан");
+                                }
+                                if ui.button("Изменить аватар").clicked() { self.choose_avatar(); }
+                            });
+                            ui.collapsing("Редактировать профиль", |ui| {
+                                ui.label("Имя");
+                                ui.text_edit_singleline(&mut self.profile_name);
+                                ui.label("Никнейм");
+                                ui.label(self.current_user.as_ref().map(|u| u.username.as_str()).unwrap_or(""));
+                                ui.label("Почта");
+                                ui.text_edit_singleline(&mut self.profile_email);
+                                ui.label("Телефон");
+                                ui.text_edit_singleline(&mut self.profile_mobile);
+                                ui.label("Новый пароль (необязательно)");
+                                ui.add(egui::TextEdit::singleline(&mut self.new_password).password(true));
+                                ui.label("Повторите пароль");
+                                ui.add(egui::TextEdit::singleline(&mut self.repeat_password).password(true));
+                                if ui.button("Сохранить профиль").clicked() { self.save_profile(); }
+                            });
+                            ui.separator();
                             ui.label("Пользователи");
                             egui::ScrollArea::vertical().max_height(160.0).show(ui, |ui| {
                                 for name in self.friends.clone() {
