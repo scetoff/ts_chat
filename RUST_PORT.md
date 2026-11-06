@@ -20,6 +20,7 @@ The initial desktop client is built with Rust, egui/eframe, Tokio and SQLx. Impl
 - Send private messages, view the inbox, and mark received messages as read.
 - Toggle light and dark themes.
 - Draw in a Paint-style notes window with adjustable brush size/color, clear canvas, and export to PNG.
+- Radio station panel with the original station list, configurable stream URLs, native playback, pause/resume, stop and volume control.
 
 ## Build and run
 
@@ -35,6 +36,13 @@ cargo run
 The configured database must already exist and the supplied MySQL user must have
 permissions to create the three TSchat tables. Do not commit `config.toml`.
 
+Radio station URLs can be entered in the Radio window and saved to the local
+`config.toml`. The original repository did not include its `База/URL.txt` stream
+list, so the station names are restored but stream URLs are intentionally blank.
+The native player supports HTTP/HTTPS live audio streams using Rodio and
+stream-download; playback depends on the URL being a compatible audio stream and
+the Windows audio output device being available.
+
 ## Compatibility and remaining work
 
 The current code is a functional starting point, not a complete recreation of the
@@ -43,7 +51,7 @@ legacy client. The next migration stages are:
 1. Native rendering of the original 16 emoticon images and rich-text message formatting.
 2. Image attachments (the legacy attachment button was commented out in the VB.NET source).
 3. Complete profile preferences and settings persistence for chat colors/fonts.
-4. Radio streaming and media controls.
+4. Voice recognition and command integration (the legacy app used Microsoft Speech SDK).
 5. Speech commands.
 6. Automated tests against a disposable MySQL database and a Windows release build.
 
