@@ -15,7 +15,11 @@ pub enum ChatCommand {
 /// This module is independent from speech recognition so it can be tested and
 /// later connected to a microphone/ASR backend without changing command actions.
 pub fn parse_command(input: &str) -> ChatCommand {
-    let normalized = input
+    let cleaned = input.trim().trim_matches(|character: char| {
+        character.is_whitespace()
+            || matches!(character, '.' | ',' | '!' | '?' | ':' | ';' | '…' | '"' | '\'' | '«' | '»')
+    });
+    let normalized = cleaned
         .split_whitespace()
         .collect::<Vec<_>>()
         .join(" ")
@@ -66,6 +70,8 @@ mod tests {
     #[test]
     fn parses_legacy_radio_station_aliases() {
         assert_eq!(parse_command("Включи Европу"), ChatCommand::SelectStation(2));
+        assert_eq!(parse_command("Включи Европу."), ChatCommand::SelectStation(2));
+        assert_eq!(parse_command("  Включи Европу!  "), ChatCommand::SelectStation(2));
         assert_eq!(parse_command("включи   русский рок"), ChatCommand::SelectStation(1));
         assert_eq!(parse_command("Включи аудиокнигу"), ChatCommand::SelectStation(10));
         assert_eq!(parse_command("Включи Тектоник"), ChatCommand::SelectStation(14));
