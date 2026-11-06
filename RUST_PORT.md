@@ -54,8 +54,7 @@ legacy client. The next migration stages are:
 2. Image attachments (the legacy attachment button was commented out in the VB.NET source).
 3. Complete profile preferences and settings persistence for chat colors/fonts.
 4. Voice recognition and command integration (the legacy app used Microsoft Speech SDK).
-5. Speech commands.
-6. Automated tests against a disposable MySQL database and a Windows release build.
+5. Automated tests against a disposable MySQL database and a Windows release build.
 
 The VB.NET client uses .NET Framework 4.5, Windows Forms, MySQL Connector/NET,
 Windows Media Player COM components, and Microsoft Speech SDK. The GUI and platform
