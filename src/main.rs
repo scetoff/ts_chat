@@ -6,6 +6,8 @@ mod commands;
 mod db;
 mod models;
 mod radio;
+#[cfg(feature = "voice")]
+mod voice;
 
 fn main() -> eframe::Result<()> {
     let options = eframe::NativeOptions {
