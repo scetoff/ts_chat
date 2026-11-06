@@ -1,0 +1,20 @@
+[package]
+name = "tschat"
+version = "0.1.0"
+edition = "2021"
+description = "Rust rewrite of the TSchat Windows messenger"
+license = "UNLICENSED"
+
+[dependencies]
+anyhow = "1"
+eframe = { version = "0.29", default-features = true }
+egui = "0.29"
+sqlx = { version = "0.8", features = ["runtime-tokio-rustls", "mysql"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
+serde = { version = "1", features = ["derive"] }
+toml = "0.8"
+rfd = "0.15"
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "gif"] }
+base64 = "0.22"
+md5 = "0.7"
+dotenvy = "0.15"
