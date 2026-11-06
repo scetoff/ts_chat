@@ -54,6 +54,7 @@ pub struct TsChatApp {
     radio_volume: f32,
     radio_status: String,
     radio_player: Option<RadioPlayback>,
+    radio_pending: Option<(std::sync::mpsc::Receiver<Result<RadioPlayback, String>>, String)>,
 }
 
 
@@ -158,6 +159,7 @@ impl Default for TsChatApp {
             radio_volume: 0.75,
             radio_status: "Выберите станцию и укажите её URL в настройках.".into(),
             radio_player: None,
+            radio_pending: None,
         }
     }
 }
@@ -496,6 +498,28 @@ impl TsChatApp {
     }
 
     fn show_radio_window(&mut self, ctx: &egui::Context) {
+        if let Some((receiver, station_name)) = self.radio_pending.as_ref() {
+            match receiver.try_recv() {
+                Ok(Ok(player)) => {
+                    let station_name = station_name.clone();
+                    self.radio_player = Some(player);
+                    self.radio_pending = None;
+                    self.radio_status = format!("Сейчас играет: {station_name}");
+                }
+                Ok(Err(error)) => {
+                    self.radio_pending = None;
+                    self.radio_status = format!("Не удалось запустить радиостанцию: {error}");
+                }
+                Err(std::sync::mpsc::TryRecvError::Empty) => {
+                    ctx.request_repaint_after(Duration::from_millis(250));
+                }
+                Err(std::sync::mpsc::TryRecvError::Disconnected) => {
+                    self.radio_pending = None;
+                    self.radio_status = "Подключение к радиостанции прервано.".into();
+                }
+            }
+        }
+
         if !self.radio_open { return; }
 
         let mut start_request: Option<(String, String)> = None;
@@ -503,6 +527,9 @@ impl TsChatApp {
         let mut pause_requested = false;
         let mut save_requested = false;
         let paused = self.radio_player.as_ref().map(RadioPlayback::is_paused).unwrap_or(true);
+        let player_present = self.radio_player.is_some();
+        let displayed_radio_status = self.radio_status.clone();
+        let connecting = self.radio_pending.is_some();
         let radio_open = &mut self.radio_open;
         let stations = &mut self.radio_stations;
         let selected = &mut self.selected_radio_station;
@@ -550,8 +577,8 @@ impl TsChatApp {
                     if ui.button("Сохранить URL станций").clicked() { save_requested = true; }
                 });
                 ui.separator();
-                ui.label(if self.radio_player.is_some() { "Плеер запущен или подключается." } else { "Плеер остановлен." });
-                ui.label(&self.radio_status);
+                ui.label(if player_present { "Плеер запущен." } else if connecting { "Идёт подключение..." } else { "Плеер остановлен." });
+                ui.label(&displayed_radio_status);
             });
 
         if save_requested {
@@ -567,6 +594,7 @@ impl TsChatApp {
             }
         }
         if stop_requested {
+            self.radio_pending = None;
             if let Some(player) = self.radio_player.take() {
                 player.stop();
             }
@@ -577,18 +605,19 @@ impl TsChatApp {
                 self.radio_status = "У этой станции нет URL. Заполните адрес потока и сохраните настройки.".into();
             } else {
                 self.radio_player = None;
+                self.radio_pending = None;
                 self.radio_status = format!("Подключение к станции «{station_name}»...");
-                ctx.request_repaint();
-                match self.runtime.block_on(RadioPlayback::connect_and_play(&url, self.radio_volume)) {
-                    Ok(player) => {
-                        self.radio_player = Some(player);
-                        self.radio_status = format!("Сейчас играет: {station_name}");
-                    }
-                    Err(error) => {
-                        self.radio_player = None;
-                        self.radio_status = format!("Не удалось запустить «{station_name}»: {error:#}");
-                    }
-                }
+                let (sender, receiver) = std::sync::mpsc::channel();
+                let volume = self.radio_volume;
+                let url_for_task = url.clone();
+                self.runtime.spawn(async move {
+                    let result = RadioPlayback::connect_and_play(&url_for_task, volume)
+                        .await
+                        .map_err(|error| format!("{error:#}"));
+                    let _ = sender.send(result);
+                });
+                self.radio_pending = Some((receiver, station_name));
+                ctx.request_repaint_after(Duration::from_millis(250));
             }
         }
     }
