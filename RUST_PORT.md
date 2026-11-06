@@ -29,11 +29,21 @@ Install stable Rust and Cargo, then:
 
 ```sh
 cp config.example.toml config.toml
-# Set database credentials in config.toml.
+# Optional: copy .env.example to .env and fill in DB settings.
 cargo check --all-targets
 cargo test
 cargo run
 ```
+
+Connection settings can come from `.env`, process environment variables, or
+`config.toml`. Environment variables take precedence. Supported names:
+
+- `DATABASE_URL` — full MySQL connection URL, if supplied.
+- `DB_CONNECTION` — `mysql` (or `mariadb`, using MySQL protocol).
+- `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`.
+
+The application reads `.env` locally via dotenvy but `.env` is ignored by Git.
+Never commit real credentials.
 
 The configured database and the original `tb_users`, `tb_chat`, and `tb_pm` tables
 must already exist. Normal startup only verifies the schema and does not require CREATE
@@ -45,16 +55,22 @@ Do not commit `config.toml`.
 A read-only smoke checker is available:
 
 ```powershell
-$env:TSCHAT_TEST_DATABASE_URL = "mysql://user:password@host:3306/db_name"
+$env:DB_CONNECTION = "mysql"
+$env:DB_HOST = "127.0.0.1"
+$env:DB_PORT = "3306"
+$env:DB_DATABASE = "db_TSchat_test"
+$env:DB_USERNAME = "tschat_test"
+$env:DB_PASSWORD = "replace-locally"
 cargo run --bin db_smoke
 ```
 
 It verifies the expected columns in `tb_users`, `tb_chat`, and `tb_pm`, then reads
 only the registered-user count and the shared-chat row. It does not create tables or
-modify data. For GitHub Actions, add a repository secret named
-`TSCHAT_TEST_DATABASE_URL` containing the test database connection URL, then run
-the `Rust checks` workflow manually. The manual database job is skipped when the
-secret is absent. Use only the disposable test database, not production.
+modify data. For GitHub Actions, add either a `DATABASE_URL` repository secret or the separate
+`DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD` secrets
+(optionally `DB_CONNECTION`), then run the `Rust checks` workflow manually. The
+manual database job is skipped when no connection details are present. The legacy
+`TSCHAT_TEST_DATABASE_URL` secret is still accepted. Use only the disposable test database, not production.
 
 Radio station URLs can be entered in the Radio window and saved to the local
 `config.toml`. The original repository did not include its `База/URL.txt` stream
