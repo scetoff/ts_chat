@@ -162,8 +162,8 @@ mod tests {
         assert_eq!(parsed.scheme(), "mysql");
         assert_eq!(parsed.host_str(), Some("db.example.test"));
         assert_eq!(parsed.port(), Some(3307));
-        assert_eq!(parsed.username(), "user@example.test");
-        assert_eq!(parsed.password(), Some("p@ss:word /?#"));
+        assert_eq!(parsed.username(), "user%40example.test");
+        assert_eq!(parsed.password(), Some("p%40ss%3Aword%20%2F%3F%23"));
         assert_eq!(parsed.path(), "/chat%20database");
     }
 
