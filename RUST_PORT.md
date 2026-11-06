@@ -23,7 +23,7 @@ The initial desktop client is built with Rust, egui/eframe, Tokio and SQLx. Impl
 - Toggle light and dark themes.
 - Draw in a Paint-style notes window with adjustable brush size/color, clear canvas, and export to PNG.
 - Radio station panel with the original station list, configurable stream URLs, native playback, pause/resume, stop and volume control.
-- Optional offline Russian voice commands (`voice` Cargo feature): user-selected multilingual Whisper model, push-to-talk recording via CPAL, 12-second automatic recording limit, and command dispatch after local transcription. Microphone is never opened until the user starts a recording.
+- Optional offline Russian voice commands (`voice` Cargo feature): user-selected multilingual Whisper model, push-to-talk recording via CPAL, 12-second automatic recording limit, and command dispatch after local transcription. Microphone is never opened until the user starts a recording. The legacy `Очисти чат` / `Очисти весь чат` command opens a confirmation dialog before replacing the shared history.
 
 ## Build and run
 
@@ -97,7 +97,7 @@ legacy client. The next migration stages are:
 2. Image attachments (the legacy attachment button was commented out in the VB.NET source).
 3. Integration tests for mutating database flows and final Windows installation packaging.
 
-The command parser has unit tests for legacy station aliases, radio/notes actions, punctuation emitted by speech recognition, and unsupported phrases. It is separate from the recognizer so manual text and Whisper transcription use the same command dispatcher.
+The command parser has unit tests for all 15 legacy station aliases, radio/notes actions, the clear-chat confirmation request, punctuation emitted by speech recognition, and unsupported phrases. It is separate from the recognizer so manual text and Whisper transcription use the same command dispatcher.
 
 ### Optional Russian voice control
 
