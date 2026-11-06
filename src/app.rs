@@ -486,10 +486,6 @@ impl TsChatApp {
                     user.email = email.clone();
                     user.display_name = name.clone();
                     user.mobile = mobile.clone();
-                    if let Some(hash) = password_hash.as_ref() {
-                        // The password hash is stored in the DB; no password value is retained in UI state.
-                        let _ = hash;
-                    }
                 }
                 // Preserve the old username's style for historical chat lines and copy it to the new name.
                 if let Some(style) = self.chat_styles.get(&old_username).cloned() {
