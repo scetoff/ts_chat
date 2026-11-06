@@ -23,6 +23,24 @@ jobs:
       - name: Install stable Rust
         uses: dtolnay/rust-toolchain@stable
       - name: Check
-        run: cargo check
+        run: cargo check --all-targets
       - name: Unit tests
         run: cargo test
+
+  mysql-smoke:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install stable Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Read-only TSchat MySQL schema check
+        env:
+          TSCHAT_TEST_DATABASE_URL: ${{ secrets.TSCHAT_TEST_DATABASE_URL }}
+        shell: pwsh
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:TSCHAT_TEST_DATABASE_URL)) {
+            Write-Host "Skipped: add the TSCHAT_TEST_DATABASE_URL repository secret to enable the database smoke test."
+            exit 0
+          }
+          cargo run --bin db_smoke
