@@ -5,6 +5,8 @@ use argon2::{
     password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString, rand_core::OsRng},
 };
 use crate::{commands::{parse_command, ChatCommand}, config::{Config, RadioStation}, db::Database, models::{ChatStyle, User}, radio::RadioPlayback};
+#[cfg(feature = "voice")]
+use crate::voice::{self, MicrophoneRecorder, WhisperModel};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 enum Screen { Login, Register, Chat }
@@ -64,6 +66,20 @@ pub struct TsChatApp {
     chat_style_font: String,
     chat_style_size: i32,
     chat_style_effect: String,
+    #[cfg(feature = "voice")]
+    voice_open: bool,
+    #[cfg(feature = "voice")]
+    voice_model_path: String,
+    #[cfg(feature = "voice")]
+    voice_model: Option<WhisperModel>,
+    #[cfg(feature = "voice")]
+    voice_model_pending: Option<std::sync::mpsc::Receiver<Result<WhisperModel, String>>>,
+    #[cfg(feature = "voice")]
+    voice_recorder: Option<MicrophoneRecorder>,
+    #[cfg(feature = "voice")]
+    voice_transcription_pending: Option<std::sync::mpsc::Receiver<Result<String, String>>>,
+    #[cfg(feature = "voice")]
+    voice_status: String,
 }
 
 
@@ -268,6 +284,20 @@ impl Default for TsChatApp {
             chat_style_font: "Candara".into(),
             chat_style_size: 16,
             chat_style_effect: "Regular".into(),
+            #[cfg(feature = "voice")]
+            voice_open: false,
+            #[cfg(feature = "voice")]
+            voice_model_path: String::new(),
+            #[cfg(feature = "voice")]
+            voice_model: None,
+            #[cfg(feature = "voice")]
+            voice_model_pending: None,
+            #[cfg(feature = "voice")]
+            voice_recorder: None,
+            #[cfg(feature = "voice")]
+            voice_transcription_pending: None,
+            #[cfg(feature = "voice")]
+            voice_status: "Выберите мультиязычную модель Whisper (.bin).".into(),
         }
     }
 }
@@ -724,6 +754,153 @@ impl TsChatApp {
         }
     }
 
+
+    #[cfg(feature = "voice")]
+    fn show_voice_window(&mut self, ctx: &egui::Context) {
+        let model_result = self.voice_model_pending.as_ref().map(|receiver| receiver.try_recv());
+        if let Some(result) = model_result {
+            match result {
+                Ok(Ok(model)) => {
+                    self.voice_model = Some(model);
+                    self.voice_model_pending = None;
+                    self.voice_status = "Whisper-модель загружена. Микрофон включается только кнопкой записи.".into();
+                }
+                Ok(Err(error)) => {
+                    self.voice_model_pending = None;
+                    self.voice_model = None;
+                    self.voice_status = format!("Не удалось загрузить модель: {error}");
+                }
+                Err(std::sync::mpsc::TryRecvError::Empty) => {
+                    ctx.request_repaint_after(Duration::from_millis(250));
+                }
+                Err(std::sync::mpsc::TryRecvError::Disconnected) => {
+                    self.voice_model_pending = None;
+                    self.voice_status = "Загрузка модели прервана.".into();
+                }
+            }
+        }
+
+        let transcription_result = self.voice_transcription_pending.as_ref().map(|receiver| receiver.try_recv());
+        if let Some(result) = transcription_result {
+            match result {
+                Ok(Ok(text)) => {
+                    self.voice_transcription_pending = None;
+                    self.command_input = text.clone();
+                    self.execute_command(&text);
+                    self.voice_status = format!("Распознано: {text}");
+                }
+                Ok(Err(error)) => {
+                    self.voice_transcription_pending = None;
+                    self.voice_status = format!("Ошибка распознавания: {error}");
+                }
+                Err(std::sync::mpsc::TryRecvError::Empty) => {
+                    ctx.request_repaint_after(Duration::from_millis(250));
+                }
+                Err(std::sync::mpsc::TryRecvError::Disconnected) => {
+                    self.voice_transcription_pending = None;
+                    self.voice_status = "Распознавание прервано.".into();
+                }
+            }
+        }
+
+        if !self.voice_open { return; }
+
+        let model_loaded = self.voice_model.is_some();
+        let loading = self.voice_model_pending.is_some();
+        let transcribing = self.voice_transcription_pending.is_some();
+        let recording = self.voice_recorder.is_some();
+        let model_path = self.voice_model_path.clone();
+        let status = self.voice_status.clone();
+        let mut choose_model = false;
+        let mut start_recording = false;
+        let mut stop_recording = false;
+
+        egui::Window::new("Голосовое управление")
+            .open(&mut self.voice_open)
+            .default_size([500.0, 270.0])
+            .resizable(false)
+            .show(ctx, |ui| {
+                ui.label("Локальное распознавание речи на русском языке (Whisper).");
+                ui.label("Запись запускается вручную; микрофон не прослушивается в фоне.");
+                ui.separator();
+                if model_path.is_empty() {
+                    ui.label("Модель не выбрана.");
+                } else {
+                    ui.label(format!("Модель: {model_path}"));
+                }
+                if ui.add_enabled(!loading && !recording && !transcribing,
+                    egui::Button::new("Выбрать модель Whisper (.bin)")).clicked() {
+                    choose_model = true;
+                }
+                ui.horizontal(|ui| {
+                    if ui.add_enabled(model_loaded && !recording && !transcribing,
+                        egui::Button::new("● Начать запись")).clicked() {
+                        start_recording = true;
+                    }
+                    if ui.add_enabled(recording,
+                        egui::Button::new("■ Остановить и распознать")).clicked() {
+                        stop_recording = true;
+                    }
+                });
+                if loading { ui.label("Загрузка модели…"); }
+                if transcribing { ui.label("Распознавание речи…"); }
+                if recording { ui.label("Идёт запись (максимум 12 секунд)…"); }
+                ui.separator();
+                ui.label(&status);
+                ui.label("Подойдёт мультиязычная ggml-модель, например ggml-base.bin.");
+            });
+
+        if choose_model {
+            if let Some(path) = rfd::FileDialog::new()
+                .add_filter("Whisper model", &["bin"])
+                .pick_file()
+            {
+                let path_string = path.display().to_string();
+                self.voice_model_path = path_string.clone();
+                self.voice_model = None;
+                let (sender, receiver) = std::sync::mpsc::channel();
+                self.runtime.spawn_blocking(move || {
+                    let result = voice::load_model(&path_string)
+                        .map_err(|error| format!("{error:#}"));
+                    let _ = sender.send(result);
+                });
+                self.voice_model_pending = Some(receiver);
+                self.voice_status = "Загружаю модель Whisper…".into();
+            }
+        }
+
+        if start_recording {
+            match MicrophoneRecorder::start() {
+                Ok(recorder) => {
+                    self.voice_recorder = Some(recorder);
+                    self.voice_status = "Запись началась. Скажите одну команду и нажмите «Остановить и распознать».".into();
+                }
+                Err(error) => self.voice_status = format!("Не удалось включить микрофон: {error:#}"),
+            }
+        }
+
+        if stop_recording {
+            if let (Some(recorder), Some(model)) = (self.voice_recorder.take(), self.voice_model.clone()) {
+                match recorder.finish() {
+                    Ok(audio) => {
+                        let (sender, receiver) = std::sync::mpsc::channel();
+                        self.runtime.spawn_blocking(move || {
+                            let result = voice::transcribe(model, &audio)
+                                .map_err(|error| format!("{error:#}"));
+                            let _ = sender.send(result);
+                        });
+                        self.voice_transcription_pending = Some(receiver);
+                        self.voice_status = "Распознаю русскую команду…".into();
+                    }
+                    Err(error) => self.voice_status = format!("Не удалось завершить запись: {error:#}"),
+                }
+            } else {
+                self.voice_recorder = None;
+                self.voice_status = "Сначала загрузите модель Whisper.".into();
+            }
+        }
+    }
+
     fn save_radio_settings(&mut self) {
         self.config.radio.stations = self.radio_stations.clone();
         match self.config.save() {
@@ -982,6 +1159,8 @@ impl eframe::App for TsChatApp {
                         if ui.button("Входящие").clicked() { self.load_inbox(); }
                         if ui.button("Заметки / Paint").clicked() { self.notes_open = true; }
                         if ui.button("Радио").clicked() { self.radio_open = true; }
+                        #[cfg(feature = "voice")]
+                        if ui.button("Голос").clicked() { self.voice_open = true; }
                         if ui.button("Выйти").clicked() { self.current_user = None; self.screen = Screen::Login; }
                     });
                     ui.horizontal(|ui| {
@@ -1127,5 +1306,7 @@ impl eframe::App for TsChatApp {
         });
         self.show_notes_window(ctx);
         self.show_radio_window(ctx);
+        #[cfg(feature = "voice")]
+        self.show_voice_window(ctx);
     }
 }
