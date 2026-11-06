@@ -10,7 +10,7 @@ anyhow = "1"
 eframe = { version = "0.29", default-features = true }
 egui = "0.29"
 sqlx = { version = "0.8", features = ["runtime-tokio-rustls", "mysql"] }
-tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "net", "io-util", "sync"] }
 serde = { version = "1", features = ["derive"] }
 toml = "0.8"
 base64 = "0.22"
@@ -20,3 +20,6 @@ password-hash = { version = "0.5", features = ["rand_core", "getrandom"] }
 urlencoding = "2"
 rfd = "0.15"
 image = { version = "0.25", default-features = false, features = ["png", "jpeg", "gif"] }
+rodio = "0.22.2"
+stream-download = { version = "0.24.4", default-features = false, features = ["http", "reqwest-rustls", "temp-storage"] }
+url = "2"
