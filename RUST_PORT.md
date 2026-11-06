@@ -7,7 +7,7 @@ is preserved in the default branch and in the repository root.
 
 The initial desktop client is built with Rust, egui/eframe, Tokio and SQLx. Implemented:
 
-- Connect to an existing MySQL database using local `config.toml`.
+- Connect to an existing MySQL database using `DATABASE_URL`, individual `DB_*` environment variables, local `.env`, or `config.toml`.
 - Verify the existing TSchat tables in read-only mode on connection; normal startup does not create tables or insert data.
 - Authenticate against the existing `tb_users` table.
 - Register users using the original user table columns.
@@ -68,8 +68,9 @@ It verifies the expected columns in `tb_users`, `tb_chat`, and `tb_pm`, then rea
 only the registered-user count and the shared-chat row. It does not create tables or
 modify data. For GitHub Actions, add either a `DATABASE_URL` repository secret or the separate
 `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD` secrets
-(optionally `DB_CONNECTION`), then run the `Rust checks` workflow manually. The
-manual database job is skipped when no connection details are present. The legacy
+(optionally `DB_CONNECTION`). The smoke test then runs automatically on this
+repository's pull requests or can be started by manually dispatching the workflow.
+It is skipped when no connection details are present. The legacy
 `TSCHAT_TEST_DATABASE_URL` secret is still accepted. Use only the disposable test database, not production.
 
 Radio station URLs can be entered in the Radio window and saved to the local
