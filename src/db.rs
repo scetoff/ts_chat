@@ -213,6 +213,44 @@ impl Database {
     }
 
 
+    pub async fn update_profile_with_messages(
+        &self,
+        old_username: &str,
+        username: &str,
+        email: &str,
+        display_name: &str,
+        mobile: &str,
+        password_hash: Option<&str>,
+    ) -> Result<()> {
+        let mut tx = self.pool.begin().await?;
+        let username_count: u64 = sqlx::query_scalar(
+            "SELECT COUNT(*) FROM tb_users WHERE username = ? AND username <> ?"
+        ).bind(username).bind(old_username).fetch_one(&mut *tx).await?;
+        if username_count > 0 { anyhow::bail!("Никнейм уже занят"); }
+
+        let email_count: u64 = sqlx::query_scalar(
+            "SELECT COUNT(*) FROM tb_users WHERE email = ? AND username <> ?"
+        ).bind(email).bind(old_username).fetch_one(&mut *tx).await?;
+        if email_count > 0 { anyhow::bail!("Эта почта уже используется"); }
+
+        sqlx::query("UPDATE tb_users SET username = ?, email = ?, name = ?, mobile = ? WHERE username = ?")
+            .bind(username).bind(email).bind(display_name).bind(mobile).bind(old_username)
+            .execute(&mut *tx).await?;
+
+        if old_username != username {
+            sqlx::query("UPDATE tb_pm SET username = ? WHERE username = ?")
+                .bind(username).bind(old_username).execute(&mut *tx).await?;
+            sqlx::query("UPDATE tb_pm SET fromuser = ? WHERE fromuser = ?")
+                .bind(username).bind(old_username).execute(&mut *tx).await?;
+        }
+        if let Some(hash) = password_hash {
+            sqlx::query("UPDATE tb_users SET password = ? WHERE username = ?")
+                .bind(hash).bind(username).execute(&mut *tx).await?;
+        }
+        tx.commit().await?;
+        Ok(())
+    }
+
     pub async fn chat_styles(&self) -> Result<std::collections::HashMap<String, ChatStyle>> {
         let rows = sqlx::query(
             "SELECT username, chatcolor, chatfont, chatfontsize, chatfontstyle FROM tb_users"
