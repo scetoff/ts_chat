@@ -34,6 +34,31 @@ async fn main() -> Result<()> {
         .await
         .context("tb_pm is missing or does not match the expected TSchat columns")?;
 
+    let password_capacity: Option<u64> = sqlx::query_scalar(
+        "SELECT CHARACTER_MAXIMUM_LENGTH FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tb_users' AND COLUMN_NAME = 'password'"
+    ).fetch_one(&pool).await.context("Could not inspect tb_users.password column length")?;
+    match password_capacity {
+        Some(length) if length >= 100 => println!("tb_users.password capacity: {length} characters (Argon2id-compatible)"),
+        Some(length) => anyhow::bail!("tb_users.password is only {length} characters; Argon2id upgrade requires at least 100"),
+        None => anyhow::bail!("Could not determine tb_users.password capacity"),
+    }
+
+    let auto_increment_ids: u64 = sqlx::query_scalar(
+        "SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND ((TABLE_NAME = 'tb_users' AND COLUMN_NAME = 'id') OR (TABLE_NAME = 'tb_pm' AND COLUMN_NAME = 'id')) AND EXTRA LIKE '%auto_increment%'"
+    ).fetch_one(&pool).await.context("Could not inspect auto-increment IDs")?;
+    if auto_increment_ids != 2 {
+        anyhow::bail!("tb_users.id and tb_pm.id must both be AUTO_INCREMENT");
+    }
+
+    let charsets = sqlx::query(
+        "SELECT TABLE_NAME, TABLE_COLLATION FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME IN ('tb_users','tb_chat','tb_pm') ORDER BY TABLE_NAME"
+    ).fetch_all(&pool).await.context("Could not inspect table collations")?;
+    for row in charsets {
+        let table: String = row.try_get("TABLE_NAME")?;
+        let collation: Option<String> = row.try_get("TABLE_COLLATION")?;
+        println!("{table} collation: {}", collation.unwrap_or_else(|| "unknown".into()));
+    }
+
     let user_count: u64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users")
         .fetch_one(&pool)
         .await
@@ -52,7 +77,7 @@ async fn main() -> Result<()> {
             anyhow::bail!("Unexpected shared chat row id");
         }
     } else {
-        println!("tb_chat row id=1: missing (schema is valid, application initialization would create it)");
+        anyhow::bail!("tb_chat row id=1 is missing; the application expects the original welcome row");
     }
 
     println!("TSchat MySQL schema: OK (tb_users, tb_chat, tb_pm)");
