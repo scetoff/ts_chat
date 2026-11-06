@@ -1,4 +1,5 @@
 use eframe::egui;
+use std::time::{Duration, Instant};
 use crate::{config::Config, db::Database, models::User};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -24,6 +25,7 @@ pub struct TsChatApp {
     dark_theme: bool,
     connected: bool,
     show_inbox: bool,
+    last_refresh: Instant,
 }
 
 impl Default for TsChatApp {
@@ -38,6 +40,7 @@ impl Default for TsChatApp {
             private_text: String::new(), inbox: Vec::new(),
             status: "Введите параметры MySQL в config.toml и нажмите «Подключиться».".into(),
             dark_theme: true, connected: false, show_inbox: false,
+            last_refresh: Instant::now(),
         }
     }
 }
@@ -138,6 +141,14 @@ impl TsChatApp {
 
 impl eframe::App for TsChatApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        if self.screen == Screen::Chat {
+            ctx.request_repaint_after(Duration::from_secs(2));
+            if self.last_refresh.elapsed() >= Duration::from_secs(2) {
+                self.refresh_chat();
+                self.last_refresh = Instant::now();
+            }
+        }
+
         if self.dark_theme { ctx.set_visuals(egui::Visuals::dark()); } else { ctx.set_visuals(egui::Visuals::light()); }
 
         egui::TopBottomPanel::top("top").show(ctx, |ui| {
