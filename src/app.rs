@@ -6,6 +6,7 @@ enum Screen { Login, Register, Chat }
 
 pub struct TsChatApp {
     config: Config,
+    runtime: tokio::runtime::Runtime,
     db: Option<Database>,
     screen: Screen,
     username: String,
@@ -28,7 +29,9 @@ pub struct TsChatApp {
 impl Default for TsChatApp {
     fn default() -> Self {
         Self {
-            config: Config::load(), db: None, screen: Screen::Login,
+            config: Config::load(),
+            runtime: tokio::runtime::Builder::new_multi_thread().enable_all().build().expect("Не удалось создать async runtime"),
+            db: None, screen: Screen::Login,
             username: String::new(), password: String::new(), email: String::new(),
             current_user: None, friends: Vec::new(), chat_text: String::new(),
             draft: String::new(), selected_friend: None, private_subject: String::new(),
@@ -42,15 +45,12 @@ impl Default for TsChatApp {
 impl TsChatApp {
     fn connect(&mut self) {
         let cfg = self.config.clone();
-        match tokio::runtime::Builder::new_current_thread().enable_all().build() {
-            Ok(rt) => match rt.block_on(Database::connect(&cfg)) {
-                Ok(db) => match rt.block_on(db.initialize()) {
-                    Ok(()) => { self.db = Some(db); self.connected = true; self.status = "Подключено к MySQL.".into(); }
-                    Err(e) => self.status = format!("Ошибка инициализации БД: {e:#}"),
-                },
-                Err(e) => self.status = format!("{e:#}"),
+        match self.runtime.block_on(Database::connect(&cfg)) {
+            Ok(db) => match self.runtime.block_on(db.initialize()) {
+                Ok(()) => { self.db = Some(db); self.connected = true; self.status = "Подключено к MySQL.".into(); }
+                Err(e) => self.status = format!("Ошибка инициализации БД: {e:#}"),
             },
-            Err(e) => self.status = format!("Ошибка запуска async runtime: {e}"),
+            Err(e) => self.status = format!("{e:#}"),
         }
     }
 
@@ -60,13 +60,13 @@ impl TsChatApp {
         input.extend_from_slice(b"ZUBI");
         let mut digest = md5::compute(input).0.to_vec();
         digest.extend_from_slice(b"ZUBI");
-        base64::Engine::encode(&base64::engine::general_purpose::STANDARD, digest)
+        use base64::Engine;
+        base64::engine::general_purpose::STANDARD.encode(digest)
     }
 
     fn run_db<T>(&mut self, f: impl FnOnce(&tokio::runtime::Runtime, &Database) -> anyhow::Result<T>) -> anyhow::Result<T> {
         let db = self.db.clone().ok_or_else(|| anyhow::anyhow!("Сначала подключитесь к базе данных"))?;
-        let rt = tokio::runtime::Builder::new_current_thread().enable_all().build()?;
-        f(&rt, &db)
+        f(&self.runtime, &db)
     }
 
     fn login(&mut self) {
