@@ -854,6 +854,10 @@ impl TsChatApp {
         let mut start_recording = false;
         let mut stop_recording = false;
 
+        if loading || transcribing || recording {
+            ctx.request_repaint_after(Duration::from_millis(200));
+        }
+
         egui::Window::new("Голосовое управление")
             .open(&mut self.voice_open)
             .default_size([500.0, 270.0])
