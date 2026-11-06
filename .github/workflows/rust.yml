@@ -9,6 +9,7 @@ on:
       - "src/**"
       - "RUST_PORT.md"
       - ".github/workflows/rust.yml"
+      - ".env.example"
   workflow_dispatch:
 
 concurrency:
@@ -37,10 +38,19 @@ jobs:
       - name: Read-only TSchat MySQL schema check
         env:
           TSCHAT_TEST_DATABASE_URL: ${{ secrets.TSCHAT_TEST_DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DB_CONNECTION: ${{ secrets.DB_CONNECTION }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         shell: pwsh
         run: |
-          if ([string]::IsNullOrWhiteSpace($env:TSCHAT_TEST_DATABASE_URL)) {
-            Write-Host "Skipped: add the TSCHAT_TEST_DATABASE_URL repository secret to enable the database smoke test."
+          $hasUrl = -not [string]::IsNullOrWhiteSpace($env:DATABASE_URL) -or -not [string]::IsNullOrWhiteSpace($env:TSCHAT_TEST_DATABASE_URL)
+          $hasParts = -not [string]::IsNullOrWhiteSpace($env:DB_HOST) -and -not [string]::IsNullOrWhiteSpace($env:DB_DATABASE) -and -not [string]::IsNullOrWhiteSpace($env:DB_USERNAME)
+          if (-not $hasUrl -and -not $hasParts) {
+            Write-Host "Skipped: configure DATABASE_URL or DB_HOST/DB_PORT/DB_DATABASE/DB_USERNAME repository secrets."
             exit 0
           }
           cargo run --bin db_smoke
