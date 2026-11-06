@@ -16,7 +16,7 @@ The initial desktop client is built with Rust, egui/eframe, Tokio and SQLx. Impl
 - Poll the shared chat every two seconds while the chat screen is open.
 - List registered users, view friend profiles, and show their avatars.
 - Read and save per-user message color, font family preference, size, and style in the legacy `tb_users` columns; render each author's chat lines accordingly.
-- Edit own nickname, display name, email and phone; change the password.
+- Edit own nickname, display name, email and phone; change the password. Profile, password and private-message sender/recipient rename updates are committed in one MySQL transaction.
 - Choose and upload a PNG/JPEG/GIF avatar (normalized to PNG, max 640×480).
 - Import and render all 16 original PNG smileys in the composer and message history; shortcode compatibility is retained.
 - Send private messages, view the inbox, and mark received messages as read.
