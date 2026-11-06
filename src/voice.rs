@@ -34,9 +34,9 @@ impl MicrophoneRecorder {
         let samples = Arc::new(Mutex::new(Vec::with_capacity(max_samples.min(1_000_000))));
 
         let stream = match sample_format {
-            SampleFormat::F32 => Self::build_stream::<f32>(&device, &config, samples.clone(), max_samples)?,
-            SampleFormat::I16 => Self::build_stream::<i16>(&device, &config, samples.clone(), max_samples)?,
-            SampleFormat::U16 => Self::build_stream::<u16>(&device, &config, samples.clone(), max_samples)?,
+            SampleFormat::F32 => Self::build_stream::<f32>(&device, config, samples.clone(), max_samples)?,
+            SampleFormat::I16 => Self::build_stream::<i16>(&device, config, samples.clone(), max_samples)?,
+            SampleFormat::U16 => Self::build_stream::<u16>(&device, config, samples.clone(), max_samples)?,
             other => anyhow::bail!("Формат микрофона {other:?} пока не поддерживается; выберите устройство с PCM float или 16-bit input"),
         };
 
@@ -46,7 +46,7 @@ impl MicrophoneRecorder {
 
     fn build_stream<T>(
         device: &cpal::Device,
-        config: &cpal::StreamConfig,
+        config: cpal::StreamConfig,
         samples: Arc<Mutex<Vec<f32>>>,
         max_samples: usize,
     ) -> Result<cpal::Stream>
@@ -74,6 +74,10 @@ impl MicrophoneRecorder {
         let Self { stream, samples, sample_rate, channels } = self;
         drop(stream);
 
+        if sample_rate == 0 || channels == 0 {
+            anyhow::bail!("Микрофон вернул некорректную частоту или число каналов");
+        }
+
         let interleaved = samples.lock()
             .map_err(|_| anyhow::anyhow!("Буфер микрофона заблокирован"))?
             .clone();
@@ -86,6 +90,10 @@ impl MicrophoneRecorder {
             .chunks_exact(channel_count)
             .map(|frame| frame.iter().copied().sum::<f32>() / channel_count as f32)
             .collect();
+
+        if mono.is_empty() {
+            anyhow::bail!("Микрофон не записал полных аудиокадров");
+        }
 
         if sample_rate == WHISPER_SAMPLE_RATE {
             return Ok(mono);
