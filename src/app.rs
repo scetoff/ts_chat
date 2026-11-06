@@ -4,7 +4,7 @@ use argon2::{
     Argon2,
     password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString, rand_core::OsRng},
 };
-use crate::{commands::{parse_command, ChatCommand}, config::{Config, RadioStation}, db::Database, models::User, radio::RadioPlayback};
+use crate::{commands::{parse_command, ChatCommand}, config::{Config, RadioStation}, db::Database, models::{ChatStyle, User}, radio::RadioPlayback};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 enum Screen { Login, Register, Chat }
@@ -59,6 +59,11 @@ pub struct TsChatApp {
     command_input: String,
     command_status: String,
     radio_autoplay_pending: Option<usize>,
+    chat_styles: std::collections::HashMap<String, ChatStyle>,
+    chat_style_color: egui::Color32,
+    chat_style_font: String,
+    chat_style_size: i32,
+    chat_style_effect: String,
 }
 
 
@@ -135,13 +140,63 @@ fn render_strokes_png(
 }
 
 
+
+fn parse_legacy_argb(value: &str) -> Option<egui::Color32> {
+    let hex = value.trim().trim_start_matches('#');
+    let parsed = u32::from_str_radix(hex, 16).ok()?;
+    match hex.len() {
+        8 => Some(egui::Color32::from_rgba_unmultiplied(
+            ((parsed >> 16) & 0xff) as u8,
+            ((parsed >> 8) & 0xff) as u8,
+            (parsed & 0xff) as u8,
+            ((parsed >> 24) & 0xff) as u8,
+        )),
+        6 => Some(egui::Color32::from_rgb(
+            ((parsed >> 16) & 0xff) as u8,
+            ((parsed >> 8) & 0xff) as u8,
+            (parsed & 0xff) as u8,
+        )),
+        _ => None,
+    }
+}
+
+fn legacy_color_hex(color: egui::Color32) -> String {
+    let [r, g, b, a] = color.to_array();
+    format!("{a:02X}{r:02X}{g:02X}{b:02X}")
+}
+
+fn styled_rich_text<'a>(text: &'a str, style: Option<&ChatStyle>) -> egui::RichText {
+    let Some(style) = style else { return egui::RichText::new(text); };
+    let mut rich = egui::RichText::new(text)
+        .size(style.font_size.clamp(8, 48) as f32);
+    if let Some(color) = parse_legacy_argb(&style.color) { rich = rich.color(color); }
+    match style.font_style.to_lowercase().as_str() {
+        "bold" => { rich = rich.strong(); }
+        "italic" => { rich = rich.italics(); }
+        "underline" => { rich = rich.underline(); }
+        "strikeout" => { rich = rich.strikethrough(); }
+        _ => {}
+    }
+    if matches!(style.font.to_lowercase().as_str(), "consolas" | "courier new" | "monospace") {
+        rich = rich.family(egui::FontFamily::Monospace);
+    }
+    rich
+}
+
 const SMILEY_CODES: [&str; 16] = [
     ":fuu:", ":beer:", ":sorry:", ":read:", ":girl:", ":lich:", ":sing:", ":haha:",
     ":allbear:", ":say:", ":money:", ":no:", ":king:", ":go:", ":good:", ":nice:",
 ];
 
-fn show_chat_line(ui: &mut egui::Ui, line: &str, smileys: &[(String, egui::TextureHandle)]) {
+fn show_chat_line(
+    ui: &mut egui::Ui,
+    line: &str,
+    smileys: &[(String, egui::TextureHandle)],
+    styles: &std::collections::HashMap<String, ChatStyle>,
+) {
     ui.horizontal_wrapped(|ui| {
+        let author_style = line.split_once(": ")
+            .and_then(|(author, _)| styles.get(author));
         let mut rest = line;
         loop {
             let mut next: Option<(usize, &str)> = None;
@@ -156,7 +211,7 @@ fn show_chat_line(ui: &mut egui::Ui, line: &str, smileys: &[(String, egui::Textu
             match next {
                 Some((position, code)) => {
                     if position > 0 {
-                        ui.label(&rest[..position]);
+                        ui.label(styled_rich_text(&rest[..position], author_style));
                     }
                     if let Some((_, texture)) = smileys.iter().find(|(candidate, _)| candidate == code) {
                         ui.add(egui::Image::new((texture.id(), egui::vec2(28.0, 28.0))));
@@ -166,7 +221,7 @@ fn show_chat_line(ui: &mut egui::Ui, line: &str, smileys: &[(String, egui::Textu
                     rest = &rest[position + code.len()..];
                 }
                 None => {
-                    if !rest.is_empty() { ui.label(rest); }
+                    if !rest.is_empty() { ui.label(styled_rich_text(rest, author_style)); }
                     break;
                 }
             }
@@ -208,6 +263,11 @@ impl Default for TsChatApp {
             command_input: String::new(),
             command_status: String::new(),
             radio_autoplay_pending: None,
+            chat_styles: std::collections::HashMap::new(),
+            chat_style_color: egui::Color32::BLACK,
+            chat_style_font: "Candara".into(),
+            chat_style_size: 16,
+            chat_style_effect: "Regular".into(),
         }
     }
 }
@@ -286,6 +346,11 @@ impl TsChatApp {
                 let name = user.username.clone();
                 let friends = self.run_db(|rt, db| rt.block_on(db.users_except(&name))).unwrap_or_default();
                 let chat = self.run_db(|rt, db| rt.block_on(db.read_chat())).unwrap_or_default();
+                self.chat_styles = self.run_db(|rt, db| rt.block_on(db.chat_styles())).unwrap_or_default();
+                self.chat_style_color = parse_legacy_argb(&user.chat_color).unwrap_or(egui::Color32::BLACK);
+                self.chat_style_font = if user.chat_font.is_empty() { "Candara".into() } else { user.chat_font.clone() };
+                self.chat_style_size = user.chat_font_size.clamp(8, 48);
+                self.chat_style_effect = if user.chat_font_style.is_empty() { "Regular".into() } else { user.chat_font_style.clone() };
                 self.profile_username = user.username.clone();
                 self.profile_name = user.display_name.clone();
                 self.profile_email = user.email.clone();
@@ -316,6 +381,31 @@ impl TsChatApp {
         }
     }
 
+
+
+    fn save_chat_style(&mut self) {
+        let Some(username) = self.current_user.as_ref().map(|u| u.username.clone()) else { return; };
+        let color = legacy_color_hex(self.chat_style_color);
+        let font = self.chat_style_font.clone();
+        let size = self.chat_style_size.clamp(8, 48);
+        let effect = self.chat_style_effect.clone();
+        match self.run_db(|rt, db| rt.block_on(db.update_chat_style(&username, &color, &font, size, &effect))) {
+            Ok(()) => {
+                let style = ChatStyle {
+                    color: color.clone(), font: font.clone(), font_size: size, font_style: effect.clone(),
+                };
+                self.chat_styles.insert(username.clone(), style);
+                if let Some(user) = self.current_user.as_mut() {
+                    user.chat_color = color;
+                    user.chat_font = font;
+                    user.chat_font_size = size;
+                    user.chat_font_style = effect;
+                }
+                self.status = "Оформление сообщений сохранено.".into();
+            }
+            Err(error) => self.status = format!("Не удалось сохранить оформление: {error:#}"),
+        }
+    }
 
     fn save_profile(&mut self) {
         let Some(user) = self.current_user.as_ref() else { return; };
@@ -912,7 +1002,7 @@ impl eframe::App for TsChatApp {
                             let smiley_items = self.smiley_textures.clone();
                             egui::ScrollArea::vertical().max_height(470.0).show(ui, |ui| {
                                 for line in self.chat_text.split('\n') {
-                                    show_chat_line(ui, line, &smiley_items);
+                                    show_chat_line(ui, line, &smiley_items, &self.chat_styles);
                                 }
                             });
                             ui.add(egui::TextEdit::singleline(&mut self.draft).hint_text("Сообщение...").desired_width(f32::INFINITY));
@@ -953,6 +1043,29 @@ impl eframe::App for TsChatApp {
                                 ui.label("Повторите пароль");
                                 ui.add(egui::TextEdit::singleline(&mut self.repeat_password).password(true));
                                 if ui.button("Сохранить профиль").clicked() { self.save_profile(); }
+                            });
+                            ui.collapsing("Оформление сообщений", |ui| {
+                                ui.label("Цвет имени и сообщения");
+                                ui.color_edit_button_srgba(&mut self.chat_style_color);
+                                ui.horizontal(|ui| {
+                                    ui.label("Шрифт");
+                                    egui::ComboBox::from_id_salt("chat-font")
+                                        .selected_text(&self.chat_style_font)
+                                        .show_ui(ui, |ui| {
+                                            for font in ["Candara", "Arial", "Tahoma", "Verdana", "Consolas"] {
+                                                ui.selectable_value(&mut self.chat_style_font, font.to_string(), font);
+                                            }
+                                        });
+                                });
+                                ui.add(egui::Slider::new(&mut self.chat_style_size, 8..=36).text("Размер"));
+                                egui::ComboBox::from_id_salt("chat-style")
+                                    .selected_text(&self.chat_style_effect)
+                                    .show_ui(ui, |ui| {
+                                        for effect in ["Regular", "Bold", "Italic", "Underline", "Strikeout"] {
+                                            ui.selectable_value(&mut self.chat_style_effect, effect.to_string(), effect);
+                                        }
+                                    });
+                                if ui.button("Сохранить оформление").clicked() { self.save_chat_style(); }
                             });
                             ui.separator();
                             ui.label("Пользователи");
