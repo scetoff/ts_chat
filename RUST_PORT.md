@@ -23,6 +23,7 @@ The initial desktop client is built with Rust, egui/eframe, Tokio and SQLx. Impl
 - Toggle light and dark themes.
 - Draw in a Paint-style notes window with adjustable brush size/color, clear canvas, and export to PNG.
 - Radio station panel with the original station list, configurable stream URLs, native playback, pause/resume, stop and volume control.
+- Optional offline Russian voice commands (`voice` Cargo feature): user-selected multilingual Whisper model, push-to-talk recording via CPAL, 12-second automatic recording limit, and command dispatch after local transcription. Microphone is never opened until the user starts a recording.
 
 ## Build and run
 
@@ -35,6 +36,8 @@ cargo check --all-targets
 cargo test
 cargo build --release --bin tschat
 cargo run
+# Optional local speech recognition (requires CMake, LLVM/Clang and a C++ toolchain):
+cargo run --features voice
 ```
 
 Connection settings can come from `.env`, process environment variables, or
@@ -90,12 +93,25 @@ device being available.
 The current code is a functional starting point, not a complete recreation of the
 legacy client. The next migration stages are:
 
-1. Russian speech recognition from a microphone and continuous voice-command activation; the legacy app used Microsoft Speech SDK.
-2. Rich-text per-user message formatting and persistent chat font/color preferences.
-3. Image attachments (the legacy attachment button was commented out in the VB.NET source).
-4. Automated tests against a disposable MySQL database and a Windows release build.
+1. Continuous hands-free voice-command activation; the current Rust version uses push-to-talk so the microphone is only opened by an explicit user action.
+2. Image attachments (the legacy attachment button was commented out in the VB.NET source).
+3. Integration tests for mutating database flows and final Windows installation packaging.
 
-The command parser has unit tests for legacy station aliases, radio/notes actions, and unsupported phrases. It is separate from speech-to-text so an offline recognizer can feed the same dispatcher later. The current command field is manual input; the microphone is not activated.
+The command parser has unit tests for legacy station aliases, radio/notes actions, punctuation emitted by speech recognition, and unsupported phrases. It is separate from the recognizer so manual text and Whisper transcription use the same command dispatcher.
+
+### Optional Russian voice control
+
+The voice feature is built with CPAL and whisper-rs. On Windows, building
+whisper-rs requires Visual Studio C++ build tools, CMake, and LLVM/Clang; the
+GitHub Actions workflow installs CMake and LLVM and builds a separate
+voice-enabled Windows artifact.
+
+1. Download the multilingual Whisper model [ggml-base.bin](https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin) (about 148 MB) from the official whisper.cpp model repository.
+2. Build/run with `--features voice`.
+3. Sign in, open **Голос**, choose `ggml-base.bin`, then click **Начать запись**. Say one command and click **Остановить и распознать**.
+4. The recognized Russian text is passed to the existing command dispatcher. Recording stops after 12 seconds even if the stop button is not pressed; closing the voice window also releases the microphone.
+
+Use the multilingual model file without the `.en` suffix. The model remains on the user's computer and is not committed to Git. The audio is processed locally by Whisper; no audio upload is performed.
 
 The VB.NET client uses .NET Framework 4.5, Windows Forms, MySQL Connector/NET,
 Windows Media Player COM components, and Microsoft Speech SDK. The GUI and platform
