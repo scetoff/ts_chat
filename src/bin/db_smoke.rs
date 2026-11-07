@@ -15,34 +15,38 @@ async fn main() -> Result<()> {
     let options = url.parse::<MySqlConnectOptions>()?
         .ssl_mode(MySqlSslMode::Required);
     let pool = MySqlPoolOptions::new()
-        .max_connections(2)
+        .max_connections(1)
         .acquire_timeout(Duration::from_secs(30))
         .test_before_acquire(true)
         .connect_with(options)
         .await
         .context("Could not connect to the TSchat test database")?;
 
+    // Hold one server session throughout smoke checks. Free/shared MySQL accounts
+    // often have max_user_connections set to 1.
+    let mut conn = pool.acquire().await.context("Could not acquire the single MySQL session")?;
+
     // Verify the exact columns expected by the Rust client without reading user data.
     sqlx::query(
         "SELECT id, username, password, email, name, dp, mobile, chatcolor, chatfont, chatfontsize, chatfontstyle FROM tb_users LIMIT 0"
     )
-    .fetch_all(&pool)
+    .fetch_all(&mut *conn)
     .await
     .context("tb_users is missing or does not match the expected TSchat columns. Check DB_DATABASE; for a new disposable database, run database/schema.mysql.sql manually before retrying")?;
 
     sqlx::query("SELECT id, chat FROM tb_chat LIMIT 0")
-        .fetch_all(&pool)
+        .fetch_all(&mut *conn)
         .await
         .context("tb_chat is missing or does not match the expected TSchat columns. Check DB_DATABASE or manually prepare a disposable database with database/schema.mysql.sql")?;
 
     sqlx::query("SELECT id, username, fromuser, subject, message, isread FROM tb_pm LIMIT 0")
-        .fetch_all(&pool)
+        .fetch_all(&mut *conn)
         .await
         .context("tb_pm is missing or does not match the expected TSchat columns. Check DB_DATABASE or manually prepare a disposable database with database/schema.mysql.sql")?;
 
     let password_capacity: Option<i64> = sqlx::query_scalar(
         "SELECT CHARACTER_MAXIMUM_LENGTH FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tb_users' AND COLUMN_NAME = 'password'"
-    ).fetch_one(&pool).await.context("Could not inspect tb_users.password column length")?;
+    ).fetch_one(&mut *conn).await.context("Could not inspect tb_users.password column length")?;
     match password_capacity {
         Some(length) if length >= 100 => println!("tb_users.password capacity: {length} characters (Argon2id-compatible)"),
         Some(length) => anyhow::bail!("tb_users.password is only {length} characters; Argon2id upgrade requires at least 100"),
@@ -51,7 +55,7 @@ async fn main() -> Result<()> {
 
     let auto_increment_ids: i64 = sqlx::query_scalar(
         "SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND ((TABLE_NAME = 'tb_users' AND COLUMN_NAME = 'id') OR (TABLE_NAME = 'tb_pm' AND COLUMN_NAME = 'id')) AND EXTRA LIKE '%auto_increment%'"
-    ).fetch_one(&pool).await.context("Could not inspect auto-increment IDs")?;
+    ).fetch_one(&mut *conn).await.context("Could not inspect auto-increment IDs")?;
     if auto_increment_ids != 2 {
         anyhow::bail!("tb_users.id and tb_pm.id must both be AUTO_INCREMENT");
     }
@@ -60,12 +64,12 @@ async fn main() -> Result<()> {
     // as binary values or restrict information_schema while table access works.
 
     let user_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users")
-        .fetch_one(&pool)
+        .fetch_one(&mut *conn)
         .await
         .context("Could not read tb_users count")?;
 
     let chat_row = sqlx::query("SELECT id, chat FROM tb_chat WHERE id = 1")
-        .fetch_optional(&pool)
+        .fetch_optional(&mut *conn)
         .await
         .context("Could not read shared chat row")?;
 
@@ -84,6 +88,7 @@ async fn main() -> Result<()> {
     println!("Registered user count: {user_count}");
     println!("No rows or schema objects were modified.");
 
+    drop(conn);
     pool.close().await;
     Ok(())
 }
