@@ -43,7 +43,7 @@ async fn main() -> Result<()> {
         None => anyhow::bail!("Could not determine tb_users.password capacity"),
     }
 
-    let auto_increment_ids: u64 = sqlx::query_scalar(
+    let auto_increment_ids: i64 = sqlx::query_scalar(
         "SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND ((TABLE_NAME = 'tb_users' AND COLUMN_NAME = 'id') OR (TABLE_NAME = 'tb_pm' AND COLUMN_NAME = 'id')) AND EXTRA LIKE '%auto_increment%'"
     ).fetch_one(&pool).await.context("Could not inspect auto-increment IDs")?;
     if auto_increment_ids != 2 {
@@ -59,7 +59,7 @@ async fn main() -> Result<()> {
         println!("{table} collation: {}", collation.unwrap_or_else(|| "unknown".into()));
     }
 
-    let user_count: u64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users")
+    let user_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users")
         .fetch_one(&pool)
         .await
         .context("Could not read tb_users count")?;
