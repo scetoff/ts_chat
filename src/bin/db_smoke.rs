@@ -22,17 +22,17 @@ async fn main() -> Result<()> {
     )
     .fetch_all(&pool)
     .await
-    .context("tb_users is missing or does not match the expected TSchat columns")?;
+    .context("tb_users is missing or does not match the expected TSchat columns. Check DB_DATABASE; for a new disposable database, run database/schema.mysql.sql manually before retrying")?;
 
     sqlx::query("SELECT id, chat FROM tb_chat LIMIT 0")
         .fetch_all(&pool)
         .await
-        .context("tb_chat is missing or does not match the expected TSchat columns")?;
+        .context("tb_chat is missing or does not match the expected TSchat columns. Check DB_DATABASE or manually prepare a disposable database with database/schema.mysql.sql")?;
 
     sqlx::query("SELECT id, username, fromuser, subject, message, isread FROM tb_pm LIMIT 0")
         .fetch_all(&pool)
         .await
-        .context("tb_pm is missing or does not match the expected TSchat columns")?;
+        .context("tb_pm is missing or does not match the expected TSchat columns. Check DB_DATABASE or manually prepare a disposable database with database/schema.mysql.sql")?;
 
     let password_capacity: Option<u64> = sqlx::query_scalar(
         "SELECT CHARACTER_MAXIMUM_LENGTH FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tb_users' AND COLUMN_NAME = 'password'"
