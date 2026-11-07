@@ -95,7 +95,24 @@ impl Config {
     }
 
     pub fn mysql_url(&self) -> String {
-        // Prefer a full URL. This supports DATABASE_URL used by common deployment tooling.
+        // Prefer separate fields when they are complete: credentials are URL-encoded here,
+        // so passwords containing @, :, /, # or ? do not corrupt URL parsing.
+        let host_env = Self::env_value("DB_HOST");
+        let database_env = Self::env_value("DB_DATABASE");
+        let username_env = Self::env_value("DB_USERNAME");
+
+        if let (Some(host), Some(database), Some(username)) =
+            (host_env, database_env, username_env)
+        {
+            let port = Self::env_value("DB_PORT")
+                .and_then(|value| value.parse::<u16>().ok())
+                .unwrap_or(self.database.port);
+            let password = Self::env_value("DB_PASSWORD")
+                .unwrap_or_else(|| self.database.password.clone());
+            return Self::build_mysql_url(&host, port, &database, &username, &password);
+        }
+
+        // Fall back to a complete URL when individual connection fields are not supplied.
         if let Some(url) = Self::env_value("DATABASE_URL") {
             return url;
         }
