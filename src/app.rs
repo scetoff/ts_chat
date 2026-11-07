@@ -31,6 +31,7 @@ pub struct TsChatApp {
     dark_theme: bool,
     connected: bool,
     show_inbox: bool,
+    private_message_open: bool,
     confirm_delete_message: Option<i64>,
     last_refresh: Instant,
     profile_username: String,
@@ -414,7 +415,7 @@ impl Default for TsChatApp {
             draft: String::new(), selected_friend: None, private_subject: String::new(),
             private_text: String::new(), inbox: Vec::new(),
             status: "Введите параметры MySQL в config.toml и нажмите «Подключиться».".into(),
-            dark_theme: true, connected: false, show_inbox: false,
+            dark_theme: true, connected: false, show_inbox: false, private_message_open: false,
             confirm_delete_message: None,
             last_refresh: Instant::now(),
             profile_username: String::new(), profile_name: String::new(), profile_email: String::new(), profile_mobile: String::new(),
@@ -1958,6 +1959,242 @@ impl TsChatApp {
 
 }
 
+
+impl TsChatApp {
+    fn show_legacy_friend_profile_window(&mut self, ctx: &egui::Context) {
+        if !self.show_friend_profile {
+            return;
+        }
+        let mut open = self.show_friend_profile;
+        let mut close_requested = false;
+        let mut send_requested = false;
+        let profile = self.friend_profile.clone();
+
+        egui::Window::new("Профиль друга")
+            .id(egui::Id::new("legacy-friend-profile-window"))
+            .title_bar(false)
+            .collapsible(false)
+            .resizable(false)
+            .fixed_size([595.0, 356.0])
+            .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+            .frame(egui::Frame::none())
+            .open(&mut open)
+            .show(ctx, |ui| {
+                let rect = ui.max_rect();
+                let origin = rect.min;
+                let dark = self.dark_theme;
+                let bg = if dark { egui::Color32::BLACK } else { egui::Color32::WHITE };
+                let fg = if dark { egui::Color32::WHITE } else { egui::Color32::BLACK };
+                ui.painter().rect_filled(rect, 0.0, bg);
+
+                ui.painter().rect_filled(
+                    legacy_rect(origin, 0.0, 0.0, 595.0, 35.0),
+                    0.0,
+                    egui::Color32::from_rgb(0, 0, 128),
+                );
+                legacy_static_image(ui, &self.ui_textures, "chat_icon", legacy_rect(origin, 1.0, 0.0, 35.0, 35.0));
+                legacy_static_image(ui, &self.ui_textures, "minimize", legacy_rect(origin, 516.0, 0.0, 35.0, 35.0));
+                if let Some(response) = legacy_image_button(
+                    ui,
+                    &self.ui_textures,
+                    "close",
+                    legacy_rect(origin, 557.0, 0.0, 35.0, 35.0),
+                ) {
+                    if response.clicked() {
+                        close_requested = true;
+                    }
+                }
+
+                ui.painter().rect_filled(legacy_rect(origin, 0.0, 36.0, 595.0, 36.0), 0.0, bg);
+                legacy_text(ui, legacy_rect(origin, 12.0, 40.0, 200.0, 26.0), "Профиль друга", fg, 16.0);
+
+                legacy_group(ui, legacy_rect(origin, 13.0, 78.0, 569.0, 266.0), bg, egui::Color32::DARK_GRAY);
+
+                let avatar_rect = legacy_rect(origin, 34.0, 97.0, 150.0, 150.0);
+                if let Some(texture) = &self.friend_avatar_texture {
+                    ui.painter().image(
+                        texture.id(),
+                        avatar_rect,
+                        egui::Rect::from_min_max(egui::Pos2::ZERO, egui::pos2(1.0, 1.0)),
+                        egui::Color32::WHITE,
+                    );
+                } else {
+                    ui.painter().rect_filled(avatar_rect, 0.0, egui::Color32::DARK_GRAY);
+                }
+
+                legacy_group(ui, legacy_rect(origin, 203.0, 91.0, 363.0, 238.0), bg, egui::Color32::DARK_GRAY);
+                if let Some(user) = profile.as_ref() {
+                    let labels = [
+                        ("Настоящее имя", &user.display_name, 107.0),
+                        ("Никнейм", &user.username, 155.0),
+                        ("Почта", &user.email, 199.0),
+                        ("Телефон", &user.mobile, 293.0),
+                    ];
+                    for (label, value, y) in labels {
+                        legacy_text(ui, legacy_rect(origin, 209.0, y, 132.0, 23.0), label, fg, 11.0);
+                        legacy_text(ui, legacy_rect(origin, 347.0, y, 205.0, 23.0), value, fg, 11.0);
+                    }
+                }
+
+                let send_icon = if dark { "send_dark" } else { "send_light" };
+                if let Some(response) = legacy_image_button(
+                    ui,
+                    &self.ui_textures,
+                    send_icon,
+                    legacy_rect(origin, 82.0, 253.0, 50.0, 50.0),
+                ) {
+                    if response.clicked() {
+                        send_requested = true;
+                    }
+                }
+                let send_label = legacy_text(
+                    ui,
+                    legacy_rect(origin, 21.0, 306.0, 180.0, 23.0),
+                    "Отправить сообщение",
+                    fg,
+                    11.0,
+                );
+                if send_label.clicked() {
+                    send_requested = true;
+                }
+            });
+
+        if close_requested {
+            open = false;
+        }
+        self.show_friend_profile = open && self.show_friend_profile;
+
+        if send_requested {
+            if let Some(user) = profile {
+                self.selected_friend = Some(user.username);
+                self.private_subject.clear();
+                self.private_text.clear();
+                self.private_message_open = true;
+                self.show_friend_profile = false;
+            }
+        }
+    }
+
+    fn show_legacy_private_message_window(&mut self, ctx: &egui::Context) {
+        if !self.private_message_open {
+            return;
+        }
+        let Some(recipient) = self.selected_friend.clone() else {
+            self.private_message_open = false;
+            self.status = "Выберите собеседника перед отправкой личного сообщения.".into();
+            return;
+        };
+
+        let mut open = self.private_message_open;
+        let mut close_requested = false;
+        let mut send_requested = false;
+
+        egui::Window::new(format!("Личное сообщение для: {recipient}"))
+            .id(egui::Id::new("legacy-private-message-window"))
+            .title_bar(false)
+            .collapsible(false)
+            .resizable(false)
+            .fixed_size([643.0, 430.0])
+            .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+            .frame(egui::Frame::none())
+            .open(&mut open)
+            .show(ctx, |ui| {
+                let rect = ui.max_rect();
+                let origin = rect.min;
+                let dark = self.dark_theme;
+                let bg = if dark { egui::Color32::BLACK } else { egui::Color32::WHITE };
+                let fg = if dark { egui::Color32::WHITE } else { egui::Color32::BLACK };
+                ui.painter().rect_filled(rect, 0.0, bg);
+
+                ui.painter().rect_filled(
+                    legacy_rect(origin, 0.0, 0.0, 643.0, 35.0),
+                    0.0,
+                    egui::Color32::from_rgb(0, 0, 128),
+                );
+                legacy_static_image(ui, &self.ui_textures, "chat_icon", legacy_rect(origin, 1.0, 0.0, 35.0, 35.0));
+                legacy_static_image(ui, &self.ui_textures, "minimize", legacy_rect(origin, 564.0, 0.0, 35.0, 35.0));
+                if let Some(response) = legacy_image_button(
+                    ui,
+                    &self.ui_textures,
+                    "close",
+                    legacy_rect(origin, 605.0, 0.0, 35.0, 35.0),
+                ) {
+                    if response.clicked() {
+                        close_requested = true;
+                    }
+                }
+
+                ui.painter().rect_filled(legacy_rect(origin, 0.0, 35.0, 643.0, 36.0), 0.0, bg);
+                legacy_text(
+                    ui,
+                    legacy_rect(origin, 12.0, 39.0, 330.0, 26.0),
+                    "Отправить личное сообщение",
+                    fg,
+                    16.0,
+                );
+                legacy_text(
+                    ui,
+                    legacy_rect(origin, 18.0, 93.0, 260.0, 26.0),
+                    "Тема сообщения",
+                    fg,
+                    12.0,
+                );
+                ui.put(
+                    legacy_rect(origin, 18.0, 122.0, 606.0, 30.0),
+                    egui::TextEdit::singleline(&mut self.private_subject)
+                        .desired_width(606.0)
+                        .hint_text("Тема")
+                        .text_color(egui::Color32::BLACK),
+                );
+                legacy_text(
+                    ui,
+                    legacy_rect(origin, 18.0, 167.0, 260.0, 26.0),
+                    "Текст сообщения",
+                    fg,
+                    12.0,
+                );
+                ui.put(
+                    legacy_rect(origin, 18.0, 196.0, 606.0, 159.0),
+                    egui::TextEdit::multiline(&mut self.private_text)
+                        .desired_width(606.0)
+                        .desired_rows(7)
+                        .hint_text("Сообщение...")
+                        .text_color(egui::Color32::BLACK),
+                );
+
+                let send_icon = if dark { "send_dark" } else { "send_light" };
+                if let Some(response) = legacy_image_button(
+                    ui,
+                    &self.ui_textures,
+                    send_icon,
+                    legacy_rect(origin, 574.0, 361.0, 50.0, 50.0),
+                ) {
+                    if response.clicked() {
+                        send_requested = true;
+                    }
+                }
+                legacy_text(
+                    ui,
+                    legacy_rect(origin, 18.0, 371.0, 400.0, 22.0),
+                    format!("Получатель: {recipient}"),
+                    fg,
+                    10.0,
+                );
+            });
+
+        if close_requested {
+            open = false;
+        }
+        if send_requested {
+            self.send_private();
+            if self.status.starts_with("Сообщение отправлено пользователю ") {
+                open = false;
+            }
+        }
+        self.private_message_open = open && self.private_message_open;
+    }
+}
+
 impl eframe::App for TsChatApp {
 
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
@@ -2004,26 +2241,8 @@ impl eframe::App for TsChatApp {
 
         self.show_legacy_profile_window(ctx);
         self.show_legacy_chat_style_window(ctx);
-        if self.show_friend_profile {
-            let mut close_profile = false;
-            egui::Window::new("Профиль пользователя").show(ctx, |ui| {
-                if let Some(texture) = &self.friend_avatar_texture {
-                    ui.add(egui::Image::new((texture.id(), egui::vec2(120.0, 120.0))));
-                }
-                if let Some(profile) = &self.friend_profile {
-                    ui.heading(&profile.display_name);
-                    ui.label(format!("Никнейм: {}", profile.username));
-                    ui.label(format!("Почта: {}", profile.email));
-                    ui.label(format!("Телефон: {}", profile.mobile));
-                }
-                if ui.button("Закрыть").clicked() {
-                    close_profile = true;
-                }
-            });
-            if close_profile {
-                self.show_friend_profile = false;
-            }
-        }
+        self.show_legacy_friend_profile_window(ctx);
+        self.show_legacy_private_message_window(ctx);
 
         if self.show_inbox {
             let inbox_items = self.inbox.clone();
@@ -2069,6 +2288,7 @@ impl eframe::App for TsChatApp {
                 } else {
                     format!("Re: {subject}")
                 };
+                self.private_message_open = true;
                 self.show_inbox = false;
                 self.status = format!("Ответьте пользователю {sender} в окне личных сообщений.");
             }
