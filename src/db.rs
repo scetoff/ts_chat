@@ -179,6 +179,16 @@ impl Database {
         Ok(())
     }
 
+    /// Delete exactly one message from the authenticated user's own inbox.
+    pub async fn delete_private_message(&self, message_id: i64, username: &str) -> Result<u64> {
+        let result = sqlx::query("DELETE FROM tb_pm WHERE id = ? AND username = ?")
+            .bind(message_id)
+            .bind(username)
+            .execute(&self.pool)
+            .await?;
+        Ok(result.rows_affected())
+    }
+
     pub async fn inbox(&self, username: &str) -> Result<Vec<PrivateMessage>> {
         let rows = sqlx::query("SELECT id,fromuser,subject,message,isread FROM tb_pm WHERE username = ? ORDER BY id DESC")
             .bind(username).fetch_all(&self.pool).await?;
