@@ -3,6 +3,27 @@ use sqlx::{mysql::{MySqlConnectOptions, MySqlPoolOptions, MySqlSslMode}, MySqlPo
 use std::time::Duration;
 use crate::{config::Config, models::{ChatStyle, PrivateMessage, User}};
 
+
+/// Detect failures caused by a broken network/session rather than a schema mismatch.
+fn is_transient_connection_error(error: &anyhow::Error) -> bool {
+    error.chain().any(|cause| {
+        let Some(sqlx_error) = cause.downcast_ref::<sqlx::Error>() else {
+            return false;
+        };
+        match sqlx_error {
+            sqlx::Error::Io(_)
+            | sqlx::Error::Tls(_)
+            | sqlx::Error::Protocol(_)
+            | sqlx::Error::PoolTimedOut
+            | sqlx::Error::WorkerCrashed => true,
+            sqlx::Error::Database(database_error) => {
+                matches!(database_error.code().as_deref(), Some("2006" | "2013" | "2055"))
+            }
+            _ => false,
+        }
+    })
+}
+
 #[derive(Clone)]
 pub struct Database {
     pool: MySqlPool,
@@ -32,31 +53,45 @@ impl Database {
 
 
     /// Verify the legacy tables without changing schema or data.
+    ///
+    /// Run each metadata probe through the pool instead of pinning one physical
+    /// session for the whole sequence. Some shared MySQL hosts reset idle/metadata
+    /// probe connections; SQLx can validate or replace the pooled connection
+    /// between probes (test_before_acquire is enabled in connect_url).
     pub async fn verify_schema(&self) -> Result<()> {
-        // Hold exactly one physical MySQL connection for the complete schema check.
-        // FreeDB accounts may have a very low max_user_connections limit.
-        let mut conn = self.pool.acquire().await
-            .context("Не удалось получить подключение к FreeDB для проверки структуры")?;
+        match self.verify_schema_once().await {
+            Ok(()) => Ok(()),
+            Err(first_error) if is_transient_connection_error(&first_error) => {
+                // A transport reset is not evidence of a missing table. Give the
+                // host a moment and retry the read-only checks on a fresh pooled session.
+                tokio::time::sleep(Duration::from_millis(350)).await;
+                self.verify_schema_once().await.map_err(|retry_error| {
+                    anyhow::anyhow!(
+                        "Проверка схемы MySQL не удалась после переподключения.                          Первая ошибка: {first_error:#}. Повторная ошибка: {retry_error:#}"
+                    )
+                })
+            }
+            Err(error) => Err(error),
+        }
+    }
 
+    async fn verify_schema_once(&self) -> Result<()> {
         sqlx::query(
             "SELECT id, username, password, email, name, dp, mobile, chatcolor, chatfont, chatfontsize, chatfontstyle FROM tb_users LIMIT 0"
-        ).fetch_all(&mut *conn).await.context("Ошибка при проверке таблицы tb_users (проверьте соединение и структуру)")?;
+        ).fetch_all(&self.pool).await.context("Ошибка при проверке таблицы tb_users (проверьте соединение и структуру)")?;
 
         sqlx::query("SELECT id, chat FROM tb_chat LIMIT 0")
-            .fetch_all(&mut *conn).await.context("Ошибка при проверке таблицы tb_chat (проверьте соединение и структуру)")?;
+            .fetch_all(&self.pool).await.context("Ошибка при проверке таблицы tb_chat (проверьте соединение и структуру)")?;
 
         sqlx::query("SELECT id, username, fromuser, subject, message, isread FROM tb_pm LIMIT 0")
-            .fetch_all(&mut *conn).await.context("Ошибка при проверке таблицы tb_pm (проверьте соединение и структуру)")?;
+            .fetch_all(&self.pool).await.context("Ошибка при проверке таблицы tb_pm (проверьте соединение и структуру)")?;
 
         // schema.mysql.sql defines password as VARCHAR(200), which is sufficient
         // for Argon2id hashes. Avoid querying information_schema here: some shared
         // MySQL hosts reset metadata-probe connections despite allowing normal table access.
 
-        // Use the same direct row read as the read-only CI smoke test.
-        // Some shared MySQL hosts reset connections on this extra COUNT(*) probe,
-        // although SELECT id, chat ... WHERE id = 1 works normally.
         let chat_row = sqlx::query("SELECT id, chat FROM tb_chat WHERE id = 1")
-            .fetch_optional(&mut *conn)
+            .fetch_optional(&self.pool)
             .await
             .context("Не удалось прочитать стартовую запись tb_chat")?;
         let row = chat_row.ok_or_else(|| {
