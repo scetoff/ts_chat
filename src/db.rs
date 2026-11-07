@@ -16,7 +16,7 @@ impl Database {
         let options = config.mysql_url().parse::<MySqlConnectOptions>()?
             .ssl_mode(MySqlSslMode::Required);
         let pool = MySqlPoolOptions::new()
-            .max_connections(2)
+            .max_connections(1)
             .acquire_timeout(Duration::from_secs(30))
             .test_before_acquire(true)
             .connect_with(options)
@@ -28,15 +28,20 @@ impl Database {
 
     /// Verify the legacy tables without changing schema or data.
     pub async fn verify_schema(&self) -> Result<()> {
+        // Hold exactly one physical MySQL connection for the complete schema check.
+        // FreeDB accounts may have a very low max_user_connections limit.
+        let mut conn = self.pool.acquire().await
+            .context("Не удалось получить подключение к FreeDB для проверки структуры")?;
+
         sqlx::query(
             "SELECT id, username, password, email, name, dp, mobile, chatcolor, chatfont, chatfontsize, chatfontstyle FROM tb_users LIMIT 0"
-        ).fetch_all(&self.pool).await.context("Таблица tb_users отсутствует или её структура несовместима")?;
+        ).fetch_all(&mut *conn).await.context("Ошибка при проверке таблицы tb_users (проверьте соединение и структуру)")?;
 
         sqlx::query("SELECT id, chat FROM tb_chat LIMIT 0")
-            .fetch_all(&self.pool).await.context("Таблица tb_chat отсутствует или её структура несовместима")?;
+            .fetch_all(&mut *conn).await.context("Ошибка при проверке таблицы tb_chat (проверьте соединение и структуру)")?;
 
         sqlx::query("SELECT id, username, fromuser, subject, message, isread FROM tb_pm LIMIT 0")
-            .fetch_all(&self.pool).await.context("Таблица tb_pm отсутствует или её структура несовместима")?;
+            .fetch_all(&mut *conn).await.context("Ошибка при проверке таблицы tb_pm (проверьте соединение и структуру)")?;
 
         // schema.mysql.sql defines password as VARCHAR(200), which is sufficient
         // for Argon2id hashes. Avoid querying information_schema here: some shared
@@ -46,7 +51,7 @@ impl Database {
         // Some shared MySQL hosts reset connections on this extra COUNT(*) probe,
         // although SELECT id, chat ... WHERE id = 1 works normally.
         let chat_row = sqlx::query("SELECT id, chat FROM tb_chat WHERE id = 1")
-            .fetch_optional(&self.pool)
+            .fetch_optional(&mut *conn)
             .await
             .context("Не удалось прочитать стартовую запись tb_chat")?;
         let row = chat_row.ok_or_else(|| {
