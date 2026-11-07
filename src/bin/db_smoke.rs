@@ -93,30 +93,107 @@ fn non_empty_env(name: &str) -> Option<String> {
 }
 
 fn database_url_from_env() -> Result<String> {
-    if let Some(url) = non_empty_env("TSCHAT_TEST_DATABASE_URL")
-        .or_else(|| non_empty_env("DATABASE_URL"))
-    {
-        return Ok(url);
-    }
-
     let driver = non_empty_env("DB_CONNECTION").unwrap_or_else(|| "mysql".into());
     if driver != "mysql" && driver != "mariadb" {
         anyhow::bail!("DB_CONNECTION='{driver}' is not supported; expected mysql");
     }
 
-    let host = non_empty_env("DB_HOST").context("DB_HOST is required")?;
-    let port = non_empty_env("DB_PORT").unwrap_or_else(|| "3306".into());
-    let database = non_empty_env("DB_DATABASE").context("DB_DATABASE is required")?;
-    let username = non_empty_env("DB_USERNAME").context("DB_USERNAME is required")?;
-    let password = non_empty_env("DB_PASSWORD").unwrap_or_default();
-    let port: u16 = port.parse().context("DB_PORT must be a valid TCP port")?;
+    // Prefer separate fields over DATABASE_URL when they are all supplied. This avoids
+    // URL parsing problems when a database password contains reserved characters.
+    if let (Some(host), Some(database), Some(username)) = (
+        non_empty_env("DB_HOST"),
+        non_empty_env("DB_DATABASE"),
+        non_empty_env("DB_USERNAME"),
+    ) {
+        let port_text = non_empty_env("DB_PORT").unwrap_or_else(|| "3306".into());
+        let port: u16 = port_text.parse().context("DB_PORT must be a valid TCP port")?;
+        if port == 0 {
+            anyhow::bail!("DB_PORT must be between 1 and 65535");
+        }
+        let password = non_empty_env("DB_PASSWORD").unwrap_or_default();
+        return Ok(build_mysql_url(&host, port, &database, &username, &password));
+    }
 
-    Ok(format!(
+    if let Some(url) = non_empty_env("TSCHAT_TEST_DATABASE_URL")
+        .or_else(|| non_empty_env("DATABASE_URL"))
+    {
+        validate_mysql_url(&url)?;
+        return Ok(url);
+    }
+
+    anyhow::bail!(
+        "Set DB_HOST, DB_DATABASE and DB_USERNAME (plus optional DB_PORT/DB_PASSWORD),          or provide a valid DATABASE_URL for the disposable test database"
+    )
+}
+
+fn build_mysql_url(host: &str, port: u16, database: &str, username: &str, password: &str) -> String {
+    let formatted_host = if host.contains(':') && !host.starts_with('[') {
+        format!("[{host}]")
+    } else {
+        host.to_string()
+    };
+
+    format!(
         "mysql://{}:{}@{}:{}/{}",
-        urlencoding::encode(&username),
-        urlencoding::encode(&password),
-        host,
+        urlencoding::encode(username),
+        urlencoding::encode(password),
+        formatted_host,
         port,
-        urlencoding::encode(&database)
-    ))
+        urlencoding::encode(database)
+    )
+}
+
+fn validate_mysql_url(url: &str) -> Result<()> {
+    let parsed = url::Url::parse(url).map_err(|error| {
+        anyhow::anyhow!(
+            "DATABASE_URL is malformed ({error}). Encode reserved characters in the username/password              or configure DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME and DB_PASSWORD separately"
+        )
+    })?;
+    if parsed.scheme() != "mysql" {
+        anyhow::bail!("DATABASE_URL must use the mysql:// scheme");
+    }
+    if parsed.host_str().is_none() {
+        anyhow::bail!("DATABASE_URL must include a database host");
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{build_mysql_url, validate_mysql_url};
+
+    #[test]
+    fn mysql_url_encodes_credentials_and_database_name() {
+        let url = build_mysql_url(
+            "db.example.test",
+            3307,
+            "chat database",
+            "user@example.test",
+            "p@ss:word /?#",
+        );
+        let parsed = url::Url::parse(&url).expect("valid MySQL URL");
+        assert_eq!(parsed.scheme(), "mysql");
+        assert_eq!(parsed.host_str(), Some("db.example.test"));
+        assert_eq!(parsed.port(), Some(3307));
+        assert_eq!(parsed.username(), "user%40example.test");
+        assert_eq!(parsed.password(), Some("p%40ss%3Aword%20%2F%3F%23"));
+        assert_eq!(parsed.path(), "/chat%20database");
+    }
+
+    #[test]
+    fn mysql_url_formats_ipv6_host() {
+        let url = build_mysql_url("::1", 3306, "tschat", "user", "pass");
+        let parsed = url::Url::parse(&url).expect("valid IPv6 MySQL URL");
+        assert_eq!(parsed.host_str(), Some("[::1]"));
+        assert_eq!(parsed.port(), Some(3306));
+    }
+
+    #[test]
+    fn malformed_mysql_url_is_rejected_without_echoing_credentials() {
+        let result = validate_mysql_url("mysql://user:secret@db.example.test:not-a-port/chat");
+        assert!(result.is_err());
+        let error = result.unwrap_err().to_string();
+        assert!(error.contains("DATABASE_URL is malformed"));
+        assert!(!error.contains("secret"));
+    }
 }
