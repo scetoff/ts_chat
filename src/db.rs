@@ -5,23 +5,35 @@ use crate::{config::Config, models::{ChatStyle, PrivateMessage, User}};
 
 
 /// Detect failures caused by a broken network/session rather than a schema mismatch.
+fn is_transient_sqlx_error(error: &sqlx::Error) -> bool {
+    match error {
+        sqlx::Error::Io(_)
+        | sqlx::Error::Tls(_)
+        | sqlx::Error::Protocol(_)
+        | sqlx::Error::PoolTimedOut
+        | sqlx::Error::WorkerCrashed => true,
+        sqlx::Error::Database(database_error) => {
+            matches!(database_error.code().as_deref(), Some("2006" | "2013" | "2055"))
+        }
+        _ => false,
+    }
+}
+
 fn is_transient_connection_error(error: &anyhow::Error) -> bool {
     error.chain().any(|cause| {
-        let Some(sqlx_error) = cause.downcast_ref::<sqlx::Error>() else {
-            return false;
-        };
-        match sqlx_error {
-            sqlx::Error::Io(_)
-            | sqlx::Error::Tls(_)
-            | sqlx::Error::Protocol(_)
-            | sqlx::Error::PoolTimedOut
-            | sqlx::Error::WorkerCrashed => true,
-            sqlx::Error::Database(database_error) => {
-                matches!(database_error.code().as_deref(), Some("2006" | "2013" | "2055"))
-            }
-            _ => false,
-        }
+        cause
+            .downcast_ref::<sqlx::Error>()
+            .map(is_transient_sqlx_error)
+            .unwrap_or(false)
     })
+}
+
+fn is_duplicate_key_error(error: &sqlx::Error) -> bool {
+    matches!(
+        error,
+        sqlx::Error::Database(database_error)
+            if database_error.code().as_deref() == Some("1062")
+    )
 }
 
 #[derive(Clone)]
@@ -183,25 +195,128 @@ impl Database {
         }))
     }
 
-    pub async fn register(&self, username: &str, password_hash: &str, email: &str, avatar_base64: &str) -> Result<()> {
-        let username_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users WHERE username = ?")
-            .bind(username).fetch_one(&self.pool).await?;
-        if username_count > 0 {
-            anyhow::bail!("Никнейм уже занят");
-        }
-        let email_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users WHERE email = ?")
-            .bind(email).fetch_one(&self.pool).await?;
-        if email_count > 0 {
-            anyhow::bail!("Эта почта уже используется");
-        }
+    async fn insert_registration(
+        &self,
+        username: &str,
+        password_hash: &str,
+        email: &str,
+        avatar_base64: &str,
+    ) -> std::result::Result<(), sqlx::Error> {
         sqlx::query(
             "INSERT INTO tb_users (username,password,email,name,dp,mobile,chatcolor,chatfont,chatfontsize,chatfontstyle) VALUES (?,?,?,?,?,?,?,?,?,?)"
         )
         .bind(username).bind(password_hash).bind(email).bind(username)
         .bind(avatar_base64).bind("+7(xxx)xxx-xx-xx").bind("FF000000")
         .bind("Candara").bind(16_i32).bind("Regular")
-        .execute(&self.pool).await?;
+        .execute(&self.pool)
+        .await?;
         Ok(())
+    }
+
+    /// Confirm an INSERT whose acknowledgement may have been lost when MySQL
+    /// reset the TCP connection. The fresh Argon2 hash makes this attempt
+    /// distinguishable from an older account with the same username/email.
+    async fn registration_was_persisted(
+        &self,
+        username: &str,
+        password_hash: &str,
+        email: &str,
+    ) -> Result<bool> {
+        let row = sqlx::query(
+            "SELECT username, email, password FROM tb_users WHERE username = ? OR email = ? LIMIT 1"
+        )
+        .bind(username)
+        .bind(email)
+        .fetch_optional(&self.pool)
+        .await
+        .context("Не удалось проверить результат регистрации после сброса соединения")?;
+
+        let Some(row) = row else {
+            return Ok(false);
+        };
+        let saved_username: String = row.try_get("username")?;
+        let saved_email: String = row.try_get("email")?;
+        let saved_hash: String = row.try_get("password")?;
+        Ok(saved_username == username && saved_email == email && saved_hash == password_hash)
+    }
+
+    async fn registration_was_persisted_with_retry(
+        &self,
+        username: &str,
+        password_hash: &str,
+        email: &str,
+    ) -> Result<bool> {
+        match self.registration_was_persisted(username, password_hash, email).await {
+            Ok(saved) => Ok(saved),
+            Err(first_error) if is_transient_connection_error(&first_error) => {
+                tokio::time::sleep(Duration::from_millis(500)).await;
+                self.registration_was_persisted(username, password_hash, email)
+                    .await
+                    .context(format!(
+                        "Не удалось проверить результат регистрации после повторного подключения. Первая ошибка: {first_error:#}"
+                    ))
+            }
+            Err(error) => Err(error),
+        }
+    }
+
+    pub async fn register(
+        &self,
+        username: &str,
+        password_hash: &str,
+        email: &str,
+        avatar_base64: &str,
+    ) -> Result<()> {
+        match self.insert_registration(username, password_hash, email, avatar_base64).await {
+            Ok(()) => Ok(()),
+            Err(error) if is_duplicate_key_error(&error) => {
+                if self.registration_was_persisted_with_retry(username, password_hash, email).await? {
+                    Ok(())
+                } else {
+                    anyhow::bail!("Никнейм или почта уже используются");
+                }
+            }
+            Err(first_error) if is_transient_sqlx_error(&first_error) => {
+                // First reconcile the outcome: the server may have committed the
+                // INSERT and only lost the acknowledgement. Never blindly repeat it.
+                tokio::time::sleep(Duration::from_millis(500)).await;
+                if self.registration_was_persisted_with_retry(username, password_hash, email)
+                    .await
+                    .context(format!("Первичная ошибка регистрации: {first_error}"))?
+                {
+                    return Ok(());
+                }
+
+                match self.insert_registration(username, password_hash, email, avatar_base64).await {
+                    Ok(()) => Ok(()),
+                    Err(retry_error) if is_duplicate_key_error(&retry_error) => {
+                        if self.registration_was_persisted_with_retry(username, password_hash, email).await? {
+                            Ok(())
+                        } else {
+                            anyhow::bail!("Никнейм или почта уже используются");
+                        }
+                    }
+                    Err(retry_error) if is_transient_sqlx_error(&retry_error) => {
+                        tokio::time::sleep(Duration::from_millis(500)).await;
+                        if self.registration_was_persisted_with_retry(username, password_hash, email)
+                            .await
+                            .context(format!(
+                                "Первичная ошибка: {first_error}. Повторная ошибка: {retry_error}"
+                            ))?
+                        {
+                            Ok(())
+                        } else {
+                            Err(anyhow::anyhow!(
+                                "MySQL дважды разорвал соединение во время регистрации; результат INSERT не подтверждён. Первая ошибка: {first_error}. Повторная ошибка: {retry_error}"
+                            ))
+                        }
+                    }
+                    Err(retry_error) => Err(anyhow::Error::new(retry_error)
+                        .context(format!("Повторная попытка регистрации после ошибки соединения: {first_error}"))),
+                }
+            }
+            Err(error) => Err(anyhow::Error::new(error).context("Не удалось вставить запись нового пользователя в tb_users")),
+        }
     }
 
     pub async fn users_except(&self, current: &str) -> Result<Vec<String>> {
