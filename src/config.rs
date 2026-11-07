@@ -171,7 +171,7 @@ mod tests {
     fn mysql_url_formats_ipv6_host() {
         let url = Config::build_mysql_url("::1", 3306, "tschat", "user", "pass");
         let parsed = url::Url::parse(&url).expect("valid IPv6 MySQL URL");
-        assert_eq!(parsed.host_str(), Some("::1"));
+        assert_eq!(parsed.host_str(), Some("[::1]"));
         assert_eq!(parsed.port(), Some(3306));
     }
 }
