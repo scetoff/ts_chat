@@ -42,11 +42,20 @@ impl Database {
         // for Argon2id hashes. Avoid querying information_schema here: some shared
         // MySQL hosts reset metadata-probe connections despite allowing normal table access.
 
-        let chat_row_count: i64 = sqlx::query_scalar(
-            "SELECT COUNT(*) FROM tb_chat WHERE id = 1"
-        ).fetch_one(&self.pool).await.context("Не удалось проверить стартовую запись tb_chat")?;
-        if chat_row_count == 0 {
-            anyhow::bail!("В tb_chat отсутствует строка id=1; заполните её в тестовой БД после проверки резервной копии");
+        // Use the same direct row read as the read-only CI smoke test.
+        // Some shared MySQL hosts reset connections on this extra COUNT(*) probe,
+        // although SELECT id, chat ... WHERE id = 1 works normally.
+        let chat_row = sqlx::query("SELECT id, chat FROM tb_chat WHERE id = 1")
+            .fetch_optional(&self.pool)
+            .await
+            .context("Не удалось прочитать стартовую запись tb_chat")?;
+        let row = chat_row.ok_or_else(|| {
+            anyhow::anyhow!("В tb_chat отсутствует строка id=1; выполните ручную инициализацию только для пустой тестовой БД")
+        })?;
+        let chat_id: i32 = row.try_get("id").context("Не удалось прочитать tb_chat.id")?;
+        let _: String = row.try_get("chat").context("Не удалось прочитать tb_chat.chat")?;
+        if chat_id != 1 {
+            anyhow::bail!("В tb_chat найдена некорректная стартовая запись");
         }
 
         Ok(())
