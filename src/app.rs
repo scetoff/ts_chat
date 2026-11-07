@@ -519,6 +519,12 @@ impl TsChatApp {
         if self.username.trim().is_empty() || self.password.is_empty() {
             self.status = "Укажите никнейм и пароль.".into(); return;
         }
+        if self.db.is_none() {
+            self.connect();
+            if self.db.is_none() {
+                return;
+            }
+        }
         let username = self.username.clone();
         let password = self.password.clone();
         match self.run_db(|rt, db| rt.block_on(db.user_with_password(&username))) {
@@ -563,6 +569,12 @@ impl TsChatApp {
     fn register(&mut self) {
         if self.username.trim().is_empty() || self.password.is_empty() || self.email.trim().is_empty() {
             self.status = "Заполните никнейм, пароль и почту.".into(); return;
+        }
+        if self.db.is_none() {
+            self.connect();
+            if self.db.is_none() {
+                return;
+            }
         }
         let username = self.username.clone(); let email = self.email.clone();
         let hash = match Self::hash_password(&self.password) {
@@ -1386,9 +1398,11 @@ impl eframe::App for TsChatApp {
             return;
         }
 
-        let assets: [(&str, &[u8]); 27] = [
+        let assets: [(&str, &[u8]); 29] = [
             ("brand_logo", include_bytes!("../Resources/32323.png")),
             ("tavern_art", include_bytes!("../Resources/222.gif")),
+            ("theme_day", include_bytes!("../Resources/b_day.png")),
+            ("theme_night", include_bytes!("../Resources/b_night.png")),
             ("chat_icon", include_bytes!("../assets/ICOCOS1.png")),
             ("minimize", include_bytes!("../assets/remove.png")),
             ("close", include_bytes!("../assets/clear_search.png")),
@@ -1492,22 +1506,16 @@ impl eframe::App for TsChatApp {
                 self.login();
             }
 
-            let switch_name = if dark { "brand_logo" } else { "tavern_art" };
-            let switch_rect = legacy_rect(origin, 98.0, 301.0, 97.0, 45.0);
-            let switch_fill = if dark { egui::Color32::DARK_GRAY } else { egui::Color32::LIGHT_GRAY };
-            let switch = ui.put(
-                switch_rect,
-                egui::Button::new(
-                    egui::RichText::new(if dark { "Ночь" } else { "День" })
-                        .size(11.0)
-                        .color(foreground),
-                )
-                .fill(switch_fill)
-                .stroke(egui::Stroke::new(1.0, foreground)),
-            );
-            let _ = switch_name;
-            if switch.clicked() {
-                self.dark_theme = !self.dark_theme;
+            let theme_image = if dark { "theme_day" } else { "theme_night" };
+            if let Some(response) = legacy_image_button(
+                ui,
+                &self.ui_textures,
+                theme_image,
+                legacy_rect(origin, 98.0, 301.0, 97.0, 45.0),
+            ) {
+                if response.clicked() {
+                    self.dark_theme = !self.dark_theme;
+                }
             }
 
             let status_text = if self.connected { "Подключено к MySQL" } else { &self.status };
@@ -1563,7 +1571,7 @@ impl eframe::App for TsChatApp {
             legacy_text(
                 ui,
                 legacy_rect(origin, 346.0, 316.0, 225.0, 36.0),
-                &self.status,
+                self.status.clone(),
                 egui::Color32::from_rgb(46, 139, 87),
                 10.0,
             );
@@ -1612,6 +1620,7 @@ impl eframe::App for TsChatApp {
         // Original WinForms MenuStrip: File, Fonts, Clear, Private messages, Entertainment and ICQ.
         let menu_y = 38.0;
         let mut x = 0.0;
+        let menu_textures = self.ui_textures.clone();
         let mut menu_item = |ui: &mut egui::Ui, text: &str, icon: &str, width: f32| {
             let rect = legacy_rect(origin, x, menu_y, width, 27.0);
             let response = ui.put(
@@ -1620,7 +1629,7 @@ impl eframe::App for TsChatApp {
                     .fill(menu_fill)
                     .stroke(egui::Stroke::new(0.0, menu_fill)),
             );
-            legacy_static_image(ui, &self.ui_textures, icon, legacy_rect(origin, x + 3.0, menu_y + 5.0, 17.0, 17.0));
+            legacy_static_image(ui, &menu_textures, icon, legacy_rect(origin, x + 3.0, menu_y + 5.0, 17.0, 17.0));
             x += width;
             response
         };
@@ -1894,11 +1903,9 @@ impl eframe::App for TsChatApp {
                 legacy_text(ui, legacy_rect(origin, 12.0, 43.0, 300.0, 24.0), "Оформление сообщений", fg, 15.0);
 
                 legacy_text(ui, legacy_rect(origin, 12.0, 78.0, 180.0, 20.0), "Цвет", fg, 12.0);
-                ui.put(legacy_rect(origin, 150.0, 75.0, 50.0, 28.0), egui::widgets::color_picker::color_edit_button_srgba(
-                    ui,
-                    &mut self.chat_style_color,
-                    egui::color_picker::Alpha::Opaque,
-                ));
+                ui.allocate_ui_at_rect(legacy_rect(origin, 150.0, 75.0, 50.0, 28.0), |color_ui| {
+                    color_ui.color_edit_button_srgba(&mut self.chat_style_color);
+                });
                 legacy_text(ui, legacy_rect(origin, 12.0, 112.0, 180.0, 20.0), "Шрифт", fg, 12.0);
                 egui::ComboBox::from_id_source("legacy-chat-font")
                     .selected_text(&self.chat_style_font)
@@ -2079,4 +2086,5 @@ impl eframe::App for TsChatApp {
         self.show_clear_chat_confirmation(ctx);
         #[cfg(feature = "voice")]
         self.show_voice_window(ctx);
-    }}
+    }
+}
