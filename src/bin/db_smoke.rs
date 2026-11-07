@@ -1,6 +1,6 @@
 use anyhow::{Context, Result};
-use sqlx::{mysql::MySqlPoolOptions, Row};
-use std::env;
+use sqlx::{mysql::{MySqlConnectOptions, MySqlPoolOptions, MySqlSslMode}, Row};
+use std::{env, time::Duration};
 
 /// Read-only verification of the legacy TSchat MySQL schema.
 /// This tool never creates, inserts, updates, or deletes any database object or row.
@@ -10,9 +10,15 @@ async fn main() -> Result<()> {
     let url = database_url_from_env()
         .context("Set DATABASE_URL or DB_HOST/DB_PORT/DB_DATABASE/DB_USERNAME for the disposable test database")?;
 
+    // FreeDB supports TLS on port 3306. Require encrypted transport and
+    // keep the pool small for shared hosting.
+    let options = url.parse::<MySqlConnectOptions>()?
+        .ssl_mode(MySqlSslMode::Required);
     let pool = MySqlPoolOptions::new()
         .max_connections(2)
-        .connect(&url)
+        .acquire_timeout(Duration::from_secs(30))
+        .test_before_acquire(true)
+        .connect_with(options)
         .await
         .context("Could not connect to the TSchat test database")?;
 
@@ -50,14 +56,8 @@ async fn main() -> Result<()> {
         anyhow::bail!("tb_users.id and tb_pm.id must both be AUTO_INCREMENT");
     }
 
-    let charsets = sqlx::query(
-        "SELECT TABLE_NAME, TABLE_COLLATION FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME IN ('tb_users','tb_chat','tb_pm') ORDER BY TABLE_NAME"
-    ).fetch_all(&pool).await.context("Could not inspect table collations")?;
-    for row in charsets {
-        let table: String = row.try_get("TABLE_NAME")?;
-        let collation: Option<String> = row.try_get("TABLE_COLLATION")?;
-        println!("{table} collation: {}", collation.unwrap_or_else(|| "unknown".into()));
-    }
+    // Avoid collation metadata probes: shared MySQL hosts may expose these
+    // as binary values or restrict information_schema while table access works.
 
     let user_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM tb_users")
         .fetch_one(&pool)
