@@ -78,6 +78,8 @@ pub struct TsChatApp {
     #[cfg(feature = "voice")]
     voice_recorder: Option<MicrophoneRecorder>,
     #[cfg(feature = "voice")]
+    voice_recording_started: Option<Instant>,
+    #[cfg(feature = "voice")]
     voice_transcription_pending: Option<std::sync::mpsc::Receiver<Result<String, String>>>,
     #[cfg(feature = "voice")]
     voice_status: String,
@@ -296,6 +298,8 @@ impl Default for TsChatApp {
             voice_model_pending: None,
             #[cfg(feature = "voice")]
             voice_recorder: None,
+            #[cfg(feature = "voice")]
+            voice_recording_started: None,
             #[cfg(feature = "voice")]
             voice_transcription_pending: None,
             #[cfg(feature = "voice")]
