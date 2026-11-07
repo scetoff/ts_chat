@@ -416,7 +416,7 @@ impl Default for TsChatApp {
             current_user: None, friends: Vec::new(), chat_text: String::new(),
             draft: String::new(), selected_friend: None, private_subject: String::new(),
             private_text: String::new(), inbox: Vec::new(),
-            status: "Введите параметры MySQL в config.toml и нажмите «Подключиться».".into(),
+            status: "Соединение проверяется при входе или регистрации.".into(),
             dark_theme: true, connected: false, show_inbox: false, private_message_open: false,
             confirm_delete_message: None,
             last_refresh: Instant::now(),
