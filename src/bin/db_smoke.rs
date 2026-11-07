@@ -68,6 +68,44 @@ async fn main() -> Result<()> {
         .await
         .context("Could not read tb_users count")?;
 
+    // Diagnose whether the connected database account has write access without
+    // attempting any INSERT/UPDATE or changing user data.
+    match sqlx::query("SHOW GRANTS").fetch_all(&mut *conn).await {
+        Ok(rows) => {
+            let grants: Vec<String> = rows
+                .iter()
+                .filter_map(|row| row.try_get::<String, _>(0).ok())
+                .map(|grant| grant.to_ascii_uppercase())
+                .collect();
+            let has_insert = grants.iter().any(|grant| {
+                let Some(rest) = grant.strip_prefix("GRANT ") else { return false; };
+                let Some((privileges, _target)) = rest.split_once(" ON ") else { return false; };
+                privileges.contains("ALL PRIVILEGES")
+                    || privileges.split(',').any(|item| item.trim() == "INSERT")
+            });
+            let has_update = grants.iter().any(|grant| {
+                let Some(rest) = grant.strip_prefix("GRANT ") else { return false; };
+                let Some((privileges, _target)) = rest.split_once(" ON ") else { return false; };
+                privileges.contains("ALL PRIVILEGES")
+                    || privileges.split(',').any(|item| item.trim() == "UPDATE")
+            });
+            println!("Current account grants include INSERT: {has_insert}");
+            println!("Current account grants include UPDATE: {has_update}");
+        }
+        Err(_) => println!("Current account grants: unavailable (SHOW GRANTS was not permitted)"),
+    }
+
+    let schema_size_mb: Option<f64> = sqlx::query_scalar(
+        "SELECT ROUND(COALESCE(SUM(data_length + index_length), 0) / 1024 / 1024, 2) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()"
+    )
+    .fetch_one(&mut *conn)
+    .await
+    .context("Could not estimate current schema storage")?;
+    println!(
+        "Current schema storage: {:.2} MB (host quota may cover multiple databases)",
+        schema_size_mb.unwrap_or(0.0)
+    );
+
     let chat_row = sqlx::query("SELECT id, chat FROM tb_chat WHERE id = 1")
         .fetch_optional(&mut *conn)
         .await
