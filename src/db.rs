@@ -56,6 +56,9 @@ impl Database {
         let pool = MySqlPoolOptions::new()
             .max_connections(1)
             .acquire_timeout(Duration::from_secs(30))
+            // FreeDB may cap simultaneous sessions per account. Release an
+            // idle pooled socket quickly so phpMyAdmin/other clients can connect.
+            .idle_timeout(Some(Duration::from_secs(5)))
             .test_before_acquire(true)
             .connect_with(options)
             .await
