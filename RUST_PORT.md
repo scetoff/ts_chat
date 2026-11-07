@@ -47,6 +47,14 @@ Connection settings can come from `.env`, process environment variables, or
 - `DB_CONNECTION` — `mysql` (or `mariadb`, using MySQL protocol).
 - `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`.
 
+When all required separate fields (`DB_HOST`, `DB_DATABASE`, `DB_USERNAME`) are
+present, they take precedence over `DATABASE_URL`; the username, password and
+database name are URL-encoded automatically. This is the recommended setup for
+GitHub Actions and for passwords containing characters such as `@`, `:`, `/`,
+`#` or `?`. If using a single `DATABASE_URL`, reserved characters in its
+username/password must be percent-encoded (for example, `@` as `%40` and
+`:` as `%3A`). The smoke checker validates the URL format without printing it.
+
 The application reads `.env` locally via dotenvy but `.env` is ignored by Git.
 Never commit real credentials.
 
