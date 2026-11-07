@@ -1397,12 +1397,13 @@ impl TsChatApp {
             return;
         }
 
-        let assets: [(&str, &[u8]); 29] = [
+        let assets: [(&str, &[u8]); 30] = [
             ("brand_logo", include_bytes!("../Resources/32323.png")),
             ("tavern_art", include_bytes!("../Resources/222.gif")),
             ("theme_day", include_bytes!("../Resources/b_day.png")),
             ("theme_night", include_bytes!("../Resources/b_night.png")),
             ("chat_icon", include_bytes!("../assets/ICOCOS1.png")),
+            ("icq_logo", include_bytes!("../assets/icq_logo.png")),
             ("minimize", include_bytes!("../assets/remove.png")),
             ("close", include_bytes!("../assets/clear_search.png")),
             ("send_dark", include_bytes!("../assets/Send_mail.png")),
@@ -1485,7 +1486,7 @@ impl TsChatApp {
             if let Some(response) = legacy_image_button(
                 ui,
                 &self.ui_textures,
-                "chat_icon",
+                "icq_logo",
                 legacy_rect(origin, 50.0, 237.0, 33.0, 33.0),
             ) {
                 if response.clicked() {
@@ -1611,7 +1612,6 @@ impl TsChatApp {
         let foreground = if dark { egui::Color32::WHITE } else { egui::Color32::BLACK };
         let border = if dark { egui::Color32::DARK_GRAY } else { egui::Color32::GRAY };
         let menu_fill = background;
-        let menu_icon = |dark_name: &str, light_name: &str| if dark { dark_name } else { light_name };
 
         ui.painter().rect_filled(ui.max_rect(), 0.0, background);
         legacy_title_bar(ui, ctx, &self.ui_textures, origin, 796.0, 2.0, 716.0, 757.0);
@@ -1633,27 +1633,31 @@ impl TsChatApp {
             response
         };
 
-        let file_icon = menu_icon("file_dark", "file_light");
+        let file_icon = if dark { "file_dark" } else { "file_light" };
         if menu_item(ui, "Файл", file_icon, 67.0).clicked() {
             self.edit_profile_open = true;
         }
-        let fonts_icon = menu_icon("fonts_dark", "fonts_light");
+        let fonts_icon = if dark { "fonts_dark" } else { "fonts_light" };
         if menu_item(ui, "Шрифты", fonts_icon, 90.0).clicked() {
             self.chat_style_open = true;
         }
-        let clear_icon = menu_icon("clear_dark", "clear_light");
+        let clear_icon = if dark { "clear_dark" } else { "clear_light" };
         if menu_item(ui, "Очистка сообщений", clear_icon, 161.0).clicked() {
             self.show_clear_chat_confirmation = true;
         }
-        let pm_icon = menu_icon("pm_dark", "pm_light");
+        let pm_icon = if dark { "pm_dark" } else { "pm_light" };
         if menu_item(ui, "Личные сообщения", pm_icon, 150.0).clicked() {
             self.load_inbox();
         }
-        let radio_icon = menu_icon("radio_dark", "radio_light");
+        let radio_icon = if dark { "radio_dark" } else { "radio_light" };
         if menu_item(ui, "Развлечения", radio_icon, 98.0).clicked() {
             self.radio_open = true;
         }
-        let icq_icon = menu_icon("icq_dark", "icq_light");
+        let notes_icon = if dark { "notes_dark" } else { "notes_light" };
+        if menu_item(ui, "Заметки", notes_icon, 78.0).clicked() {
+            self.notes_open = true;
+        }
+        let icq_icon = if dark { "icq_dark" } else { "icq_light" };
         if menu_item(ui, "ICQ", icq_icon, 62.0).clicked() {
             self.status = "ICQ-модуль пока не перенесён.".into();
         }
@@ -1716,7 +1720,7 @@ impl TsChatApp {
             });
         });
 
-        let profile_icon = menu_icon("profile_dark", "profile_light");
+        let profile_icon = if dark { "profile_dark" } else { "profile_light" };
         legacy_static_image(
             ui,
             &self.ui_textures,
@@ -1751,7 +1755,7 @@ impl TsChatApp {
                 .text_color(foreground),
         );
 
-        let send_icon = menu_icon("send_dark", "send_light");
+        let send_icon = if dark { "send_dark" } else { "send_light" };
         if let Some(response) = legacy_image_button(
             ui,
             &self.ui_textures,
@@ -1763,7 +1767,7 @@ impl TsChatApp {
             }
         }
 
-        let attach_icon = menu_icon("attach_dark", "attach_light");
+        let attach_icon = if dark { "attach_dark" } else { "attach_light" };
         if let Some(response) = legacy_image_button(
             ui,
             &self.ui_textures,
@@ -1794,7 +1798,7 @@ impl TsChatApp {
             for (index, (code, texture)) in self.smiley_textures.clone().iter().enumerate().take(16) {
                 let row = index / 8;
                 let column = index % 8;
-                let rect = legacy_rect(origin, positions[column], 87.0 + 9.0 + row as f32 * 42.0, 42.0, 42.0);
+                let rect = legacy_rect(origin, 55.0 + positions[column], 87.0 + 9.0 + row as f32 * 42.0, 42.0, 42.0);
                 let response = ui.put(
                     rect,
                     egui::Image::new((texture.id(), rect.size())).sense(egui::Sense::click()),
@@ -1839,7 +1843,12 @@ impl TsChatApp {
                 let bg = if dark { egui::Color32::BLACK } else { egui::Color32::WHITE };
                 let fg = if dark { egui::Color32::WHITE } else { egui::Color32::BLACK };
                 ui.painter().rect_filled(rect, 0.0, bg);
-                legacy_title_bar(ui, ctx, &self.ui_textures, origin, 617.0, 1.0, 535.0, 576.0);
+                ui.painter().rect_filled(legacy_rect(origin, 0.0, 0.0, 617.0, 35.0), 0.0, egui::Color32::from_rgb(0, 0, 128));
+                legacy_static_image(ui, &self.ui_textures, "chat_icon", legacy_rect(origin, 1.0, 0.0, 35.0, 35.0));
+                legacy_static_image(ui, &self.ui_textures, "minimize", legacy_rect(origin, 535.0, 0.0, 35.0, 35.0));
+                if let Some(response) = legacy_image_button(ui, &self.ui_textures, "close", legacy_rect(origin, 576.0, 0.0, 35.0, 35.0)) {
+                    if response.clicked() { open = false; }
+                }
                 ui.painter().rect_filled(legacy_rect(origin, 0.0, 35.0, 617.0, 36.0), 0.0, egui::Color32::from_rgb(128, 0, 0));
                 legacy_text(ui, legacy_rect(origin, 12.0, 39.0, 250.0, 26.0), "Редактировать профиль", fg, 17.0);
 
@@ -1898,7 +1907,11 @@ impl TsChatApp {
                 let bg = if self.dark_theme { egui::Color32::BLACK } else { egui::Color32::WHITE };
                 let fg = if self.dark_theme { egui::Color32::WHITE } else { egui::Color32::BLACK };
                 ui.painter().rect_filled(rect, 0.0, bg);
-                legacy_title_bar(ui, ctx, &self.ui_textures, origin, 390.0, 0.0, 308.0, 349.0);
+                ui.painter().rect_filled(legacy_rect(origin, 0.0, 0.0, 390.0, 35.0), 0.0, egui::Color32::from_rgb(0, 0, 128));
+                legacy_static_image(ui, &self.ui_textures, "chat_icon", legacy_rect(origin, 0.0, 0.0, 35.0, 35.0));
+                if let Some(response) = legacy_image_button(ui, &self.ui_textures, "close", legacy_rect(origin, 349.0, 0.0, 35.0, 35.0)) {
+                    if response.clicked() { open = false; }
+                }
                 legacy_text(ui, legacy_rect(origin, 12.0, 43.0, 300.0, 24.0), "Оформление сообщений", fg, 15.0);
 
                 legacy_text(ui, legacy_rect(origin, 12.0, 78.0, 180.0, 20.0), "Цвет", fg, 12.0);
