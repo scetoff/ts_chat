@@ -96,6 +96,25 @@ repository's pull requests or can be started by manually dispatching the workflo
 It is skipped when no connection details are present. The legacy
 `TSCHAT_TEST_DATABASE_URL` secret is still accepted. Use only the disposable test database, not production.
 
+Mutating compatibility tests are separate from the read-only smoke check. To enable
+them locally, set both a dedicated `TSCHAT_MUTATING_TEST_DATABASE_URL` and
+`TSCHAT_ALLOW_MUTATING_TESTS=YES`, then run:
+
+```powershell
+$env:TSCHAT_MUTATING_TEST_DATABASE_URL = "mysql://user:password@host/db_TSchat_test"
+$env:TSCHAT_ALLOW_MUTATING_TESTS = "YES"
+cargo test --bin tschat mutating_mysql_flows_use_isolated_disposable_database
+```
+
+The test refuses to connect unless the selected schema is named exactly `test` or
+ends in `_test`. It creates uniquely marked temporary accounts, exercises
+registration/authentication, private-message sending and read state, both sides of
+a username change, password storage, and recipient-only deletion, then attempts to
+remove only its own test rows. For GitHub Actions, configure the separate
+`TSCHAT_MUTATING_TEST_DATABASE_URL` repository secret. The mutating job is skipped
+when that secret is absent; it never reuses the read-only smoke-test credentials
+automatically. Never point this setting at production or a database with real users.
+
 Radio station URLs can be entered in the Radio window and saved to the local
 `config.toml`. The original repository did not include its `База/URL.txt` stream
 list, so the station names are restored but stream URLs are intentionally blank.
@@ -112,7 +131,7 @@ legacy client. The next migration stages are:
 
 1. Continuous hands-free voice-command activation; the current Rust version uses push-to-talk so the microphone is only opened by an explicit user action.
 2. Image attachments (the legacy attachment button was commented out in the VB.NET source).
-3. Integration tests for mutating database flows and final Windows installation packaging.
+3. Final Windows installer packaging and code signing.
 
 The command parser has unit tests for all 15 legacy station aliases, radio/notes actions, the clear-chat confirmation request, punctuation emitted by speech recognition, and unsupported phrases. It is separate from the recognizer so manual text and Whisper transcription use the same command dispatcher.
 
