@@ -1706,12 +1706,23 @@ impl TsChatApp {
                 }
             }
 
-            let status_text = if self.connected { "Подключено к MySQL" } else { &self.status };
+            let status_color = if self.status.starts_with("Подключено к MySQL")
+                || self.status.starts_with("Аккаунт создан")
+            {
+                egui::Color32::from_rgb(46, 139, 87)
+            } else if self.status.starts_with("Ошибка")
+                || self.status.starts_with("Не удалось")
+                || self.status.starts_with("Проверьте")
+            {
+                egui::Color32::from_rgb(220, 80, 80)
+            } else {
+                foreground
+            };
             legacy_text(
                 ui,
                 legacy_rect(origin, 79.0, 349.0, 185.0, 31.0),
-                status_text.to_string(),
-                egui::Color32::from_rgb(46, 139, 87),
+                self.status.clone(),
+                status_color,
                 10.0,
             );
             if legacy_button(
