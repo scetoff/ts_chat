@@ -69,8 +69,9 @@ jobs:
           retention-days: 14
 
   mysql-smoke:
-    # Also run for same-repository PRs when DB secrets are configured.
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+    # Uses the configured FreeDB credentials, so run only on an explicit manual
+    # dispatch to avoid competing with the desktop app for the account connection limit.
+    if: github.event_name == 'workflow_dispatch'
     runs-on: windows-latest
     steps:
       - name: Check whether database credentials are configured
