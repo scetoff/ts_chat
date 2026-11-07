@@ -1,7 +1,7 @@
 use anyhow::{Context, Result};
 use cpal::{
     traits::{DeviceTrait, HostTrait, StreamTrait},
-    FromSample, Sample, SampleFormat, SizedSample,
+    FromSample, SampleFormat, SizedSample,
 };
 use std::sync::{Arc, Mutex};
 use whisper_rs::{FullParams, SamplingStrategy, WhisperContext, WhisperContextParameters};
@@ -28,7 +28,7 @@ impl MicrophoneRecorder {
             .context("Не удалось получить настройки микрофона")?;
         let sample_format = supported.sample_format();
         let config: cpal::StreamConfig = supported.into();
-        let sample_rate = config.sample_rate.0;
+        let sample_rate = config.sample_rate;
         let channels = config.channels;
         let max_samples = sample_rate as usize * channels as usize * MAX_RECORDING_SECONDS;
         let samples = Arc::new(Mutex::new(Vec::with_capacity(max_samples.min(1_000_000))));
