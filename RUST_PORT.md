@@ -25,6 +25,28 @@ The initial desktop client is built with Rust, egui/eframe, Tokio and SQLx. Impl
 - Radio station panel with the original station list, configurable stream URLs, native playback, pause/resume, stop and volume control.
 - Optional offline Russian voice commands (`voice` Cargo feature): user-selected multilingual Whisper model, push-to-talk recording via CPAL, 12-second automatic recording limit, and command dispatch after local transcription. Microphone is never opened until the user starts a recording. The legacy `Очисти чат` / `Очисти весь чат` command opens a confirmation dialog before replacing the shared history.
 
+## Original WinForms interface port
+
+The Rust client now follows the original WinForms form geometry rather than the
+first responsive prototype:
+
+- Authentication/registration window: 590×437, borderless dark-blue title strip,
+  original logo and tavern artwork, original field/button positions, and day/night
+  switch images.
+- Main chat window: 796×451, original title strip and menu row, chat history panel
+  at (14, 72) with size 437×275, users panel at (498, 72) with size 285×275,
+  and message composer at (14, 353) with size 437×90.
+- Profile editor: original 617×384 form size and original title/header-panel structure.
+- Existing repository artwork is loaded from `Resources/` and `assets/`; original
+  smiley images retain their legacy positions and message shortcodes.
+- The dark/light palette, profile, font/colour, clear-chat, inbox, radio and notes
+  controls remain wired to the migrated application logic.
+
+The original VB.NET/WinForms Designer and resource files are retained unchanged as
+the visual source of truth. Some old WinForms widgets are represented by native egui
+controls, so pixel-perfect font metrics and native Windows hover rendering may differ
+slightly; no reference screenshots were supplied.
+
 ## Build and run
 
 Install stable Rust and Cargo, then:
