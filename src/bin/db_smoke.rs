@@ -95,15 +95,14 @@ async fn main() -> Result<()> {
         Err(_) => println!("Current account grants: unavailable (SHOW GRANTS was not permitted)"),
     }
 
-    let schema_size_mb: Option<f64> = sqlx::query_scalar(
-        "SELECT CAST(ROUND(COALESCE(SUM(data_length + index_length), 0) / 1024 / 1024, 2) AS DOUBLE) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()"
+    let schema_size_mb: String = sqlx::query_scalar(
+        "SELECT CAST(ROUND(COALESCE(SUM(data_length + index_length), 0) / 1024 / 1024, 2) AS CHAR) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()"
     )
     .fetch_one(&mut *conn)
     .await
     .context("Could not estimate current schema storage")?;
     println!(
-        "Current schema storage: {:.2} MB (host quota may cover multiple databases)",
-        schema_size_mb.unwrap_or(0.0)
+        "Current schema storage: {schema_size_mb} MB (host quota may cover multiple databases)"
     );
 
     let chat_row = sqlx::query("SELECT id, chat FROM tb_chat WHERE id = 1")
