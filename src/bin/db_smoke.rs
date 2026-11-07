@@ -34,7 +34,7 @@ async fn main() -> Result<()> {
         .await
         .context("tb_pm is missing or does not match the expected TSchat columns. Check DB_DATABASE or manually prepare a disposable database with database/schema.mysql.sql")?;
 
-    let password_capacity: Option<u64> = sqlx::query_scalar(
+    let password_capacity: Option<i64> = sqlx::query_scalar(
         "SELECT CHARACTER_MAXIMUM_LENGTH FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tb_users' AND COLUMN_NAME = 'password'"
     ).fetch_one(&pool).await.context("Could not inspect tb_users.password column length")?;
     match password_capacity {
