@@ -110,3 +110,35 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         shell: pwsh
         run: cargo run --bin db_smoke
+
+  mysql-mutating:
+    needs: cargo-check
+    # Mutating tests run only on same-repository PRs/manual dispatch and only
+    # when a dedicated disposable-database secret has been configured.
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: windows-latest
+    steps:
+      - name: Check whether the dedicated disposable database is configured
+        id: database
+        env:
+          TSCHAT_MUTATING_TEST_DATABASE_URL: ${{ secrets.TSCHAT_MUTATING_TEST_DATABASE_URL }}
+        shell: pwsh
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:TSCHAT_MUTATING_TEST_DATABASE_URL)) {
+            Write-Host "Mutating MySQL integration tests skipped: configure the dedicated TSCHAT_MUTATING_TEST_DATABASE_URL secret."
+            "configured=false" >> $env:GITHUB_OUTPUT
+          } else {
+            "configured=true" >> $env:GITHUB_OUTPUT
+          }
+      - name: Checkout
+        if: steps.database.outputs.configured == 'true'
+        uses: actions/checkout@v4
+      - name: Install stable Rust
+        if: steps.database.outputs.configured == 'true'
+        uses: dtolnay/rust-toolchain@stable
+      - name: Run guarded mutating MySQL integration test
+        if: steps.database.outputs.configured == 'true'
+        env:
+          TSCHAT_ALLOW_MUTATING_TESTS: YES
+          TSCHAT_MUTATING_TEST_DATABASE_URL: ${{ secrets.TSCHAT_MUTATING_TEST_DATABASE_URL }}
+        run: cargo test --bin tschat mutating_mysql_flows_use_isolated_disposable_database
