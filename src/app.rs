@@ -56,6 +56,8 @@ pub struct TsChatApp {
     radio_stations: Vec<RadioStation>,
     selected_radio_station: usize,
     radio_volume: f32,
+    radio_muted: bool,
+    radio_url_editor_open: bool,
     radio_status: String,
     radio_player: Option<RadioPlayback>,
     radio_pending: Option<(std::sync::mpsc::Receiver<Result<RadioPlayback, String>>, String)>,
@@ -425,11 +427,13 @@ impl Default for TsChatApp {
             friend_profile: None, show_friend_profile: false,
             notes_open: false, note_strokes: Vec::new(), note_current_stroke: None,
             note_brush_color: egui::Color32::BLACK, note_brush_width: 6.0,
-            note_background: egui::Color32::WHITE,
+            note_background: egui::Color32::from_rgb(192, 192, 192),
             radio_open: false,
             radio_stations,
             selected_radio_station: 0,
             radio_volume: 0.75,
+            radio_muted: false,
+            radio_url_editor_open: false,
             radio_status: "Выберите станцию и укажите её URL в настройках.".into(),
             radio_player: None,
             radio_pending: None,
@@ -804,7 +808,7 @@ impl TsChatApp {
             .set_file_name("tschat-notes.png")
             .add_filter("PNG image", &["png"])
             .save_file() else { return; };
-        let image = render_strokes_png(&self.note_strokes, self.note_background, 760, 460);
+        let image = render_strokes_png(&self.note_strokes, self.note_background, 268, 286);
         match image.save(&path) {
             Ok(()) => self.status = format!("Рисунок сохранён: {}", path.display()),
             Err(error) => self.status = format!("Не удалось сохранить PNG: {error}"),
@@ -813,41 +817,91 @@ impl TsChatApp {
 
     fn show_notes_window(&mut self, ctx: &egui::Context) {
         if !self.notes_open { return; }
+
+        let mut open = self.notes_open;
+        let mut close_requested = false;
         let mut clear_requested = false;
         let mut save_requested = false;
-        let notes_open = &mut self.notes_open;
+        let mut fill_requested = false;
+
         let strokes = &mut self.note_strokes;
         let current = &mut self.note_current_stroke;
         let brush_color = &mut self.note_brush_color;
         let brush_width = &mut self.note_brush_width;
         let background = &mut self.note_background;
+        let textures = self.ui_textures.clone();
 
-        egui::Window::new("Заметки — Paint")
-            .open(notes_open)
-            .default_size([820.0, 560.0])
-            .resizable(true)
+        egui::Window::new("Заметки")
+            .id(egui::Id::new("legacy-paint-window"))
+            .title_bar(false)
+            .collapsible(false)
+            .resizable(false)
+            .fixed_size([267.0, 350.0])
+            .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+            .frame(egui::Frame::none())
+            .open(&mut open)
             .show(ctx, |ui| {
-                ui.horizontal(|ui| {
-                    ui.label("Цвет кисти");
-                    ui.color_edit_button_srgba(brush_color);
-                    ui.add(egui::Slider::new(brush_width, 1.0..=36.0).text("Размер"));
-                    if ui.button("Очистить").clicked() { clear_requested = true; }
-                    if ui.button("Сохранить PNG").clicked() { save_requested = true; }
+                let rect = ui.max_rect();
+                let origin = rect.min;
+                ui.painter().rect_filled(rect, 0.0, egui::Color32::BLACK);
+
+                ui.painter().rect_filled(
+                    legacy_rect(origin, 0.0, 0.0, 267.0, 35.0),
+                    0.0,
+                    egui::Color32::from_rgb(0, 0, 128),
+                );
+                legacy_static_image(ui, &textures, "chat_icon", legacy_rect(origin, 0.0, 0.0, 35.0, 35.0));
+                if let Some(response) = legacy_image_button(
+                    ui, &textures, "minimize", legacy_rect(origin, 191.0, 0.0, 35.0, 35.0),
+                ) {
+                    if response.clicked() { close_requested = true; }
+                }
+                if let Some(response) = legacy_image_button(
+                    ui, &textures, "close", legacy_rect(origin, 232.0, 0.0, 35.0, 35.0),
+                ) {
+                    if response.clicked() { close_requested = true; }
+                }
+
+                ui.painter().rect_filled(
+                    legacy_rect(origin, 0.0, 34.0, 267.0, 26.0),
+                    0.0,
+                    egui::Color32::DARK_GRAY,
+                );
+                if legacy_button(
+                    ui, legacy_rect(origin, 2.0, 35.0, 52.0, 24.0),
+                    "Файл", egui::Color32::DARK_GRAY, egui::Color32::WHITE, 11.0,
+                ).clicked() {
+                    save_requested = true;
+                }
+                if legacy_button(
+                    ui, legacy_rect(origin, 57.0, 35.0, 75.0, 24.0),
+                    "Заливка", egui::Color32::DARK_GRAY, egui::Color32::WHITE, 11.0,
+                ).clicked() {
+                    fill_requested = true;
+                }
+
+                ui.allocate_ui_at_rect(legacy_rect(origin, 183.0, 37.0, 48.0, 21.0), |size_ui| {
+                    egui::ComboBox::from_id_salt("legacy-paint-brush-size")
+                        .width(48.0)
+                        .selected_text(format!("{:.0}", *brush_width))
+                        .show_ui(size_ui, |ui| {
+                            for width in [1.0_f32, 2.0, 3.0, 4.0, 6.0, 8.0, 12.0, 16.0, 24.0, 32.0] {
+                                ui.selectable_value(brush_width, width, format!("{width:.0}"));
+                            }
+                        });
                 });
-                ui.horizontal(|ui| {
-                    ui.label("Фон");
-                    if ui.selectable_label(*background == egui::Color32::WHITE, "Белый").clicked() {
-                        *background = egui::Color32::WHITE;
-                    }
-                    if ui.selectable_label(*background == egui::Color32::BLACK, "Чёрный").clicked() {
-                        *background = egui::Color32::BLACK;
-                    }
+                ui.allocate_ui_at_rect(legacy_rect(origin, 240.0, 35.0, 24.0, 24.0), |color_ui| {
+                    color_ui.color_edit_button_srgba(brush_color);
                 });
 
-                let canvas_size = egui::vec2(760.0, 460.0);
-                let (canvas_rect, response) = ui.allocate_exact_size(canvas_size, egui::Sense::drag());
+                let canvas_rect = legacy_rect(origin, 0.0, 63.0, 267.0, 286.0);
+                let response = ui.interact(
+                    canvas_rect,
+                    egui::Id::new("legacy-paint-canvas"),
+                    egui::Sense::drag(),
+                );
                 let painter = ui.painter_at(canvas_rect);
-                painter.rect_filled(canvas_rect, 2.0, *background);
+                painter.rect_filled(canvas_rect, 0.0, *background);
 
                 if response.drag_started() {
                     if let Some(pointer) = response.interact_pointer_pos() {
@@ -883,9 +937,14 @@ impl TsChatApp {
 
                 for stroke in strokes.iter() { paint_stroke(&painter, canvas_rect, stroke); }
                 if let Some(stroke) = current.as_ref() { paint_stroke(&painter, canvas_rect, stroke); }
-                ui.label("Зажми левую кнопку мыши и рисуй. Рисунок сохраняется в PNG.");
             });
 
+        if close_requested { open = false; }
+        self.notes_open = open && self.notes_open;
+
+        if fill_requested {
+            self.note_background = self.note_brush_color;
+        }
         if clear_requested {
             self.note_strokes.clear();
             self.note_current_stroke = None;
@@ -897,7 +956,6 @@ impl TsChatApp {
             self.save_notes_png();
         }
     }
-
 
 
     fn execute_command(&mut self, input: &str) {
@@ -1211,77 +1269,163 @@ impl TsChatApp {
 
         if !self.radio_open { return; }
 
+        let mut open = self.radio_open;
+        let mut close_requested = false;
+        let mut minimize_requested = false;
         let mut start_request: Option<(String, String)> = self.radio_autoplay_pending
             .take()
             .and_then(|index| self.radio_stations.get(index).map(|station| (station.url.trim().to_string(), station.name.clone())));
         let mut stop_requested = false;
         let mut pause_requested = false;
-        let mut save_requested = false;
+        let mut edit_url_requested = false;
+        let mut toggle_mute_requested = false;
         let paused = self.radio_player.as_ref().map(RadioPlayback::is_paused).unwrap_or(true);
         let player_present = self.radio_player.is_some();
         let displayed_radio_status = self.radio_status.clone();
         let connecting = self.radio_pending.is_some();
-        let radio_open = &mut self.radio_open;
         let stations = &mut self.radio_stations;
         let selected = &mut self.selected_radio_station;
         let volume = &mut self.radio_volume;
+        let textures = self.ui_textures.clone();
+        let dark = self.dark_theme;
+        let muted = self.radio_muted;
 
-        egui::Window::new("Радио онлайн")
-            .open(radio_open)
-            .default_size([520.0, 520.0])
-            .resizable(true)
+        egui::Window::new("Радио Онлайн")
+            .id(egui::Id::new("legacy-radio-window"))
+            .title_bar(false)
+            .collapsible(false)
+            .resizable(false)
+            .fixed_size([344.0, 512.0])
+            .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+            .frame(egui::Frame::none())
+            .open(&mut open)
             .show(ctx, |ui| {
-                ui.label("Список станций из оригинальной версии TSchat");
-                ui.label("URL потоков не входят в репозиторий — добавьте свои адреса ниже.");
-                ui.separator();
+                let rect = ui.max_rect();
+                let origin = rect.min;
+                ui.painter().rect_filled(rect, 0.0, egui::Color32::BLACK);
 
-                egui::ScrollArea::vertical().max_height(220.0).show(ui, |ui| {
-                    for (index, station) in stations.iter().enumerate() {
-                        if ui.selectable_label(*selected == index, &station.name).clicked() {
-                            *selected = index;
-                        }
-                    }
-                });
-
-                ui.separator();
-                if let Some(station) = stations.get_mut(*selected) {
-                    ui.label(format!("Адрес потока: {}", station.name));
-                    ui.add(
-                        egui::TextEdit::singleline(&mut station.url)
-                            .hint_text("https://example.org/live.mp3")
-                            .desired_width(f32::INFINITY),
-                    );
-                    if ui.button("▶ Воспроизвести выбранную станцию").clicked() {
-                        start_request = Some((station.url.trim().to_string(), station.name.clone()));
-                    }
+                ui.painter().rect_filled(
+                    legacy_rect(origin, 0.0, 0.0, 344.0, 35.0),
+                    0.0,
+                    egui::Color32::from_rgb(0, 0, 128),
+                );
+                legacy_static_image(ui, &textures, "chat_icon", legacy_rect(origin, 0.0, 0.0, 35.0, 35.0));
+                if let Some(response) = legacy_image_button(
+                    ui, &textures, "minimize", legacy_rect(origin, 262.0, 0.0, 35.0, 35.0),
+                ) {
+                    if response.clicked() { minimize_requested = true; }
+                }
+                if let Some(response) = legacy_image_button(
+                    ui, &textures, "close", legacy_rect(origin, 303.0, 0.0, 35.0, 35.0),
+                ) {
+                    if response.clicked() { close_requested = true; }
                 }
 
-                ui.horizontal(|ui| {
-                    ui.label("Громкость");
-                    ui.add(egui::Slider::new(volume, 0.0..=1.0).show_value(true));
+                let list_rect = legacy_rect(origin, 0.0, 36.0, 292.0, 416.0);
+                ui.painter().rect_filled(list_rect, 0.0, egui::Color32::BLACK);
+                let list_textures = textures.clone();
+                ui.allocate_ui_at_rect(list_rect, |list_ui| {
+                    egui::ScrollArea::vertical()
+                        .auto_shrink([false, false])
+                        .max_height(416.0)
+                        .show(list_ui, |list_ui| {
+                            for (index, station) in stations.iter().enumerate() {
+                                let response = list_ui.selectable_label(
+                                    *selected == index,
+                                    egui::RichText::new(&station.name)
+                                        .size(14.0)
+                                        .color(egui::Color32::WHITE),
+                                );
+                                if response.clicked() {
+                                    *selected = index;
+                                }
+                            }
+                        });
                 });
-                ui.horizontal(|ui| {
-                    if ui.button(if paused { "▶ Продолжить" } else { "Ⅱ Пауза" }).clicked() {
-                        pause_requested = true;
+
+                if let Some(response) = legacy_image_button(
+                    ui, &textures, "radio_start", legacy_rect(origin, 298.0, 55.0, 40.0, 40.0),
+                ) {
+                    if response.clicked() {
+                        if let Some(station) = stations.get(*selected) {
+                            start_request = Some((station.url.trim().to_string(), station.name.clone()));
+                        }
                     }
-                    if ui.button("■ Остановить").clicked() { stop_requested = true; }
-                    if ui.button("Сохранить URL станций").clicked() { save_requested = true; }
-                });
-                ui.separator();
-                ui.label(if player_present { "Плеер запущен." } else if connecting { "Идёт подключение..." } else { "Плеер остановлен." });
-                ui.label(&displayed_radio_status);
+                }
+                if let Some(response) = legacy_image_button(
+                    ui, &textures, "radio_pause", legacy_rect(origin, 298.0, 120.0, 40.0, 40.0),
+                ) {
+                    if response.clicked() { pause_requested = true; }
+                }
+                if let Some(response) = legacy_image_button(
+                    ui, &textures, "radio_stop", legacy_rect(origin, 298.0, 190.0, 40.0, 40.0),
+                ) {
+                    if response.clicked() { stop_requested = true; }
+                }
+
+                let edit_icon = if dark { "edit_dark" } else { "edit_light" };
+                if let Some(response) = legacy_image_button(
+                    ui, &textures, edit_icon, legacy_rect(origin, 298.0, 250.0, 40.0, 40.0),
+                ) {
+                    if response.clicked() { edit_url_requested = true; }
+                }
+                legacy_text(
+                    ui,
+                    legacy_rect(origin, 294.0, 296.0, 48.0, 48.0),
+                    if player_present { "Играет" } else if connecting { "Связь…" } else { "URL" },
+                    egui::Color32::WHITE,
+                    9.0,
+                );
+                legacy_static_image(
+                    ui, &textures, "radio_mascot", legacy_rect(origin, 291.0, 402.0, 46.0, 50.0),
+                );
+
+                ui.painter().rect_filled(
+                    legacy_rect(origin, 0.0, 463.0, 344.0, 49.0),
+                    0.0,
+                    egui::Color32::BLACK,
+                );
+                let sound_icon = if muted { "radio_sound_off" } else { "radio_sound_on" };
+                if let Some(response) = legacy_image_button(
+                    ui, &textures, sound_icon, legacy_rect(origin, 26.0, 466.0, 40.0, 40.0),
+                ) {
+                    if response.clicked() { toggle_mute_requested = true; }
+                }
+                legacy_text(
+                    ui,
+                    legacy_rect(origin, 130.0, 475.0, 30.0, 16.0),
+                    format!("{:.0}", *volume * 100.0),
+                    egui::Color32::LIME,
+                    10.0,
+                );
+                ui.put(
+                    legacy_rect(origin, 166.0, 476.0, 173.0, 26.0),
+                    egui::Slider::new(volume, 0.0..=1.0).show_value(false),
+                );
             });
 
-        if save_requested {
-            self.save_radio_settings();
+        if close_requested || minimize_requested {
+            open = false;
+        }
+        self.radio_open = open && self.radio_open;
+
+        if edit_url_requested {
+            self.radio_url_editor_open = true;
+        }
+        if toggle_mute_requested {
+            self.radio_muted = !self.radio_muted;
         }
         if let Some(player) = self.radio_player.as_ref() {
-            player.set_volume(self.radio_volume);
+            player.set_volume(if self.radio_muted { 0.0 } else { self.radio_volume });
         }
         if pause_requested {
             if let Some(player) = self.radio_player.as_ref() {
                 player.toggle_pause();
-                self.radio_status = if player.is_paused() { "Воспроизведение приостановлено.".into() } else { "Воспроизведение продолжено.".into() };
+                self.radio_status = if player.is_paused() {
+                    "Воспроизведение приостановлено.".into()
+                } else {
+                    "Воспроизведение продолжено.".into()
+                };
             }
         }
         if stop_requested {
@@ -1293,13 +1437,14 @@ impl TsChatApp {
         }
         if let Some((url, station_name)) = start_request {
             if url.is_empty() {
-                self.radio_status = "У этой станции нет URL. Заполните адрес потока и сохраните настройки.".into();
+                self.radio_status = "У этой станции не задан URL потока. Нажмите значок настройки адреса.".into();
+                self.radio_url_editor_open = true;
             } else {
                 self.radio_player = None;
                 self.radio_pending = None;
                 self.radio_status = format!("Подключение к станции «{station_name}»...");
                 let (sender, receiver) = std::sync::mpsc::channel();
-                let volume = self.radio_volume;
+                let volume = if self.radio_muted { 0.0 } else { self.radio_volume };
                 let url_for_task = url.clone();
                 self.runtime.spawn(async move {
                     let result = RadioPlayback::connect_and_play(&url_for_task, volume)
@@ -1311,7 +1456,39 @@ impl TsChatApp {
                 ctx.request_repaint_after(Duration::from_millis(250));
             }
         }
+
+        self.show_radio_url_editor_window(ctx);
     }
+
+    fn show_radio_url_editor_window(&mut self, ctx: &egui::Context) {
+        if !self.radio_url_editor_open {
+            return;
+        }
+        let Some(station) = self.radio_stations.get_mut(self.selected_radio_station) else {
+            self.radio_url_editor_open = false;
+            return;
+        };
+        let station_name = station.name.clone();
+        let mut open = self.radio_url_editor_open;
+        let mut save_requested = false;
+        egui::Window::new(format!("Адрес потока: {station_name}"))
+            .default_size([420.0, 130.0])
+            .resizable(false)
+            .open(&mut open)
+            .show(ctx, |ui| {
+                ui.label("URL потока (HTTP или HTTPS)");
+                ui.text_edit_singleline(&mut station.url);
+                if ui.button("Сохранить адрес").clicked() {
+                    save_requested = true;
+                }
+            });
+        if save_requested {
+            self.save_radio_settings();
+            open = false;
+        }
+        self.radio_url_editor_open = open;
+    }
+
 
     fn refresh_chat(&mut self) {
         if let Ok(chat) = self.run_db(|rt, db| rt.block_on(db.read_chat())) { self.chat_text = chat; }
@@ -1398,13 +1575,19 @@ impl TsChatApp {
             return;
         }
 
-        let assets: [(&str, &[u8]); 30] = [
+        let assets: [(&str, &[u8]); 36] = [
             ("brand_logo", include_bytes!("../Resources/32323.png")),
             ("tavern_art", include_bytes!("../Resources/222.gif")),
             ("theme_day", include_bytes!("../Resources/b_day.png")),
             ("theme_night", include_bytes!("../Resources/b_night.png")),
             ("chat_icon", include_bytes!("../assets/ICOCOS1.png")),
             ("icq_logo", include_bytes!("../assets/icq_logo.png")),
+            ("radio_start", include_bytes!("../assets/start_b.png")),
+            ("radio_pause", include_bytes!("../assets/pause_b.png")),
+            ("radio_stop", include_bytes!("../assets/stop_b.png")),
+            ("radio_sound_on", include_bytes!("../assets/sound_on.png")),
+            ("radio_sound_off", include_bytes!("../assets/sound_off.png")),
+            ("radio_mascot", include_bytes!("../assets/pingvin.gif")),
             ("minimize", include_bytes!("../assets/remove.png")),
             ("close", include_bytes!("../assets/clear_search.png")),
             ("send_dark", include_bytes!("../assets/Send_mail.png")),
