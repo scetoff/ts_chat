@@ -12,9 +12,11 @@ mod voice;
 fn main() -> eframe::Result<()> {
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
-            .with_inner_size([980.0, 680.0])
-            .with_min_inner_size([720.0, 480.0])
-            .with_title("TSchat — Rust edition"),
+            .with_inner_size([590.0, 437.0])
+            .with_min_inner_size([590.0, 437.0])
+            .with_title("TSchat")
+            .with_decorations(false)
+            .with_resizable(false),
         ..Default::default()
     };
 
