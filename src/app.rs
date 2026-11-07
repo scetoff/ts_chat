@@ -1323,7 +1323,6 @@ impl TsChatApp {
 
                 let list_rect = legacy_rect(origin, 0.0, 36.0, 292.0, 416.0);
                 ui.painter().rect_filled(list_rect, 0.0, egui::Color32::BLACK);
-                let list_textures = textures.clone();
                 ui.allocate_ui_at_rect(list_rect, |list_ui| {
                     egui::ScrollArea::vertical()
                         .auto_shrink([false, false])
@@ -1395,7 +1394,7 @@ impl TsChatApp {
                     ui,
                     legacy_rect(origin, 130.0, 475.0, 30.0, 16.0),
                     format!("{:.0}", *volume * 100.0),
-                    egui::Color32::LIME,
+                    egui::Color32::from_rgb(0, 255, 0),
                     10.0,
                 );
                 ui.put(
@@ -1464,11 +1463,13 @@ impl TsChatApp {
         if !self.radio_url_editor_open {
             return;
         }
-        let Some(station) = self.radio_stations.get_mut(self.selected_radio_station) else {
+        let selected_index = self.selected_radio_station;
+        let Some(station) = self.radio_stations.get(selected_index) else {
             self.radio_url_editor_open = false;
             return;
         };
         let station_name = station.name.clone();
+        let mut url = station.url.clone();
         let mut open = self.radio_url_editor_open;
         let mut save_requested = false;
         egui::Window::new(format!("Адрес потока: {station_name}"))
@@ -1477,12 +1478,15 @@ impl TsChatApp {
             .open(&mut open)
             .show(ctx, |ui| {
                 ui.label("URL потока (HTTP или HTTPS)");
-                ui.text_edit_singleline(&mut station.url);
+                ui.text_edit_singleline(&mut url);
                 if ui.button("Сохранить адрес").clicked() {
                     save_requested = true;
                 }
             });
         if save_requested {
+            if let Some(station) = self.radio_stations.get_mut(selected_index) {
+                station.url = url;
+            }
             self.save_radio_settings();
             open = false;
         }
