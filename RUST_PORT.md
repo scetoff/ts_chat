@@ -19,7 +19,7 @@ The initial desktop client is built with Rust, egui/eframe, Tokio and SQLx. Impl
 - Edit own nickname, display name, email and phone; change the password. Profile, password and private-message sender/recipient rename updates are committed in one MySQL transaction.
 - Choose and upload a PNG/JPEG/GIF avatar (normalized to PNG, max 640×480).
 - Import and render all 16 original PNG smileys in the composer and message history; shortcode compatibility is retained.
-- Send private messages, view the inbox, and mark received messages as read.
+- Send private messages, view the inbox, mark received messages as read, reply to a sender with a prefilled `Re:` subject, and delete an individual message after confirmation. Message deletion is scoped by both message ID and the recipient's username.
 - Toggle light and dark themes.
 - Draw in a Paint-style notes window with adjustable brush size/color, clear canvas, and export to PNG.
 - Radio station panel with the original station list, configurable stream URLs, native playback, pause/resume, stop and volume control.
