@@ -1827,6 +1827,7 @@ impl TsChatApp {
             return;
         }
         let mut open = self.edit_profile_open;
+        let mut close_requested = false;
         egui::Window::new("Редактирование профиля")
             .id(egui::Id::new("legacy-edit-profile-window"))
             .title_bar(false)
@@ -1847,7 +1848,7 @@ impl TsChatApp {
                 legacy_static_image(ui, &self.ui_textures, "chat_icon", legacy_rect(origin, 1.0, 0.0, 35.0, 35.0));
                 legacy_static_image(ui, &self.ui_textures, "minimize", legacy_rect(origin, 535.0, 0.0, 35.0, 35.0));
                 if let Some(response) = legacy_image_button(ui, &self.ui_textures, "close", legacy_rect(origin, 576.0, 0.0, 35.0, 35.0)) {
-                    if response.clicked() { open = false; }
+                    if response.clicked() { close_requested = true; }
                 }
                 ui.painter().rect_filled(legacy_rect(origin, 0.0, 35.0, 617.0, 36.0), 0.0, egui::Color32::from_rgb(128, 0, 0));
                 legacy_text(ui, legacy_rect(origin, 12.0, 39.0, 250.0, 26.0), "Редактировать профиль", fg, 17.0);
@@ -1884,6 +1885,7 @@ impl TsChatApp {
                     }
                 }
             });
+        if close_requested { open = false; }
         self.edit_profile_open = open && self.edit_profile_open;
     }
 
@@ -1892,6 +1894,7 @@ impl TsChatApp {
             return;
         }
         let mut open = self.chat_style_open;
+        let mut close_requested = false;
         egui::Window::new("Оформление сообщений")
             .id(egui::Id::new("legacy-chat-style-window"))
             .title_bar(false)
@@ -1910,7 +1913,7 @@ impl TsChatApp {
                 ui.painter().rect_filled(legacy_rect(origin, 0.0, 0.0, 390.0, 35.0), 0.0, egui::Color32::from_rgb(0, 0, 128));
                 legacy_static_image(ui, &self.ui_textures, "chat_icon", legacy_rect(origin, 0.0, 0.0, 35.0, 35.0));
                 if let Some(response) = legacy_image_button(ui, &self.ui_textures, "close", legacy_rect(origin, 349.0, 0.0, 35.0, 35.0)) {
-                    if response.clicked() { open = false; }
+                    if response.clicked() { close_requested = true; }
                 }
                 legacy_text(ui, legacy_rect(origin, 12.0, 43.0, 300.0, 24.0), "Оформление сообщений", fg, 15.0);
 
@@ -1949,6 +1952,7 @@ impl TsChatApp {
                     self.chat_style_open = false;
                 }
             });
+        if close_requested { open = false; }
         self.chat_style_open = open && self.chat_style_open;
     }
 
