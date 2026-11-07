@@ -363,7 +363,7 @@ fn legacy_title_bar(
     close_x: f32,
 ) {
     let bar = legacy_rect(origin, 0.0, 0.0, width, 35.0);
-    ui.painter().rect_filled(bar, 0.0, egui::Color32::NAVY);
+    ui.painter().rect_filled(bar, 0.0, egui::Color32::from_rgb(0, 0, 128));
 
     legacy_static_image(
         ui,
@@ -1391,8 +1391,7 @@ impl TsChatApp {
     }
 }
 
-impl eframe::App for TsChatApp {
-
+impl TsChatApp {
     fn ensure_legacy_ui_textures(&mut self, ctx: &egui::Context) {
         if !self.ui_textures.is_empty() {
             return;
@@ -1939,6 +1938,10 @@ impl eframe::App for TsChatApp {
             });
         self.chat_style_open = open && self.chat_style_open;
     }
+
+}
+
+impl eframe::App for TsChatApp {
 
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         if self.screen == Screen::Chat {
