@@ -195,6 +195,48 @@ impl Database {
         }))
     }
 
+    async fn registration_conflicts(
+        &self,
+        username: &str,
+        email: &str,
+    ) -> Result<(i64, i64)> {
+        // The legacy tb_users schema does not require UNIQUE indexes, so retain
+        // the original username/email checks but combine them into one round-trip.
+        let row = sqlx::query(
+            "SELECT
+                (SELECT COUNT(*) FROM tb_users WHERE username = ?) AS username_count,
+                (SELECT COUNT(*) FROM tb_users WHERE email = ?) AS email_count"
+        )
+        .bind(username)
+        .bind(email)
+        .fetch_one(&self.pool)
+        .await
+        .context("Не удалось проверить занятость никнейма и почты")?;
+
+        let username_count: i64 = row.try_get("username_count")?;
+        let email_count: i64 = row.try_get("email_count")?;
+        Ok((username_count, email_count))
+    }
+
+    async fn registration_conflicts_with_retry(
+        &self,
+        username: &str,
+        email: &str,
+    ) -> Result<(i64, i64)> {
+        match self.registration_conflicts(username, email).await {
+            Ok(counts) => Ok(counts),
+            Err(first_error) if is_transient_connection_error(&first_error) => {
+                tokio::time::sleep(Duration::from_millis(500)).await;
+                self.registration_conflicts(username, email)
+                    .await
+                    .context(format!(
+                        "Проверка никнейма и почты не удалась после переподключения. Первая ошибка: {first_error:#}"
+                    ))
+            }
+            Err(error) => Err(error),
+        }
+    }
+
     async fn insert_registration(
         &self,
         username: &str,
@@ -267,6 +309,16 @@ impl Database {
         email: &str,
         avatar_base64: &str,
     ) -> Result<()> {
+        let (username_count, email_count) = self
+            .registration_conflicts_with_retry(username, email)
+            .await?;
+        if username_count > 0 {
+            anyhow::bail!("Никнейм уже занят");
+        }
+        if email_count > 0 {
+            anyhow::bail!("Эта почта уже используется");
+        }
+
         match self.insert_registration(username, password_hash, email, avatar_base64).await {
             Ok(()) => Ok(()),
             Err(error) if is_duplicate_key_error(&error) => {
