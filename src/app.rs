@@ -84,6 +84,11 @@ pub struct TsChatApp {
     voice_transcription_pending: Option<std::sync::mpsc::Receiver<Result<String, String>>>,
     #[cfg(feature = "voice")]
     voice_status: String,
+    show_smileys: bool,
+    edit_profile_open: bool,
+    chat_style_open: bool,
+    last_viewport_screen: Screen,
+    ui_textures: std::collections::HashMap<String, egui::TextureHandle>,
 }
 
 
@@ -249,6 +254,153 @@ fn show_chat_line(
     });
 }
 
+
+
+fn legacy_rect(origin: egui::Pos2, x: f32, y: f32, width: f32, height: f32) -> egui::Rect {
+    egui::Rect::from_min_size(origin + egui::vec2(x, y), egui::vec2(width, height))
+}
+
+fn legacy_text(
+    ui: &mut egui::Ui,
+    rect: egui::Rect,
+    text: impl Into<String>,
+    color: egui::Color32,
+    size: f32,
+) -> egui::Response {
+    ui.put(
+        rect,
+        egui::Label::new(egui::RichText::new(text).color(color).size(size)),
+    )
+}
+
+fn legacy_button(
+    ui: &mut egui::Ui,
+    rect: egui::Rect,
+    text: &str,
+    fill: egui::Color32,
+    foreground: egui::Color32,
+    size: f32,
+) -> egui::Response {
+    ui.put(
+        rect,
+        egui::Button::new(egui::RichText::new(text).color(foreground).size(size))
+            .fill(fill)
+            .stroke(egui::Stroke::new(1.0, foreground)),
+    )
+}
+
+fn legacy_text_edit(
+    ui: &mut egui::Ui,
+    rect: egui::Rect,
+    value: &mut String,
+    hint: &str,
+    password: bool,
+    foreground: egui::Color32,
+) -> egui::Response {
+    let mut edit = egui::TextEdit::singleline(value)
+        .desired_width(rect.width())
+        .hint_text(hint)
+        .text_color(foreground)
+        .margin(egui::vec2(6.0, 3.0));
+    if password {
+        edit = edit.password(true);
+    }
+    ui.put(rect, edit)
+}
+
+fn legacy_group(
+    ui: &egui::Ui,
+    rect: egui::Rect,
+    fill: egui::Color32,
+    border: egui::Color32,
+) {
+    let painter = ui.painter();
+    painter.rect_filled(rect, 0.0, fill);
+    let stroke = egui::Stroke::new(1.0, border);
+    painter.line_segment([rect.left_top(), rect.right_top()], stroke);
+    painter.line_segment([rect.left_bottom(), rect.right_bottom()], stroke);
+    painter.line_segment([rect.left_top(), rect.left_bottom()], stroke);
+    painter.line_segment([rect.right_top(), rect.right_bottom()], stroke);
+}
+
+fn legacy_static_image(
+    ui: &egui::Ui,
+    textures: &std::collections::HashMap<String, egui::TextureHandle>,
+    name: &str,
+    rect: egui::Rect,
+) {
+    if let Some(texture) = textures.get(name) {
+        ui.painter().image(
+            texture.id(),
+            rect,
+            egui::Rect::from_min_max(egui::Pos2::ZERO, egui::pos2(1.0, 1.0)),
+            egui::Color32::WHITE,
+        );
+    }
+}
+
+fn legacy_image_button(
+    ui: &mut egui::Ui,
+    textures: &std::collections::HashMap<String, egui::TextureHandle>,
+    name: &str,
+    rect: egui::Rect,
+) -> Option<egui::Response> {
+    let texture = textures.get(name)?;
+    Some(ui.put(
+        rect,
+        egui::Image::new((texture.id(), rect.size())).sense(egui::Sense::click()),
+    ))
+}
+
+fn legacy_title_bar(
+    ui: &mut egui::Ui,
+    ctx: &egui::Context,
+    textures: &std::collections::HashMap<String, egui::TextureHandle>,
+    origin: egui::Pos2,
+    width: f32,
+    icon_x: f32,
+    minimize_x: f32,
+    close_x: f32,
+) {
+    let bar = legacy_rect(origin, 0.0, 0.0, width, 35.0);
+    ui.painter().rect_filled(bar, 0.0, egui::Color32::NAVY);
+
+    legacy_static_image(
+        ui,
+        textures,
+        "chat_icon",
+        legacy_rect(origin, icon_x, 0.0, 35.0, 35.0),
+    );
+
+    if let Some(response) = legacy_image_button(
+        ui,
+        textures,
+        "minimize",
+        legacy_rect(origin, minimize_x, 0.0, 35.0, 35.0),
+    ) {
+        if response.clicked() {
+            ctx.send_viewport_cmd(egui::ViewportCommand::Minimized(true));
+        }
+    }
+
+    if let Some(response) = legacy_image_button(
+        ui,
+        textures,
+        "close",
+        legacy_rect(origin, close_x, 0.0, 35.0, 35.0),
+    ) {
+        if response.clicked() {
+            ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+        }
+    }
+
+    let drag_rect = legacy_rect(origin, 35.0, 0.0, (width - 110.0).max(40.0), 35.0);
+    let drag = ui.interact(drag_rect, egui::Id::new("tschat-legacy-title-drag"), egui::Sense::click_and_drag());
+    if drag.drag_started() {
+        ctx.send_viewport_cmd(egui::ViewportCommand::StartDrag);
+    }
+}
+
 impl Default for TsChatApp {
     fn default() -> Self {
         let config = Config::load();
@@ -306,6 +458,11 @@ impl Default for TsChatApp {
             voice_transcription_pending: None,
             #[cfg(feature = "voice")]
             voice_status: "Выберите мультиязычную модель Whisper (.bin).".into(),
+            show_smileys: false,
+            edit_profile_open: false,
+            chat_style_open: false,
+            last_viewport_screen: Screen::Login,
+            ui_textures: std::collections::HashMap::new(),
         }
     }
 }
@@ -1223,6 +1380,559 @@ impl TsChatApp {
 }
 
 impl eframe::App for TsChatApp {
+
+    fn ensure_legacy_ui_textures(&mut self, ctx: &egui::Context) {
+        if !self.ui_textures.is_empty() {
+            return;
+        }
+
+        let assets: [(&str, &[u8]); 27] = [
+            ("brand_logo", include_bytes!("../Resources/32323.png")),
+            ("tavern_art", include_bytes!("../Resources/222.gif")),
+            ("chat_icon", include_bytes!("../assets/ICOCOS1.png")),
+            ("minimize", include_bytes!("../assets/remove.png")),
+            ("close", include_bytes!("../assets/clear_search.png")),
+            ("send_dark", include_bytes!("../assets/Send_mail.png")),
+            ("send_light", include_bytes!("../assets/Send_mail_b.png")),
+            ("attach_dark", include_bytes!("../assets/prikrep.png")),
+            ("attach_light", include_bytes!("../assets/prikrep_b.png")),
+            ("profile_dark", include_bytes!("../assets/profile.png")),
+            ("profile_light", include_bytes!("../assets/profile_b.png")),
+            ("file_dark", include_bytes!("../assets/Fail.png")),
+            ("file_light", include_bytes!("../assets/Fail_b.png")),
+            ("edit_dark", include_bytes!("../assets/redakt.png")),
+            ("edit_light", include_bytes!("../assets/redakt_b.png")),
+            ("fonts_dark", include_bytes!("../assets/fontes.png")),
+            ("fonts_light", include_bytes!("../assets/fontes_b.png")),
+            ("clear_dark", include_bytes!("../assets/clear.png")),
+            ("clear_light", include_bytes!("../assets/clear_b.png")),
+            ("pm_dark", include_bytes!("../assets/lmseg.png")),
+            ("pm_light", include_bytes!("../assets/lmseg_b.png")),
+            ("radio_dark", include_bytes!("../assets/radio.png")),
+            ("radio_light", include_bytes!("../assets/radio_b.png")),
+            ("notes_dark", include_bytes!("../assets/pencil.png")),
+            ("notes_light", include_bytes!("../assets/pencil_b.png")),
+            ("icq_dark", include_bytes!("../assets/icq_lgtp.png")),
+            ("icq_light", include_bytes!("../assets/icq_lgtp_b.png")),
+        ];
+
+        let mut loaded = std::collections::HashMap::with_capacity(assets.len());
+        for (name, bytes) in assets {
+            let Ok(decoded) = image::load_from_memory(bytes) else { continue; };
+            let rgba = decoded.to_rgba8();
+            let size = [rgba.width() as usize, rgba.height() as usize];
+            let color = egui::ColorImage::from_rgba_unmultiplied(size, rgba.as_raw());
+            let texture = ctx.load_texture(
+                format!("tschat-legacy-{name}"),
+                color,
+                egui::TextureOptions::LINEAR,
+            );
+            loaded.insert(name.to_string(), texture);
+        }
+        self.ui_textures = loaded;
+    }
+
+    fn draw_legacy_auth_screen(&mut self, ctx: &egui::Context, ui: &mut egui::Ui) {
+        let origin = ui.max_rect().min;
+        let dark = self.dark_theme;
+        let background = if dark { egui::Color32::BLACK } else { egui::Color32::WHITE };
+        let foreground = if dark { egui::Color32::WHITE } else { egui::Color32::BLACK };
+        let field_foreground = egui::Color32::BLACK;
+
+        ui.painter().rect_filled(ui.max_rect(), 0.0, background);
+        legacy_title_bar(ui, ctx, &self.ui_textures, origin, 590.0, -1.0, 509.0, 550.0);
+
+        if self.screen == Screen::Login {
+            legacy_static_image(ui, &self.ui_textures, "brand_logo", legacy_rect(origin, 345.0, 32.0, 193.0, 140.0));
+            legacy_static_image(ui, &self.ui_textures, "tavern_art", legacy_rect(origin, 273.0, 95.0, 315.0, 315.0));
+
+            let group = legacy_rect(origin, 17.0, 41.0, 260.0, 389.0);
+            legacy_group(ui, group, background, egui::Color32::DARK_GRAY);
+            legacy_text(ui, legacy_rect(origin, 29.0, 45.0, 220.0, 24.0), "Авторизация", foreground, 17.0);
+
+            legacy_text(ui, legacy_rect(origin, 71.0, 86.0, 162.0, 24.0), "Имя пользователя", foreground, 15.0);
+            legacy_text_edit(
+                ui,
+                legacy_rect(origin, 50.0, 113.0, 196.0, 30.0),
+                &mut self.username,
+                "Никнейм",
+                false,
+                field_foreground,
+            );
+            legacy_text(ui, legacy_rect(origin, 113.0, 159.0, 100.0, 24.0), "Пароль", foreground, 15.0);
+            legacy_text_edit(
+                ui,
+                legacy_rect(origin, 50.0, 186.0, 196.0, 30.0),
+                &mut self.password,
+                "Пароль",
+                true,
+                field_foreground,
+            );
+
+            if let Some(response) = legacy_image_button(
+                ui,
+                &self.ui_textures,
+                "chat_icon",
+                legacy_rect(origin, 50.0, 237.0, 33.0, 33.0),
+            ) {
+                if response.clicked() {
+                    self.status = "TSchat".into();
+                }
+            }
+            if legacy_button(
+                ui,
+                legacy_rect(origin, 106.0, 237.0, 140.0, 33.0),
+                "Вход",
+                egui::Color32::BLACK,
+                egui::Color32::WHITE,
+                16.0,
+            )
+            .clicked()
+            {
+                self.login();
+            }
+
+            let switch_name = if dark { "brand_logo" } else { "tavern_art" };
+            let switch_rect = legacy_rect(origin, 98.0, 301.0, 97.0, 45.0);
+            let switch_fill = if dark { egui::Color32::DARK_GRAY } else { egui::Color32::LIGHT_GRAY };
+            let switch = ui.put(
+                switch_rect,
+                egui::Button::new(
+                    egui::RichText::new(if dark { "Ночь" } else { "День" })
+                        .size(11.0)
+                        .color(foreground),
+                )
+                .fill(switch_fill)
+                .stroke(egui::Stroke::new(1.0, foreground)),
+            );
+            let _ = switch_name;
+            if switch.clicked() {
+                self.dark_theme = !self.dark_theme;
+            }
+
+            let status_text = if self.connected { "Подключено к MySQL" } else { &self.status };
+            legacy_text(
+                ui,
+                legacy_rect(origin, 79.0, 349.0, 185.0, 31.0),
+                status_text.to_string(),
+                egui::Color32::from_rgb(46, 139, 87),
+                10.0,
+            );
+            if legacy_button(
+                ui,
+                legacy_rect(origin, 75.0, 384.0, 145.0, 24.0),
+                "Создать аккаунт",
+                background,
+                foreground,
+                12.0,
+            )
+            .clicked()
+            {
+                self.screen = Screen::Register;
+                self.status.clear();
+                self.email.clear();
+            }
+        } else {
+            legacy_static_image(ui, &self.ui_textures, "brand_logo", legacy_rect(origin, 80.0, 32.0, 193.0, 140.0));
+            legacy_static_image(ui, &self.ui_textures, "tavern_art", legacy_rect(origin, 4.0, 95.0, 315.0, 315.0));
+
+            let group = legacy_rect(origin, 334.0, 41.0, 243.0, 389.0);
+            legacy_group(ui, group, background, egui::Color32::DARK_GRAY);
+            legacy_text(ui, legacy_rect(origin, 346.0, 45.0, 215.0, 24.0), "Регистрация", foreground, 17.0);
+
+            legacy_text(ui, legacy_rect(origin, 374.0, 68.0, 162.0, 24.0), "Имя пользователя", foreground, 14.0);
+            legacy_text_edit(ui, legacy_rect(origin, 357.0, 99.0, 196.0, 30.0), &mut self.username, "Никнейм", false, field_foreground);
+            legacy_text(ui, legacy_rect(origin, 360.0, 132.0, 188.0, 24.0), "Придумайте пароль", foreground, 13.0);
+            legacy_text_edit(ui, legacy_rect(origin, 357.0, 159.0, 196.0, 30.0), &mut self.password, "Пароль", true, field_foreground);
+            legacy_text(ui, legacy_rect(origin, 393.0, 192.0, 131.0, 24.0), "Введите почту", foreground, 14.0);
+            legacy_text_edit(ui, legacy_rect(origin, 357.0, 219.0, 196.0, 30.0), &mut self.email, "Почта", false, field_foreground);
+
+            if legacy_button(
+                ui,
+                legacy_rect(origin, 413.0, 265.0, 140.0, 33.0),
+                "Регистрация",
+                egui::Color32::BLACK,
+                egui::Color32::WHITE,
+                14.0,
+            )
+            .clicked()
+            {
+                self.register();
+            }
+
+            legacy_text(
+                ui,
+                legacy_rect(origin, 346.0, 316.0, 225.0, 36.0),
+                &self.status,
+                egui::Color32::from_rgb(46, 139, 87),
+                10.0,
+            );
+            if legacy_button(
+                ui,
+                legacy_rect(origin, 397.0, 350.0, 145.0, 25.0),
+                "Авторизация",
+                background,
+                foreground,
+                12.0,
+            )
+            .clicked()
+            {
+                self.screen = Screen::Login;
+                self.status.clear();
+            }
+        }
+
+        // The original form has a tiny theme checkbox in its lower-right corner.
+        let checker = legacy_button(
+            ui,
+            legacy_rect(origin, 577.0, 426.0, 12.0, 9.0),
+            if dark { "✓" } else { " " },
+            background,
+            foreground,
+            8.0,
+        );
+        if checker.clicked() {
+            self.dark_theme = !self.dark_theme;
+        }
+    }
+
+    fn draw_legacy_chat_screen(&mut self, ctx: &egui::Context, ui: &mut egui::Ui) {
+        let origin = ui.max_rect().min;
+        let dark = self.dark_theme;
+        let background = if dark { egui::Color32::BLACK } else { egui::Color32::WHITE };
+        let panel = background;
+        let foreground = if dark { egui::Color32::WHITE } else { egui::Color32::BLACK };
+        let border = if dark { egui::Color32::DARK_GRAY } else { egui::Color32::GRAY };
+        let menu_fill = background;
+        let menu_icon = |dark_name: &str, light_name: &str| if dark { dark_name } else { light_name };
+
+        ui.painter().rect_filled(ui.max_rect(), 0.0, background);
+        legacy_title_bar(ui, ctx, &self.ui_textures, origin, 796.0, 2.0, 716.0, 757.0);
+
+        // Original WinForms MenuStrip: File, Fonts, Clear, Private messages, Entertainment and ICQ.
+        let menu_y = 38.0;
+        let mut x = 0.0;
+        let mut menu_item = |ui: &mut egui::Ui, text: &str, icon: &str, width: f32| {
+            let rect = legacy_rect(origin, x, menu_y, width, 27.0);
+            let response = ui.put(
+                rect,
+                egui::Button::new(egui::RichText::new(text).color(foreground).size(10.0))
+                    .fill(menu_fill)
+                    .stroke(egui::Stroke::new(0.0, menu_fill)),
+            );
+            legacy_static_image(ui, &self.ui_textures, icon, legacy_rect(origin, x + 3.0, menu_y + 5.0, 17.0, 17.0));
+            x += width;
+            response
+        };
+
+        let file_icon = menu_icon("file_dark", "file_light");
+        if menu_item(ui, "Файл", file_icon, 67.0).clicked() {
+            self.edit_profile_open = true;
+        }
+        let fonts_icon = menu_icon("fonts_dark", "fonts_light");
+        if menu_item(ui, "Шрифты", fonts_icon, 90.0).clicked() {
+            self.chat_style_open = true;
+        }
+        let clear_icon = menu_icon("clear_dark", "clear_light");
+        if menu_item(ui, "Очистка сообщений", clear_icon, 161.0).clicked() {
+            self.show_clear_chat_confirmation = true;
+        }
+        let pm_icon = menu_icon("pm_dark", "pm_light");
+        if menu_item(ui, "Личные сообщения", pm_icon, 150.0).clicked() {
+            self.load_inbox();
+        }
+        let radio_icon = menu_icon("radio_dark", "radio_light");
+        if menu_item(ui, "Развлечения", radio_icon, 98.0).clicked() {
+            self.radio_open = true;
+        }
+        let icq_icon = menu_icon("icq_dark", "icq_light");
+        if menu_item(ui, "ICQ", icq_icon, 62.0).clicked() {
+            self.status = "ICQ-модуль пока не перенесён.".into();
+        }
+        drop(menu_item);
+
+        let chat_group = legacy_rect(origin, 14.0, 72.0, 437.0, 275.0);
+        legacy_group(ui, chat_group, panel, border);
+        legacy_text(ui, legacy_rect(origin, 22.0, 74.0, 180.0, 18.0), "Общий чат", foreground, 10.0);
+
+        let chat_rect = legacy_rect(origin, 21.0, 83.0, 424.0, 258.0);
+        let smileys = self.smiley_textures.clone();
+        let chat_styles = self.chat_styles.clone();
+        ui.allocate_ui_at_rect(chat_rect, |chat_ui| {
+            egui::ScrollArea::vertical()
+                .auto_shrink([false, false])
+                .stick_to_bottom(true)
+                .show(chat_ui, |chat_content| {
+                    for line in self.chat_text.lines() {
+                        show_chat_line(chat_content, line, &smileys, &chat_styles);
+                    }
+                });
+        });
+
+        let users_group = legacy_rect(origin, 498.0, 72.0, 285.0, 275.0);
+        legacy_group(ui, users_group, panel, border);
+        let avatar_rect = legacy_rect(origin, 504.0, 87.0, 120.0, 120.0);
+        if let Some(texture) = &self.avatar_texture {
+            ui.painter().image(
+                texture.id(),
+                avatar_rect,
+                egui::Rect::from_min_max(egui::Pos2::ZERO, egui::pos2(1.0, 1.0)),
+                egui::Color32::WHITE,
+            );
+        } else {
+            ui.painter().rect_filled(avatar_rect, 0.0, egui::Color32::DARK_GRAY);
+            legacy_text(ui, legacy_rect(origin, 512.0, 137.0, 105.0, 20.0), "Аватар", foreground, 12.0);
+        }
+        let avatar_response = ui.interact(avatar_rect, egui::Id::new("legacy-own-avatar"), egui::Sense::click());
+        if avatar_response.clicked() {
+            self.edit_profile_open = true;
+        }
+
+        let info_group = legacy_rect(origin, 630.0, 80.0, 146.0, 127.0);
+        legacy_group(ui, info_group, panel, border);
+        let user = self.current_user.as_ref();
+        legacy_text(ui, legacy_rect(origin, 636.0, 91.0, 132.0, 24.0), user.map(|u| u.username.as_str()).unwrap_or("Никнейм"), foreground, 12.0);
+        legacy_text(ui, legacy_rect(origin, 636.0, 158.0, 132.0, 18.0), user.map(|u| u.mobile.as_str()).unwrap_or("Номер телефона"), foreground, 10.0);
+        legacy_text(ui, legacy_rect(origin, 636.0, 181.0, 132.0, 20.0), user.map(|u| u.email.as_str()).unwrap_or("Почта"), foreground, 10.0);
+
+        let friends_rect = legacy_rect(origin, 507.0, 217.0, 268.0, 119.0);
+        ui.allocate_ui_at_rect(friends_rect, |friends_ui| {
+            egui::ScrollArea::vertical().auto_shrink([false, false]).show(friends_ui, |list_ui| {
+                for name in self.friends.clone() {
+                    let selected = self.selected_friend.as_deref() == Some(name.as_str());
+                    if list_ui.selectable_label(selected, &name).clicked() {
+                        self.selected_friend = Some(name.clone());
+                        self.load_selected_profile();
+                    }
+                }
+            });
+        });
+
+        let profile_icon = menu_icon("profile_dark", "profile_light");
+        legacy_static_image(
+            ui,
+            &self.ui_textures,
+            profile_icon,
+            legacy_rect(origin, 466.0, 91.0, 32.0, 243.0),
+        );
+        let profile_hit = ui.interact(
+            legacy_rect(origin, 466.0, 91.0, 32.0, 243.0),
+            egui::Id::new("legacy-profile-button"),
+            egui::Sense::click(),
+        );
+        if profile_hit.clicked() {
+            self.edit_profile_open = true;
+        }
+
+        legacy_static_image(
+            ui,
+            &self.ui_textures,
+            "brand_logo",
+            legacy_rect(origin, 533.0, 322.0, 218.0, 140.0),
+        );
+
+        let composer_group = legacy_rect(origin, 14.0, 353.0, 437.0, 90.0);
+        legacy_group(ui, composer_group, panel, border);
+        let input_rect = legacy_rect(origin, 55.0, 364.0, 277.0, 72.0);
+        ui.put(
+            input_rect,
+            egui::TextEdit::multiline(&mut self.draft)
+                .desired_width(input_rect.width())
+                .desired_rows(3)
+                .hint_text("Сообщение...")
+                .text_color(foreground),
+        );
+
+        let send_icon = menu_icon("send_dark", "send_light");
+        if let Some(response) = legacy_image_button(
+            ui,
+            &self.ui_textures,
+            send_icon,
+            legacy_rect(origin, 338.0, 372.0, 50.0, 50.0),
+        ) {
+            if response.clicked() {
+                self.send_chat();
+            }
+        }
+
+        let attach_icon = menu_icon("attach_dark", "attach_light");
+        if let Some(response) = legacy_image_button(
+            ui,
+            &self.ui_textures,
+            attach_icon,
+            legacy_rect(origin, 396.0, 374.0, 45.0, 45.0),
+        ) {
+            if response.clicked() {
+                self.status = "Прикрепление изображений в оригинальном клиенте было отключено.".into();
+            }
+        }
+
+        let smiley_button = legacy_button(
+            ui,
+            legacy_rect(origin, 17.0, 400.0, 35.0, 35.0),
+            "☺",
+            background,
+            foreground,
+            22.0,
+        );
+        if smiley_button.clicked() {
+            self.show_smileys = !self.show_smileys;
+        }
+
+        if self.show_smileys {
+            let picker = legacy_rect(origin, 55.0, 87.0, 357.0, 96.0);
+            legacy_group(ui, picker, background, border);
+            let positions = [2.0, 46.0, 90.0, 134.0, 178.0, 222.0, 266.0, 311.0];
+            for (index, (code, texture)) in self.smiley_textures.clone().iter().enumerate().take(16) {
+                let row = index / 8;
+                let column = index % 8;
+                let rect = legacy_rect(origin, positions[column], 87.0 + 9.0 + row as f32 * 42.0, 42.0, 42.0);
+                let response = ui.put(
+                    rect,
+                    egui::Image::new((texture.id(), rect.size())).sense(egui::Sense::click()),
+                );
+                if response.clicked() {
+                    self.add_smiley(code);
+                    self.show_smileys = false;
+                }
+            }
+        }
+
+        // The original menu exposes profile editing under File and chat appearance under Fonts.
+        let current_user_name = self.current_user.as_ref().map(|u| u.username.clone()).unwrap_or_default();
+        let connection = if self.connected { "MySQL: подключено" } else { "MySQL: нет подключения" };
+        legacy_text(
+            ui,
+            legacy_rect(origin, 500.0, 440.0, 280.0, 10.0),
+            format!("{connection}  {current_user_name}"),
+            if self.connected { egui::Color32::from_rgb(46, 139, 87) } else { egui::Color32::GRAY },
+            8.0,
+        );
+    }
+
+    fn show_legacy_profile_window(&mut self, ctx: &egui::Context) {
+        if !self.edit_profile_open {
+            return;
+        }
+        let mut open = self.edit_profile_open;
+        egui::Window::new("Редактирование профиля")
+            .id(egui::Id::new("legacy-edit-profile-window"))
+            .title_bar(false)
+            .collapsible(false)
+            .resizable(false)
+            .fixed_size([617.0, 384.0])
+            .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+            .frame(egui::Frame::none())
+            .open(&mut open)
+            .show(ctx, |ui| {
+                let rect = ui.max_rect();
+                let origin = rect.min;
+                let dark = self.dark_theme;
+                let bg = if dark { egui::Color32::BLACK } else { egui::Color32::WHITE };
+                let fg = if dark { egui::Color32::WHITE } else { egui::Color32::BLACK };
+                ui.painter().rect_filled(rect, 0.0, bg);
+                legacy_title_bar(ui, ctx, &self.ui_textures, origin, 617.0, 1.0, 535.0, 576.0);
+                ui.painter().rect_filled(legacy_rect(origin, 0.0, 35.0, 617.0, 36.0), 0.0, egui::Color32::from_rgb(128, 0, 0));
+                legacy_text(ui, legacy_rect(origin, 12.0, 39.0, 250.0, 26.0), "Редактировать профиль", fg, 17.0);
+
+                legacy_group(ui, legacy_rect(origin, 12.0, 78.0, 593.0, 294.0), bg, egui::Color32::DARK_GRAY);
+                legacy_text(ui, legacy_rect(origin, 31.0, 94.0, 190.0, 24.0), "Настоящее имя", fg, 12.0);
+                legacy_text_edit(ui, legacy_rect(origin, 36.0, 123.0, 237.0, 30.0), &mut self.profile_name, "Имя", false, egui::Color32::BLACK);
+                legacy_text(ui, legacy_rect(origin, 31.0, 156.0, 120.0, 24.0), "Никнейм", fg, 12.0);
+                legacy_text_edit(ui, legacy_rect(origin, 36.0, 185.0, 237.0, 30.0), &mut self.profile_username, "Никнейм", false, egui::Color32::BLACK);
+                legacy_text(ui, legacy_rect(origin, 31.0, 218.0, 100.0, 24.0), "Почта", fg, 12.0);
+                legacy_text_edit(ui, legacy_rect(origin, 36.0, 247.0, 237.0, 30.0), &mut self.profile_email, "Почта", false, egui::Color32::BLACK);
+                legacy_text(ui, legacy_rect(origin, 31.0, 280.0, 100.0, 24.0), "Телефон", fg, 12.0);
+                legacy_text_edit(ui, legacy_rect(origin, 36.0, 309.0, 237.0, 30.0), &mut self.profile_mobile, "Телефон", false, egui::Color32::BLACK);
+
+                legacy_group(ui, legacy_rect(origin, 296.0, 97.0, 291.0, 195.0), bg, egui::Color32::DARK_GRAY);
+                legacy_text(ui, legacy_rect(origin, 302.0, 124.0, 180.0, 24.0), "Введите пароль", fg, 12.0);
+                legacy_text_edit(ui, legacy_rect(origin, 307.0, 153.0, 237.0, 30.0), &mut self.new_password, "Новый пароль", true, egui::Color32::BLACK);
+                legacy_text(ui, legacy_rect(origin, 302.0, 186.0, 200.0, 24.0), "Повторите пароль", fg, 12.0);
+                legacy_text_edit(ui, legacy_rect(origin, 307.0, 215.0, 237.0, 30.0), &mut self.repeat_password, "Повторите пароль", true, egui::Color32::BLACK);
+
+                if legacy_button(
+                    ui,
+                    legacy_rect(origin, 329.0, 301.0, 224.0, 38.0),
+                    "Сохранить изменения",
+                    egui::Color32::BLACK,
+                    egui::Color32::WHITE,
+                    14.0,
+                )
+                .clicked()
+                {
+                    self.save_profile();
+                    if !self.status.starts_with("Не удалось") && !self.status.starts_with("Имя,") {
+                        self.edit_profile_open = false;
+                    }
+                }
+            });
+        self.edit_profile_open = open && self.edit_profile_open;
+    }
+
+    fn show_legacy_chat_style_window(&mut self, ctx: &egui::Context) {
+        if !self.chat_style_open {
+            return;
+        }
+        let mut open = self.chat_style_open;
+        egui::Window::new("Оформление сообщений")
+            .id(egui::Id::new("legacy-chat-style-window"))
+            .title_bar(false)
+            .collapsible(false)
+            .resizable(false)
+            .fixed_size([390.0, 260.0])
+            .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+            .frame(egui::Frame::none())
+            .open(&mut open)
+            .show(ctx, |ui| {
+                let rect = ui.max_rect();
+                let origin = rect.min;
+                let bg = if self.dark_theme { egui::Color32::BLACK } else { egui::Color32::WHITE };
+                let fg = if self.dark_theme { egui::Color32::WHITE } else { egui::Color32::BLACK };
+                ui.painter().rect_filled(rect, 0.0, bg);
+                legacy_title_bar(ui, ctx, &self.ui_textures, origin, 390.0, 0.0, 308.0, 349.0);
+                legacy_text(ui, legacy_rect(origin, 12.0, 43.0, 300.0, 24.0), "Оформление сообщений", fg, 15.0);
+
+                legacy_text(ui, legacy_rect(origin, 12.0, 78.0, 180.0, 20.0), "Цвет", fg, 12.0);
+                ui.put(legacy_rect(origin, 150.0, 75.0, 50.0, 28.0), egui::widgets::color_picker::color_edit_button_srgba(
+                    ui,
+                    &mut self.chat_style_color,
+                    egui::color_picker::Alpha::Opaque,
+                ));
+                legacy_text(ui, legacy_rect(origin, 12.0, 112.0, 180.0, 20.0), "Шрифт", fg, 12.0);
+                egui::ComboBox::from_id_source("legacy-chat-font")
+                    .selected_text(&self.chat_style_font)
+                    .show_ui(ui, |ui| {
+                        for font in ["Candara", "Arial", "Tahoma", "Verdana", "Consolas"] {
+                            ui.selectable_value(&mut self.chat_style_font, font.to_string(), font);
+                        }
+                    });
+                ui.put(legacy_rect(origin, 12.0, 149.0, 350.0, 22.0), egui::Slider::new(&mut self.chat_style_size, 8..=36).text("Размер"));
+                legacy_text(ui, legacy_rect(origin, 12.0, 179.0, 150.0, 20.0), "Начертание", fg, 12.0);
+                egui::ComboBox::from_id_source("legacy-chat-style")
+                    .selected_text(&self.chat_style_effect)
+                    .show_ui(ui, |ui| {
+                        for effect in ["Regular", "Bold", "Italic", "Underline", "Strikeout"] {
+                            ui.selectable_value(&mut self.chat_style_effect, effect.to_string(), effect);
+                        }
+                    });
+                if legacy_button(
+                    ui,
+                    legacy_rect(origin, 176.0, 216.0, 190.0, 34.0),
+                    "Сохранить",
+                    egui::Color32::BLACK,
+                    egui::Color32::WHITE,
+                    13.0,
+                )
+                .clicked()
+                {
+                    self.save_chat_style();
+                    self.chat_style_open = false;
+                }
+            });
+        self.chat_style_open = open && self.chat_style_open;
+    }
+
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         if self.screen == Screen::Chat {
             ctx.request_repaint_after(Duration::from_secs(2));
@@ -1232,245 +1942,141 @@ impl eframe::App for TsChatApp {
             }
         }
 
+        if self.last_viewport_screen != self.screen {
+            let size = match self.screen {
+                Screen::Login | Screen::Register => [590.0, 437.0],
+                Screen::Chat => [796.0, 451.0],
+            };
+            ctx.send_viewport_cmd(egui::ViewportCommand::InnerSize(egui::vec2(size[0], size[1])));
+            ctx.send_viewport_cmd(egui::ViewportCommand::Resizable(false));
+            self.last_viewport_screen = self.screen;
+        }
+
         self.ensure_avatar_texture(ctx);
         self.ensure_smiley_textures(ctx);
-        if self.show_friend_profile { self.ensure_friend_avatar_texture(ctx); }
-        if self.dark_theme { ctx.set_visuals(egui::Visuals::dark()); } else { ctx.set_visuals(egui::Visuals::light()); }
+        self.ensure_legacy_ui_textures(ctx);
+        if self.show_friend_profile {
+            self.ensure_friend_avatar_texture(ctx);
+        }
 
-        egui::TopBottomPanel::top("top").show(ctx, |ui| {
-            ui.horizontal(|ui| {
-                ui.heading("TSchat");
-                ui.separator();
-                if ui.button(if self.dark_theme { "☀ Светлая тема" } else { "☾ Тёмная тема" }).clicked() { self.dark_theme = !self.dark_theme; }
-                ui.separator();
-                ui.label(if self.connected { "● MySQL подключена" } else { "○ Нет подключения" });
-                if ui.button("Подключиться").clicked() && !self.connected { self.connect(); }
-                if self.screen == Screen::Chat && ui.button("Обновить чат").clicked() { self.refresh_chat(); }
+        if self.dark_theme {
+            ctx.set_visuals(egui::Visuals::dark());
+        } else {
+            ctx.set_visuals(egui::Visuals::light());
+        }
+
+        let canvas = if self.dark_theme { egui::Color32::BLACK } else { egui::Color32::WHITE };
+        egui::CentralPanel::default()
+            .frame(egui::Frame::none().fill(canvas).inner_margin(0.0))
+            .show(ctx, |ui| {
+                match self.screen {
+                    Screen::Login | Screen::Register => self.draw_legacy_auth_screen(ctx, ui),
+                    Screen::Chat => self.draw_legacy_chat_screen(ctx, ui),
+                }
             });
-        });
 
-        egui::CentralPanel::default().show(ctx, |ui| {
-            match self.screen {
-                Screen::Login | Screen::Register => {
-                    ui.vertical_centered(|ui| {
-                        ui.add_space(55.0);
-                        ui.heading(if self.screen == Screen::Login { "Авторизация" } else { "Создание аккаунта" });
-                        ui.add_space(16.0);
-                        ui.label("Никнейм");
-                        ui.add(egui::TextEdit::singleline(&mut self.username).desired_width(280.0));
-                        ui.label("Пароль");
-                        ui.add(egui::TextEdit::singleline(&mut self.password).password(true).desired_width(280.0));
-                        if self.screen == Screen::Register {
-                            ui.label("Почта");
-                            ui.add(egui::TextEdit::singleline(&mut self.email).desired_width(280.0));
-                        }
-                        ui.add_space(10.0);
-                        if self.screen == Screen::Login {
-                            if ui.button("Войти").clicked() { self.login(); }
-                            if ui.button("Создать аккаунт").clicked() { self.screen = Screen::Register; self.status.clear(); }
-                        } else {
-                            if ui.button("Зарегистрироваться").clicked() { self.register(); }
-                            if ui.button("Назад к авторизации").clicked() { self.screen = Screen::Login; self.status.clear(); }
-                        }
-                    });
+        self.show_legacy_profile_window(ctx);
+        self.show_legacy_chat_style_window(ctx);
+        if self.show_friend_profile {
+            let mut close_profile = false;
+            egui::Window::new("Профиль пользователя").show(ctx, |ui| {
+                if let Some(texture) = &self.friend_avatar_texture {
+                    ui.add(egui::Image::new((texture.id(), egui::vec2(120.0, 120.0))));
                 }
-                Screen::Chat => {
-                    ui.horizontal(|ui| {
-                        ui.heading(format!("Чат — {}", self.current_user.as_ref().map(|u| u.username.as_str()).unwrap_or("")));
-                        if ui.button("Входящие").clicked() { self.load_inbox(); }
-                        if ui.button("Заметки / Paint").clicked() { self.notes_open = true; }
-                        if ui.button("Радио").clicked() { self.radio_open = true; }
-                        #[cfg(feature = "voice")]
-                        if ui.button("Голос").clicked() { self.voice_open = true; }
-                        if ui.button("Выйти").clicked() { self.current_user = None; self.screen = Screen::Login; }
-                    });
-                    ui.horizontal(|ui| {
-                        ui.label("Команда");
-                        ui.add(egui::TextEdit::singleline(&mut self.command_input)
-                            .hint_text("Например: Включи Европу")
-                            .desired_width(240.0));
-                        if ui.button("Выполнить").clicked() {
-                            let input = self.command_input.clone();
-                            self.execute_command(&input);
-                            self.command_input.clear();
-                        }
-                        ui.label(&self.command_status);
-                    });
-                    ui.columns(2, |cols| {
-                        cols[0].group(|ui| {
-                            ui.label("Общий чат");
-                            let smiley_items = self.smiley_textures.clone();
-                            egui::ScrollArea::vertical().max_height(470.0).show(ui, |ui| {
-                                for line in self.chat_text.split('\n') {
-                                    show_chat_line(ui, line, &smiley_items, &self.chat_styles);
-                                }
-                            });
-                            ui.add(egui::TextEdit::singleline(&mut self.draft).hint_text("Сообщение...").desired_width(f32::INFINITY));
-                            if ui.button("Отправить").clicked() { self.send_chat(); }
-                            ui.collapsing("Смайлики", |ui| {
-                                egui::Grid::new("smiley-grid").num_columns(4).show(ui, |ui| {
-                                    for (index, (code, texture)) in smiley_items.iter().enumerate() {
-                                        let image = egui::Image::new((texture.id(), egui::vec2(48.0, 48.0)))
-                                            .sense(egui::Sense::click());
-                                        if ui.add(image).on_hover_text(code).clicked() {
-                                            self.add_smiley(code);
-                                        }
-                                        if (index + 1) % 4 == 0 { ui.end_row(); }
-                                    }
-                                });
-                            });
-                        });
-                        cols[1].group(|ui| {
-                            ui.horizontal(|ui| {
-                                if let Some(texture) = &self.avatar_texture {
-                                    ui.add(egui::Image::new((texture.id(), egui::vec2(88.0, 88.0))));
-                                } else {
-                                    ui.label("Аватар не задан");
-                                }
-                                if ui.button("Изменить аватар").clicked() { self.choose_avatar(); }
-                            });
-                            ui.collapsing("Редактировать профиль", |ui| {
-                                ui.label("Имя");
-                                ui.text_edit_singleline(&mut self.profile_name);
-                                ui.label("Никнейм");
-                                ui.text_edit_singleline(&mut self.profile_username);
-                                ui.label("Почта");
-                                ui.text_edit_singleline(&mut self.profile_email);
-                                ui.label("Телефон");
-                                ui.text_edit_singleline(&mut self.profile_mobile);
-                                ui.label("Новый пароль (необязательно)");
-                                ui.add(egui::TextEdit::singleline(&mut self.new_password).password(true));
-                                ui.label("Повторите пароль");
-                                ui.add(egui::TextEdit::singleline(&mut self.repeat_password).password(true));
-                                if ui.button("Сохранить профиль").clicked() { self.save_profile(); }
-                            });
-                            ui.collapsing("Оформление сообщений", |ui| {
-                                ui.label("Цвет имени и сообщения");
-                                ui.color_edit_button_srgba(&mut self.chat_style_color);
-                                ui.horizontal(|ui| {
-                                    ui.label("Шрифт");
-                                    egui::ComboBox::from_id_salt("chat-font")
-                                        .selected_text(&self.chat_style_font)
-                                        .show_ui(ui, |ui| {
-                                            for font in ["Candara", "Arial", "Tahoma", "Verdana", "Consolas"] {
-                                                ui.selectable_value(&mut self.chat_style_font, font.to_string(), font);
-                                            }
-                                        });
-                                });
-                                ui.add(egui::Slider::new(&mut self.chat_style_size, 8..=36).text("Размер"));
-                                egui::ComboBox::from_id_salt("chat-style")
-                                    .selected_text(&self.chat_style_effect)
-                                    .show_ui(ui, |ui| {
-                                        for effect in ["Regular", "Bold", "Italic", "Underline", "Strikeout"] {
-                                            ui.selectable_value(&mut self.chat_style_effect, effect.to_string(), effect);
-                                        }
-                                    });
-                                if ui.button("Сохранить оформление").clicked() { self.save_chat_style(); }
-                            });
-                            ui.separator();
-                            ui.label("Пользователи");
-                            egui::ScrollArea::vertical().max_height(160.0).show(ui, |ui| {
-                                for name in self.friends.clone() {
-                                    if ui.selectable_label(self.selected_friend.as_deref() == Some(name.as_str()), &name).clicked() {
-                                        self.selected_friend = Some(name);
-                                    }
-                                }
-                            });
-                            if ui.button("Показать профиль выбранного пользователя").clicked() {
-                                self.load_selected_profile();
-                            }
-                            ui.separator();
-                            ui.label("Личное сообщение");
-                            ui.add(egui::TextEdit::singleline(&mut self.private_subject).hint_text("Тема"));
-                            ui.add(egui::TextEdit::multiline(&mut self.private_text).desired_rows(5).hint_text("Текст сообщения"));
-                            if ui.button("Отправить личное").clicked() { self.send_private(); }
-                        });
-                    });
-                    if self.show_friend_profile {
-                        let mut close_profile = false;
-                        egui::Window::new("Профиль пользователя").show(ctx, |ui| {
-                            if let Some(texture) = &self.friend_avatar_texture {
-                                ui.add(egui::Image::new((texture.id(), egui::vec2(120.0, 120.0))));
-                            }
-                            if let Some(profile) = &self.friend_profile {
-                                ui.heading(&profile.display_name);
-                                ui.label(format!("Никнейм: {}", profile.username));
-                                ui.label(format!("Почта: {}", profile.email));
-                                ui.label(format!("Телефон: {}", profile.mobile));
-                            }
-                            if ui.button("Закрыть").clicked() { close_profile = true; }
-                        });
-                        if close_profile { self.show_friend_profile = false; }
-                    }
-                    if self.show_inbox {
-                        let inbox_items = self.inbox.clone();
-                        let mut close_inbox = false;
-                        let mut delete_requested = None;
-                        let mut reply_requested: Option<(String, String)> = None;
-                        egui::Window::new("Входящие сообщения").show(ctx, |ui| {
-                            if ui.button("Закрыть").clicked() { close_inbox = true; }
-                            for m in inbox_items {
-                                ui.collapsing(
-                                    format!("{} — {}{}", m.from_user, m.subject, if m.is_read { "" } else { " • новое" }),
-                                    |ui| {
-                                        ui.label(&m.message);
-                                        ui.horizontal(|ui| {
-                                            if !m.is_read && ui.button("Отметить прочитанным").clicked() {
-                                                self.mark_message_read(m.id);
-                                            }
-                                            if ui.button("Ответить").clicked() {
-                                                reply_requested = Some((m.from_user.clone(), m.subject.clone()));
-                                            }
-                                            if ui.button("Удалить").clicked() {
-                                                delete_requested = Some(m.id);
-                                            }
-                                        });
-                                    },
-                                );
-                            }
-                        });
-                        if close_inbox { self.show_inbox = false; }
-                        if let Some((sender, subject)) = reply_requested {
-                            self.selected_friend = Some(sender.clone());
-                            self.private_subject = if subject.trim().is_empty() {
-                                "Re:".into()
-                            } else {
-                                format!("Re: {subject}")
-                            };
-                            self.show_inbox = false;
-                            self.status = format!("Ответьте пользователю {sender} в панели личных сообщений.");
-                        }
-                        if let Some(message_id) = delete_requested {
-                            self.confirm_delete_message = Some(message_id);
-                        }
-                    }
-                    if let Some(message_id) = self.confirm_delete_message {
-                        let mut confirm = false;
-                        let mut cancel = false;
-                        egui::Window::new("Удаление личного сообщения")
-                            .collapsible(false)
-                            .resizable(false)
-                            .show(ctx, |ui| {
-                                ui.label("Удалить это сообщение из ваших входящих?");
-                                ui.horizontal(|ui| {
-                                    if ui.button("Удалить").clicked() { confirm = true; }
-                                    if ui.button("Отмена").clicked() { cancel = true; }
-                                });
-                            });
-                        if confirm {
-                            self.delete_inbox_message(message_id);
-                        } else if cancel {
-                            self.confirm_delete_message = None;
-                        }
-                    }
+                if let Some(profile) = &self.friend_profile {
+                    ui.heading(&profile.display_name);
+                    ui.label(format!("Никнейм: {}", profile.username));
+                    ui.label(format!("Почта: {}", profile.email));
+                    ui.label(format!("Телефон: {}", profile.mobile));
                 }
+                if ui.button("Закрыть").clicked() {
+                    close_profile = true;
+                }
+            });
+            if close_profile {
+                self.show_friend_profile = false;
             }
-            if !self.status.is_empty() { ui.separator(); ui.label(&self.status); }
-        });
+        }
+
+        if self.show_inbox {
+            let inbox_items = self.inbox.clone();
+            let mut close_inbox = false;
+            let mut delete_requested = None;
+            let mut reply_requested: Option<(String, String)> = None;
+            egui::Window::new("Входящие сообщения").show(ctx, |ui| {
+                if ui.button("Закрыть").clicked() {
+                    close_inbox = true;
+                }
+                for message in inbox_items {
+                    ui.collapsing(
+                        format!(
+                            "{} — {}{}",
+                            message.from_user,
+                            message.subject,
+                            if message.is_read { "" } else { " • новое" }
+                        ),
+                        |ui| {
+                            ui.label(&message.message);
+                            ui.horizontal(|ui| {
+                                if !message.is_read && ui.button("Отметить прочитанным").clicked() {
+                                    self.mark_message_read(message.id);
+                                }
+                                if ui.button("Ответить").clicked() {
+                                    reply_requested = Some((message.from_user.clone(), message.subject.clone()));
+                                }
+                                if ui.button("Удалить").clicked() {
+                                    delete_requested = Some(message.id);
+                                }
+                            });
+                        },
+                    );
+                }
+            });
+            if close_inbox {
+                self.show_inbox = false;
+            }
+            if let Some((sender, subject)) = reply_requested {
+                self.selected_friend = Some(sender.clone());
+                self.private_subject = if subject.trim().is_empty() {
+                    "Re:".into()
+                } else {
+                    format!("Re: {subject}")
+                };
+                self.show_inbox = false;
+                self.status = format!("Ответьте пользователю {sender} в окне личных сообщений.");
+            }
+            if let Some(message_id) = delete_requested {
+                self.confirm_delete_message = Some(message_id);
+            }
+        }
+
+        if let Some(message_id) = self.confirm_delete_message {
+            let mut confirm = false;
+            let mut cancel = false;
+            egui::Window::new("Удаление личного сообщения")
+                .collapsible(false)
+                .resizable(false)
+                .show(ctx, |ui| {
+                    ui.label("Удалить это сообщение из ваших входящих?");
+                    ui.horizontal(|ui| {
+                        if ui.button("Удалить").clicked() {
+                            confirm = true;
+                        }
+                        if ui.button("Отмена").clicked() {
+                            cancel = true;
+                        }
+                    });
+                });
+            if confirm {
+                self.delete_inbox_message(message_id);
+            } else if cancel {
+                self.confirm_delete_message = None;
+            }
+        }
+
         self.show_notes_window(ctx);
         self.show_radio_window(ctx);
         self.show_clear_chat_confirmation(ctx);
         #[cfg(feature = "voice")]
         self.show_voice_window(ctx);
-    }
-}
+    }}
