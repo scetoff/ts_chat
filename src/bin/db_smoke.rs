@@ -96,7 +96,7 @@ async fn main() -> Result<()> {
     }
 
     let schema_size_mb: Option<f64> = sqlx::query_scalar(
-        "SELECT ROUND(COALESCE(SUM(data_length + index_length), 0) / 1024 / 1024, 2) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()"
+        "SELECT CAST(ROUND(COALESCE(SUM(data_length + index_length), 0) / 1024 / 1024, 2) AS DOUBLE) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()"
     )
     .fetch_one(&mut *conn)
     .await
