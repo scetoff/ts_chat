@@ -63,6 +63,15 @@ must already exist. Normal startup only verifies the schema and does not require
 or INSERT permissions. The optional bootstrap method is not called during normal login.
 Do not commit `config.toml`.
 
+The original table DDL is preserved in `database/schema.mysql.sql`. This script is
+provided only to prepare a **brand-new disposable test database** or a blank development
+database. Run it manually after selecting the intended empty database; it uses
+`CREATE TABLE IF NOT EXISTS` and does not alter existing table definitions. Do not
+run it against production or a database containing real user data. If the smoke test
+reports that `tb_users` does not exist, first check that `DB_DATABASE` names the
+schema that actually contains the legacy TSchat tables. Only import this script when
+you intentionally want to initialize a separate empty test schema.
+
 ### Verify an existing test database safely
 
 A read-only smoke checker is available:
