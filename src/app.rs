@@ -31,6 +31,7 @@ pub struct TsChatApp {
     dark_theme: bool,
     connected: bool,
     show_inbox: bool,
+    confirm_delete_message: Option<i64>,
     last_refresh: Instant,
     profile_username: String,
     profile_name: String,
@@ -262,6 +263,7 @@ impl Default for TsChatApp {
             private_text: String::new(), inbox: Vec::new(),
             status: "Введите параметры MySQL в config.toml и нажмите «Подключиться».".into(),
             dark_theme: true, connected: false, show_inbox: false,
+            confirm_delete_message: None,
             last_refresh: Instant::now(),
             profile_username: String::new(), profile_name: String::new(), profile_email: String::new(), profile_mobile: String::new(),
             avatar_texture: None, avatar_cache_key: None,
@@ -1203,6 +1205,21 @@ impl TsChatApp {
             Err(e) => self.status = format!("Ошибка загрузки входящих: {e:#}"),
         }
     }
+
+    fn delete_inbox_message(&mut self, message_id: i64) {
+        let Some(username) = self.current_user.as_ref().map(|user| user.username.clone()) else { return; };
+        match self.run_db(|rt, db| rt.block_on(db.delete_private_message(message_id, &username))) {
+            Ok(1) => {
+                self.inbox.retain(|message| message.id != message_id);
+                self.status = "Личное сообщение удалено.".into();
+            }
+            Ok(_) => {
+                self.status = "Сообщение уже удалено или не принадлежит текущему пользователю.".into();
+            }
+            Err(error) => self.status = format!("Не удалось удалить личное сообщение: {error:#}"),
+        }
+        self.confirm_delete_message = None;
+    }
 }
 
 impl eframe::App for TsChatApp {
@@ -1388,6 +1405,8 @@ impl eframe::App for TsChatApp {
                     if self.show_inbox {
                         let inbox_items = self.inbox.clone();
                         let mut close_inbox = false;
+                        let mut delete_requested = None;
+                        let mut reply_requested: Option<(String, String)> = None;
                         egui::Window::new("Входящие сообщения").show(ctx, |ui| {
                             if ui.button("Закрыть").clicked() { close_inbox = true; }
                             for m in inbox_items {
@@ -1395,14 +1414,54 @@ impl eframe::App for TsChatApp {
                                     format!("{} — {}{}", m.from_user, m.subject, if m.is_read { "" } else { " • новое" }),
                                     |ui| {
                                         ui.label(&m.message);
-                                        if !m.is_read && ui.button("Отметить прочитанным").clicked() {
-                                            self.mark_message_read(m.id);
-                                        }
+                                        ui.horizontal(|ui| {
+                                            if !m.is_read && ui.button("Отметить прочитанным").clicked() {
+                                                self.mark_message_read(m.id);
+                                            }
+                                            if ui.button("Ответить").clicked() {
+                                                reply_requested = Some((m.from_user.clone(), m.subject.clone()));
+                                            }
+                                            if ui.button("Удалить").clicked() {
+                                                delete_requested = Some(m.id);
+                                            }
+                                        });
                                     },
                                 );
                             }
                         });
                         if close_inbox { self.show_inbox = false; }
+                        if let Some((sender, subject)) = reply_requested {
+                            self.selected_friend = Some(sender.clone());
+                            self.private_subject = if subject.trim().is_empty() {
+                                "Re:".into()
+                            } else {
+                                format!("Re: {subject}")
+                            };
+                            self.show_inbox = false;
+                            self.status = format!("Ответьте пользователю {sender} в панели личных сообщений.");
+                        }
+                        if let Some(message_id) = delete_requested {
+                            self.confirm_delete_message = Some(message_id);
+                        }
+                    }
+                    if let Some(message_id) = self.confirm_delete_message {
+                        let mut confirm = false;
+                        let mut cancel = false;
+                        egui::Window::new("Удаление личного сообщения")
+                            .collapsible(false)
+                            .resizable(false)
+                            .show(ctx, |ui| {
+                                ui.label("Удалить это сообщение из ваших входящих?");
+                                ui.horizontal(|ui| {
+                                    if ui.button("Удалить").clicked() { confirm = true; }
+                                    if ui.button("Отмена").clicked() { cancel = true; }
+                                });
+                            });
+                        if confirm {
+                            self.delete_inbox_message(message_id);
+                        } else if cancel {
+                            self.confirm_delete_message = None;
+                        }
                     }
                 }
             }
