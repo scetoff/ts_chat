@@ -76,31 +76,50 @@ impl Database {
     }
 
     async fn verify_schema_once(&self) -> Result<()> {
-        sqlx::query(
-            "SELECT id, username, password, email, name, dp, mobile, chatcolor, chatfont, chatfontsize, chatfontstyle FROM tb_users LIMIT 0"
-        ).fetch_all(&self.pool).await.context("Ошибка при проверке таблицы tb_users (проверьте соединение и структуру)")?;
+        // Validate all required columns and the shared-chat seed in one round-trip.
+        // A few shared MySQL hosts reset TCP sessions between otherwise valid
+        // metadata probes; keeping this read-only check to one statement avoids
+        // depending on a connection surviving several sequential requests.
+        let row = sqlx::query(
+            "SELECT
+                (SELECT COUNT(*) FROM tb_users
+                    WHERE 1 = 0
+                      AND id IS NOT NULL
+                      AND username IS NOT NULL
+                      AND password IS NOT NULL
+                      AND email IS NOT NULL
+                      AND name IS NOT NULL
+                      AND dp IS NOT NULL
+                      AND mobile IS NOT NULL
+                      AND chatcolor IS NOT NULL
+                      AND chatfont IS NOT NULL
+                      AND chatfontsize IS NOT NULL
+                      AND chatfontstyle IS NOT NULL) AS users_schema,
+                (SELECT COUNT(*) FROM tb_chat
+                    WHERE 1 = 0
+                      AND id IS NOT NULL
+                      AND chat IS NOT NULL) AS chat_schema,
+                (SELECT COUNT(*) FROM tb_pm
+                    WHERE 1 = 0
+                      AND id IS NOT NULL
+                      AND username IS NOT NULL
+                      AND fromuser IS NOT NULL
+                      AND subject IS NOT NULL
+                      AND message IS NOT NULL
+                      AND isread IS NOT NULL) AS pm_schema,
+                (SELECT COUNT(*) FROM tb_chat WHERE id = 1) AS chat_seed"
+        )
+        .fetch_one(&self.pool)
+        .await
+        .context("Не удалось проверить структуру tb_users, tb_chat и tb_pm одним запросом; проверьте соединение и таблицы")?;
 
-        sqlx::query("SELECT id, chat FROM tb_chat LIMIT 0")
-            .fetch_all(&self.pool).await.context("Ошибка при проверке таблицы tb_chat (проверьте соединение и структуру)")?;
-
-        sqlx::query("SELECT id, username, fromuser, subject, message, isread FROM tb_pm LIMIT 0")
-            .fetch_all(&self.pool).await.context("Ошибка при проверке таблицы tb_pm (проверьте соединение и структуру)")?;
-
-        // schema.mysql.sql defines password as VARCHAR(200), which is sufficient
-        // for Argon2id hashes. Avoid querying information_schema here: some shared
-        // MySQL hosts reset metadata-probe connections despite allowing normal table access.
-
-        let chat_row = sqlx::query("SELECT id, chat FROM tb_chat WHERE id = 1")
-            .fetch_optional(&self.pool)
-            .await
-            .context("Не удалось прочитать стартовую запись tb_chat")?;
-        let row = chat_row.ok_or_else(|| {
-            anyhow::anyhow!("В tb_chat отсутствует строка id=1; выполните ручную инициализацию только для пустой тестовой БД")
-        })?;
-        let chat_id: i32 = row.try_get("id").context("Не удалось прочитать tb_chat.id")?;
-        let _: String = row.try_get("chat").context("Не удалось прочитать tb_chat.chat")?;
-        if chat_id != 1 {
-            anyhow::bail!("В tb_chat найдена некорректная стартовая запись");
+        let chat_seed_count: i64 = row
+            .try_get("chat_seed")
+            .context("Не удалось прочитать результат проверки tb_chat.id=1")?;
+        if chat_seed_count == 0 {
+            anyhow::bail!(
+                "В tb_chat отсутствует строка id=1; выполните ручную инициализацию только для пустой тестовой БД"
+            );
         }
 
         Ok(())
