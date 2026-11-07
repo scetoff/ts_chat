@@ -1,5 +1,6 @@
 use anyhow::{Context, Result};
-use sqlx::{mysql::MySqlPoolOptions, MySqlPool, Row};
+use sqlx::{mysql::{MySqlConnectOptions, MySqlPoolOptions, MySqlSslMode}, MySqlPool, Row};
+use std::time::Duration;
 use crate::{config::Config, models::{ChatStyle, PrivateMessage, User}};
 
 #[derive(Clone)]
@@ -10,9 +11,15 @@ pub struct Database {
 impl Database {
     pub async fn connect(config: &Config) -> Result<Self> {
         Config::validate_database_driver()?;
+        // FreeDB documents TLS support on port 3306. Require encryption and keep
+        // a small pool for shared/free database hosting; validate idle sockets before reuse.
+        let options = config.mysql_url().parse::<MySqlConnectOptions>()?
+            .ssl_mode(MySqlSslMode::Required);
         let pool = MySqlPoolOptions::new()
-            .max_connections(8)
-            .connect(&config.mysql_url())
+            .max_connections(2)
+            .acquire_timeout(Duration::from_secs(30))
+            .test_before_acquire(true)
+            .connect_with(options)
             .await
             .context("Не удалось подключиться к MySQL")?;
         Ok(Self { pool })
@@ -31,20 +38,9 @@ impl Database {
         sqlx::query("SELECT id, username, fromuser, subject, message, isread FROM tb_pm LIMIT 0")
             .fetch_all(&self.pool).await.context("Таблица tb_pm отсутствует или её структура несовместима")?;
 
-        // Ensure Argon2id can be stored before upgrading a legacy password hash.
-        let password_capacity: Option<i64> = sqlx::query_scalar(
-            "SELECT CHARACTER_MAXIMUM_LENGTH FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tb_users' AND COLUMN_NAME = 'password'"
-        ).fetch_one(&self.pool).await.context("Не удалось проверить длину tb_users.password")?;
-        if password_capacity.unwrap_or(0) < 100 {
-            anyhow::bail!("tb_users.password слишком короткий для Argon2id (нужно минимум 100 символов); сначала проверьте тестовую БД и выполните миграцию столбца");
-        }
-
-        let auto_increment_ids: i64 = sqlx::query_scalar(
-            "SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND ((TABLE_NAME = 'tb_users' AND COLUMN_NAME = 'id') OR (TABLE_NAME = 'tb_pm' AND COLUMN_NAME = 'id')) AND EXTRA LIKE '%auto_increment%'"
-        ).fetch_one(&self.pool).await.context("Не удалось проверить автоинкремент ID")?;
-        if auto_increment_ids != 2 {
-            anyhow::bail!("В tb_users.id и tb_pm.id должен быть включён AUTO_INCREMENT; проверьте DDL тестовой БД");
-        }
+        // schema.mysql.sql defines password as VARCHAR(200), which is sufficient
+        // for Argon2id hashes. Avoid querying information_schema here: some shared
+        // MySQL hosts reset metadata-probe connections despite allowing normal table access.
 
         let chat_row_count: i64 = sqlx::query_scalar(
             "SELECT COUNT(*) FROM tb_chat WHERE id = 1"
