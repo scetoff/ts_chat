@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use sqlx::{mysql::{MySqlConnectOptions, MySqlPoolOptions, MySqlSslMode}, MySqlPool, Row};
+use sqlx::{mysql::{MySqlConnectOptions, MySqlPoolOptions, MySqlSslMode}, Executor, MySqlPool, Row};
 use std::time::Duration;
 use crate::{config::Config, models::{ChatStyle, PrivateMessage, User}};
 
@@ -34,6 +34,19 @@ fn is_duplicate_key_error(error: &sqlx::Error) -> bool {
         sqlx::Error::Database(database_error)
             if database_error.code().as_deref() == Some("1062")
     )
+}
+
+/// Build a MySQL string expression from UTF-8 bytes without interpolating
+/// user-controlled characters into SQL syntax. This is used only by the
+/// simple-query protocol fallback for hosts that reset prepared INSERTs.
+fn mysql_utf8_literal(value: &str) -> String {
+    const HEX: &[u8; 16] = b"0123456789ABCDEF";
+    let mut encoded = String::with_capacity(value.len() * 2);
+    for byte in value.as_bytes() {
+        encoded.push(HEX[(byte >> 4) as usize] as char);
+        encoded.push(HEX[(byte & 0x0f) as usize] as char);
+    }
+    format!("CONVERT(X'{encoded}' USING utf8mb4)")
 }
 
 #[derive(Clone)]
@@ -247,14 +260,23 @@ impl Database {
         email: &str,
         avatar_base64: &str,
     ) -> std::result::Result<(), sqlx::Error> {
-        sqlx::query(
-            "INSERT INTO tb_users (username,password,email,name,dp,mobile,chatcolor,chatfont,chatfontsize,chatfontstyle) VALUES (?,?,?,?,?,?,?,?,?,?)"
-        )
-        .bind(username).bind(password_hash).bind(email).bind(username)
-        .bind(avatar_base64).bind("+7(xxx)xxx-xx-xx").bind("FF000000")
-        .bind("Candara").bind(16_i32).bind("Regular")
-        .execute(&self.pool)
-        .await?;
+        // Use MySQL's simple COM_QUERY protocol for this INSERT. Some shared
+        // database gateways reset the TCP session on the prepared-statement
+        // INSERT path even though reads and phpMyAdmin's ordinary INSERT work.
+        // Every dynamic value is represented as a UTF-8 hex literal, so quotes,
+        // backslashes and SQL metacharacters remain data rather than SQL syntax.
+        let statement = format!(
+            "INSERT INTO tb_users              (username,password,email,name,dp,mobile,chatcolor,chatfont,chatfontsize,chatfontstyle)              VALUES ({},{},{},{},{},{},{},{},16,'Regular')",
+            mysql_utf8_literal(username),
+            mysql_utf8_literal(password_hash),
+            mysql_utf8_literal(email),
+            mysql_utf8_literal(username),
+            mysql_utf8_literal(avatar_base64),
+            mysql_utf8_literal("+7(xxx)xxx-xx-xx"),
+            mysql_utf8_literal("FF000000"),
+            mysql_utf8_literal("Candara"),
+        );
+        (&self.pool).execute(statement.as_str()).await?;
         Ok(())
     }
 
@@ -529,6 +551,20 @@ impl Database {
     }
 }
 
+
+#[cfg(test)]
+mod sql_literal_tests {
+    use super::mysql_utf8_literal;
+
+    #[test]
+    fn user_text_is_encoded_as_hex_and_cannot_break_out_of_literal() {
+        assert_eq!(
+            mysql_utf8_literal("a'b\\c"),
+            "CONVERT(X'6127625C63' USING utf8mb4)"
+        );
+        assert_eq!(mysql_utf8_literal(""), "CONVERT(X'' USING utf8mb4)");
+    }
+}
 
 #[cfg(test)]
 mod integration_tests {
