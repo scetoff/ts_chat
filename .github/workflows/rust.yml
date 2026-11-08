@@ -18,6 +18,7 @@ concurrency:
 
 jobs:
   cargo-check:
+    timeout-minutes: 45
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -48,6 +49,7 @@ jobs:
 
   voice-build:
     needs: cargo-check
+    timeout-minutes: 60
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
