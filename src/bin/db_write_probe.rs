@@ -37,7 +37,7 @@ async fn verify_row_absent(options: &MySqlConnectOptions, username: &str) -> Res
     .fetch_one(&mut conn)
     .await
     .context("Could not verify that the probe row was rolled back")?;
-    conn.close().await.ok();
+    drop(conn);
     Ok(count == 0)
 }
 
@@ -50,11 +50,16 @@ async fn run_probe(
 ) -> Result<bool> {
     println!();
     println!("=== {label} INSERT probe ===");
+    let _ = io::stdout().flush();
 
+    println!("Opening a fresh MySQL connection...");
+    let _ = io::stdout().flush();
     let mut conn = new_connection(options).await?;
     conn.execute("START TRANSACTION")
         .await
         .context("Could not start the rollback-only transaction")?;
+    println!("Transaction started; sending test INSERT...");
+    let _ = io::stdout().flush();
 
     // Same field order and representative values as TSchat registration.
     let password_hash = "$argon2id$v=19$m=19456,t=2,p=1$diagnostic$not-a-real-password-hash";
@@ -104,7 +109,7 @@ async fn run_probe(
                 Err(error) => {
                     println!("SELECT inside transaction failed: {error:?}");
                     let _ = conn.execute("ROLLBACK").await;
-                    conn.close().await.ok();
+                    drop(conn);
                     return Ok(false);
                 }
             }
@@ -113,11 +118,11 @@ async fn run_probe(
                 Ok(_) => println!("ROLLBACK: OK"),
                 Err(error) => {
                     println!("ROLLBACK failed: {error:?}");
-                    conn.close().await.ok();
+                    drop(conn);
                     return Ok(false);
                 }
             }
-            conn.close().await.ok();
+            drop(conn);
 
             let absent = verify_row_absent(options, username).await?;
             println!("Probe row absent after reconnect: {absent}");
@@ -131,7 +136,7 @@ async fn run_probe(
                 Ok(_) => println!("ROLLBACK after failed INSERT: OK"),
                 Err(rollback_error) => println!("ROLLBACK after failed INSERT also failed: {rollback_error:?}"),
             }
-            conn.close().await.ok();
+            drop(conn);
 
             match verify_row_absent(options, username).await {
                 Ok(true) => println!("Probe row absent after reconnect: true"),
@@ -199,7 +204,10 @@ async fn run_diagnostic() -> Result<()> {
     .context("Could not inspect tb_users engine")?;
     let engine: Option<String> = table.map(|row| row.try_get("ENGINE")).transpose()?;
     println!("tb_users engine: {}", engine.as_deref().unwrap_or("NOT FOUND"));
-    conn.close().await.ok();
+    let _ = io::stdout().flush();
+    // Dropping the direct connection closes its socket without waiting for
+    // a graceful COM_QUIT round trip from this hosted MySQL service.
+    drop(conn);
 
     if engine.as_deref() != Some("InnoDB") {
         anyhow::bail!("Expected tb_users to use InnoDB; no write probe was attempted");
