@@ -7,7 +7,10 @@ use sqlx::{
     mysql::{MySqlConnectOptions, MySqlConnection, MySqlSslMode},
     Connection, Executor, Row,
 };
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::{
+    io::{self, Write},
+    time::{SystemTime, UNIX_EPOCH},
+};
 
 fn hex_literal(value: &str) -> String {
     const HEX: &[u8; 16] = b"0123456789ABCDEF";
@@ -141,7 +144,23 @@ async fn run_probe(
 }
 
 #[tokio::main]
-async fn main() -> Result<()> {
+async fn main() {
+    let result = run_diagnostic().await;
+    if let Err(error) = &result {
+        eprintln!("\nDIAGNOSTIC ERROR: {error:#}");
+    }
+
+    println!("\nДиагностика завершена. Нажмите Enter, чтобы закрыть это окно.");
+    let _ = io::stdout().flush();
+    let mut line = String::new();
+    let _ = io::stdin().read_line(&mut line);
+
+    if result.is_err() {
+        std::process::exit(1);
+    }
+}
+
+async fn run_diagnostic() -> Result<()> {
     println!("TSchat MySQL write diagnostic");
     println!("Uses config.toml/.env; credentials are not printed.");
     println!("Each test INSERT is run inside an InnoDB transaction and rolled back.");
