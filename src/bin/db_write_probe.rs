@@ -41,6 +41,14 @@ async fn verify_row_absent(options: &MySqlConnectOptions, username: &str) -> Res
     Ok(count == 0)
 }
 
+async fn report_row_absence(options: &MySqlConnectOptions, username: &str) {
+    match verify_row_absent(options, username).await {
+        Ok(true) => println!("Probe row absent after reconnect: true"),
+        Ok(false) => println!("WARNING: probe row still exists after reconnect; inspect it in phpMyAdmin"),
+        Err(error) => println!("Could not verify probe row after reconnect: {error:#}"),
+    }
+}
+
 async fn run_probe(
     options: &MySqlConnectOptions,
     label: &str,
@@ -108,8 +116,12 @@ async fn run_probe(
                 Ok(count) => println!("Row visible inside transaction: {count}"),
                 Err(error) => {
                     println!("SELECT inside transaction failed: {error:?}");
-                    let _ = conn.execute("ROLLBACK").await;
+                    match conn.execute("ROLLBACK").await {
+                        Ok(_) => println!("ROLLBACK after SELECT failure: OK"),
+                        Err(rollback_error) => println!("ROLLBACK after SELECT failure also failed: {rollback_error:?}"),
+                    }
                     drop(conn);
+                    report_row_absence(options, username).await;
                     return Ok(false);
                 }
             }
@@ -119,6 +131,7 @@ async fn run_probe(
                 Err(error) => {
                     println!("ROLLBACK failed: {error:?}");
                     drop(conn);
+                    report_row_absence(options, username).await;
                     return Ok(false);
                 }
             }
@@ -218,6 +231,9 @@ async fn run_diagnostic() -> Result<()> {
     let simple_user = format!("__tschat_diag_s_{stamp:x}");
     let prepared_email = format!("{prepared_user}@example.invalid");
     let simple_email = format!("{simple_user}@example.invalid");
+    println!("Prepared probe username: {prepared_user}");
+    println!("Simple-query probe username: {simple_user}");
+    let _ = io::stdout().flush();
 
     let prepared_ok = run_probe(
         &options,
