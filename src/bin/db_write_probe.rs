@@ -4,12 +4,12 @@ mod config;
 use anyhow::{Context, Result};
 use config::Config;
 use sqlx::{
-    mysql::{MySqlConnectOptions, MySqlConnection, MySqlSslMode},
+    mysql::{MySqlConnectOptions, MySqlConnection, MySqlPoolOptions, MySqlSslMode},
     Connection, Executor, Row,
 };
 use std::{
     io::{self, Write},
-    time::{SystemTime, UNIX_EPOCH},
+    time::{Duration, SystemTime, UNIX_EPOCH},
 };
 
 fn hex_literal(value: &str) -> String {
@@ -119,6 +119,105 @@ async fn run_autocommit_probe(
         match verify_row_absent(options, username).await {
             Ok(absent) => println!("Probe account absent after cleanup: {absent}"),
             Err(error) => println!("Could not confirm cleanup after reconnect: {error:#}"),
+        }
+    }
+    Ok(persisted)
+}
+
+async fn run_pool_registration_probe(
+    options: &MySqlConnectOptions,
+    username: &str,
+    email: &str,
+) -> Result<bool> {
+    println!();
+    println!("=== TSchat connection-pool registration probe ===");
+    println!("Uses the same one-connection pool, pre-insert SELECT, and simple INSERT as Database::register.");
+    let _ = io::stdout().flush();
+
+    let pool = MySqlPoolOptions::new()
+        .max_connections(1)
+        .acquire_timeout(Duration::from_secs(30))
+        .idle_timeout(Some(Duration::from_secs(5)))
+        .test_before_acquire(true)
+        .connect_with(options.clone())
+        .await
+        .context("Could not create TSchat-style MySQL connection pool")?;
+
+    println!("Step 1/2: checking username and email through the pool...");
+    let conflicts = sqlx::query(
+        "SELECT (SELECT COUNT(*) FROM tb_users WHERE username = ?) AS username_count, (SELECT COUNT(*) FROM tb_users WHERE email = ?) AS email_count"
+    )
+    .bind(username)
+    .bind(email)
+    .fetch_one(&pool)
+    .await
+    .context("TSchat-style pre-insert conflict check failed")?;
+    let username_count: i64 = conflicts.try_get("username_count")?;
+    let email_count: i64 = conflicts.try_get("email_count")?;
+    println!("Existing username matches: {username_count}; email matches: {email_count}");
+    if username_count != 0 || email_count != 0 {
+        pool.close().await;
+        anyhow::bail!("Unique pool probe username/email unexpectedly already exist");
+    }
+
+    let password_hash = "$argon2id$v=19$m=19456,t=2,p=1$diagnostic$not-a-real-password-hash";
+    let statement = format!(
+        "INSERT INTO tb_users (username,password,email,name,dp,mobile,chatcolor,chatfont,chatfontsize,chatfontstyle) VALUES ({},{},{},{},{},{},{},{},16,'Regular')",
+        hex_literal(username),
+        hex_literal(password_hash),
+        hex_literal(email),
+        hex_literal(username),
+        hex_literal(""),
+        hex_literal("+7(xxx)xxx-xx-xx"),
+        hex_literal("FF000000"),
+        hex_literal("Candara"),
+    );
+
+    println!("Step 2/2: sending the application INSERT through the pool...");
+    let _ = io::stdout().flush();
+    let insert_result = (&pool).execute(statement.as_str()).await;
+    match insert_result {
+        Ok(result) => println!("Pool INSERT acknowledgement: OK ({} row(s) affected)", result.rows_affected()),
+        Err(error) => println!("Pool INSERT returned error: {error:?}"),
+    }
+
+    pool.close().await;
+
+    println!("Checking persisted state using a new direct connection...");
+    let _ = io::stdout().flush();
+    let mut verify = new_connection(options).await?;
+    let count: i64 = sqlx::query_scalar(
+        "SELECT COUNT(*) FROM tb_users WHERE username = ? AND email = ? AND password = ?"
+    )
+    .bind(username)
+    .bind(email)
+    .bind(password_hash)
+    .fetch_one(&mut verify)
+    .await
+    .context("Could not verify TSchat-style pool INSERT from a fresh connection")?;
+    let persisted = count > 0;
+    println!("Pool probe account persisted after reconnect: {persisted}");
+
+    if persisted {
+        println!("Attempting to remove only this pool-probe account...");
+        match sqlx::query(
+            "DELETE FROM tb_users WHERE username = ? AND email = ? AND password = ?"
+        )
+        .bind(username)
+        .bind(email)
+        .bind(password_hash)
+        .execute(&mut verify)
+        .await
+        {
+            Ok(result) => println!("Pool probe cleanup: {} row(s) deleted", result.rows_affected()),
+            Err(error) => println!("WARNING: pool probe cleanup failed: {error:?}; remove username {username} in phpMyAdmin"),
+        }
+    }
+    drop(verify);
+    if persisted {
+        match verify_row_absent(options, username).await {
+            Ok(absent) => println!("Pool probe account absent after cleanup: {absent}"),
+            Err(error) => println!("Could not confirm pool probe cleanup: {error:#}"),
         }
     }
     Ok(persisted)
@@ -308,9 +407,12 @@ async fn run_diagnostic() -> Result<()> {
     let simple_email = format!("{simple_user}@example.invalid");
     let autocommit_user = format!("__tschat_diag_auto_{stamp:x}");
     let autocommit_email = format!("{autocommit_user}@example.invalid");
+    let pool_user = format!("__tschat_diag_pool_{stamp:x}");
+    let pool_email = format!("{pool_user}@example.invalid");
     println!("Prepared probe username: {prepared_user}");
     println!("Simple-query probe username: {simple_user}");
     println!("Autocommit probe username: {autocommit_user}");
+    println!("Pool probe username: {pool_user}");
     let _ = io::stdout().flush();
 
     let prepared_ok = run_probe(
@@ -350,10 +452,22 @@ async fn run_diagnostic() -> Result<()> {
         false
     });
 
+    let pool_ok = run_pool_registration_probe(
+        &options,
+        &pool_user,
+        &pool_email,
+    )
+    .await
+    .unwrap_or_else(|error| {
+        println!("TSchat-style pool probe could not complete: {error:#}");
+        false
+    });
+
     println!();
     println!("=== SUMMARY ===");
     println!("Prepared INSERT + rollback: {}", if prepared_ok { "PASS" } else { "FAIL" });
     println!("Simple INSERT + rollback: {}", if simple_ok { "PASS" } else { "FAIL" });
-    println!("Application-style autocommit INSERT persisted: {}", if autocommit_ok { "YES (then cleanup attempted)" } else { "NO" });
+    println!("Direct autocommit INSERT persisted: {}", if autocommit_ok { "YES (then cleanup attempted)" } else { "NO" });
+    println!("TSchat-style pooled INSERT persisted: {}", if pool_ok { "YES (then cleanup attempted)" } else { "NO" });
     Ok(())
 }
