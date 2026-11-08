@@ -92,6 +92,14 @@ pub struct TsChatApp {
     chat_style_open: bool,
     last_viewport_screen: Screen,
     ui_textures: std::collections::HashMap<String, egui::TextureHandle>,
+    tavern_animation: Option<AnimatedGif>,
+}
+
+struct AnimatedGif {
+    frames: Vec<egui::TextureHandle>,
+    frame_durations: Vec<Duration>,
+    current_frame: usize,
+    next_frame_at: Instant,
 }
 
 
@@ -342,6 +350,23 @@ fn legacy_static_image(
     }
 }
 
+fn legacy_animated_image(
+    ui: &egui::Ui,
+    animation: Option<&AnimatedGif>,
+    rect: egui::Rect,
+) {
+    if let Some(animation) = animation {
+        if let Some(texture) = animation.frames.get(animation.current_frame) {
+            ui.painter().image(
+                texture.id(),
+                rect,
+                egui::Rect::from_min_max(egui::Pos2::ZERO, egui::pos2(1.0, 1.0)),
+                egui::Color32::WHITE,
+            );
+        }
+    }
+}
+
 fn legacy_image_button(
     ui: &mut egui::Ui,
     textures: &std::collections::HashMap<String, egui::TextureHandle>,
@@ -468,6 +493,7 @@ impl Default for TsChatApp {
             chat_style_open: false,
             last_viewport_screen: Screen::Login,
             ui_textures: std::collections::HashMap::new(),
+            tavern_animation: None,
         }
     }
 }
@@ -1579,9 +1605,8 @@ impl TsChatApp {
             return;
         }
 
-        let assets: [(&str, &[u8]); 36] = [
+        let assets: [(&str, &[u8]); 35] = [
             ("brand_logo", include_bytes!("../Resources/32323.png")),
-            ("tavern_art", include_bytes!("../Resources/222.gif")),
             ("theme_day", include_bytes!("../Resources/b_day.png")),
             ("theme_night", include_bytes!("../Resources/b_night.png")),
             ("chat_icon", include_bytes!("../assets/ICOCOS1.png")),
@@ -1634,19 +1659,96 @@ impl TsChatApp {
         self.ui_textures = loaded;
     }
 
+    fn ensure_tavern_animation(&mut self, ctx: &egui::Context) {
+        if self.tavern_animation.is_some() {
+            return;
+        }
+
+        use image::AnimationDecoder;
+
+        let gif_bytes = include_bytes!("../Resources/222.gif");
+        let decoder = match image::codecs::gif::GifDecoder::new(Cursor::new(gif_bytes.as_slice())) {
+            Ok(decoder) => decoder,
+            Err(error) => {
+                eprintln!("Не удалось прочитать GIF главного экрана: {error}");
+                return;
+            }
+        };
+        let decoded_frames = match decoder.into_frames().collect_frames() {
+            Ok(frames) => frames,
+            Err(error) => {
+                eprintln!("Не удалось декодировать кадры GIF главного экрана: {error}");
+                return;
+            }
+        };
+        if decoded_frames.is_empty() {
+            eprintln!("GIF главного экрана не содержит кадров.");
+            return;
+        }
+
+        let mut textures = Vec::with_capacity(decoded_frames.len());
+        let mut durations = Vec::with_capacity(decoded_frames.len());
+        for (index, frame) in decoded_frames.into_iter().enumerate() {
+            let (numerator_ms, denominator_ms) = frame.delay().numer_denom_ms();
+            let delay_ms = if denominator_ms == 0 || numerator_ms == 0 {
+                100
+            } else {
+                (numerator_ms / denominator_ms).clamp(20, 1000)
+            };
+            let rgba = frame.into_buffer();
+            let size = [rgba.width() as usize, rgba.height() as usize];
+            let color = egui::ColorImage::from_rgba_unmultiplied(size, rgba.as_raw());
+            let texture = ctx.load_texture(
+                format!("tschat-tavern-gif-frame-{index}"),
+                color,
+                egui::TextureOptions::LINEAR,
+            );
+            textures.push(texture);
+            durations.push(Duration::from_millis(delay_ms as u64));
+        }
+
+        let first_delay = durations.first().copied().unwrap_or(Duration::from_millis(100));
+        self.tavern_animation = Some(AnimatedGif {
+            frames: textures,
+            frame_durations: durations,
+            current_frame: 0,
+            next_frame_at: Instant::now() + first_delay,
+        });
+    }
+
+    fn advance_tavern_animation(&mut self, ctx: &egui::Context) {
+        let Some(animation) = self.tavern_animation.as_mut() else {
+            return;
+        };
+        if animation.frames.len() <= 1 {
+            return;
+        }
+
+        let now = Instant::now();
+        if now >= animation.next_frame_at {
+            animation.current_frame = (animation.current_frame + 1) % animation.frames.len();
+            let delay = animation.frame_durations[animation.current_frame];
+            animation.next_frame_at = now + delay;
+        }
+
+        let remaining = animation.next_frame_at.saturating_duration_since(Instant::now());
+        ctx.request_repaint_after(remaining.max(Duration::from_millis(1)));
+    }
+
     fn draw_legacy_auth_screen(&mut self, ctx: &egui::Context, ui: &mut egui::Ui) {
         let origin = ui.max_rect().min;
         let dark = self.dark_theme;
         let background = if dark { egui::Color32::BLACK } else { egui::Color32::WHITE };
         let foreground = if dark { egui::Color32::WHITE } else { egui::Color32::BLACK };
-        let field_foreground = egui::Color32::BLACK;
+        // Keep text readable against egui's dark/light TextEdit fill.
+        let field_foreground = foreground;
 
         ui.painter().rect_filled(ui.max_rect(), 0.0, background);
         legacy_title_bar(ui, ctx, &self.ui_textures, origin, 590.0, -1.0, 509.0, 550.0);
 
         if self.screen == Screen::Login {
             legacy_static_image(ui, &self.ui_textures, "brand_logo", legacy_rect(origin, 345.0, 32.0, 193.0, 140.0));
-            legacy_static_image(ui, &self.ui_textures, "tavern_art", legacy_rect(origin, 273.0, 95.0, 315.0, 315.0));
+            legacy_animated_image(ui, self.tavern_animation.as_ref(), legacy_rect(origin, 273.0, 95.0, 315.0, 315.0));
 
             let group = legacy_rect(origin, 17.0, 41.0, 260.0, 389.0);
             legacy_group(ui, group, background, egui::Color32::DARK_GRAY);
@@ -1741,7 +1843,7 @@ impl TsChatApp {
             }
         } else {
             legacy_static_image(ui, &self.ui_textures, "brand_logo", legacy_rect(origin, 80.0, 32.0, 193.0, 140.0));
-            legacy_static_image(ui, &self.ui_textures, "tavern_art", legacy_rect(origin, 4.0, 95.0, 315.0, 315.0));
+            legacy_animated_image(ui, self.tavern_animation.as_ref(), legacy_rect(origin, 4.0, 95.0, 315.0, 315.0));
 
             let group = legacy_rect(origin, 334.0, 41.0, 243.0, 389.0);
             legacy_group(ui, group, background, egui::Color32::DARK_GRAY);
@@ -2417,6 +2519,10 @@ impl eframe::App for TsChatApp {
         self.ensure_avatar_texture(ctx);
         self.ensure_smiley_textures(ctx);
         self.ensure_legacy_ui_textures(ctx);
+        if matches!(self.screen, Screen::Login | Screen::Register) {
+            self.ensure_tavern_animation(ctx);
+            self.advance_tavern_animation(ctx);
+        }
         if self.show_friend_profile {
             self.ensure_friend_avatar_texture(ctx);
         }
