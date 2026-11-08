@@ -185,7 +185,7 @@ async fn run_diagnostic() -> Result<()> {
     let db_name: String = row.try_get("db_name")?;
     let account_name: String = row.try_get("account_name")?;
     let server_version: String = row.try_get("server_version")?;
-    let max_connections: i64 = row.try_get("max_connections")?;
+    let max_connections: u64 = row.try_get("max_connections")?;
     println!("Database: {db_name}");
     println!("MySQL account: {account_name}");
     println!("Server: {server_version}");
