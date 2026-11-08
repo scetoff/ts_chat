@@ -49,6 +49,81 @@ async fn report_row_absence(options: &MySqlConnectOptions, username: &str) {
     }
 }
 
+async fn run_autocommit_probe(
+    options: &MySqlConnectOptions,
+    username: &str,
+    email: &str,
+) -> Result<bool> {
+    println!();
+    println!("=== Application-style autocommit INSERT probe ===");
+    println!("This matches TSchat registration: one INSERT, no explicit transaction.");
+    let _ = io::stdout().flush();
+
+    let password_hash = "$argon2id$v=19$m=19456,t=2,p=1$diagnostic$not-a-real-password-hash";
+    let statement = format!(
+        "INSERT INTO tb_users (username,password,email,name,dp,mobile,chatcolor,chatfont,chatfontsize,chatfontstyle) VALUES ({},{},{},{},{},{},{},{},16,'Regular')",
+        hex_literal(username),
+        hex_literal(password_hash),
+        hex_literal(email),
+        hex_literal(username),
+        hex_literal(""),
+        hex_literal("+7(xxx)xxx-xx-xx"),
+        hex_literal("FF000000"),
+        hex_literal("Candara"),
+    );
+
+    println!("Opening fresh connection and sending one autocommit INSERT...");
+    let _ = io::stdout().flush();
+    let mut conn = new_connection(options).await?;
+    match conn.execute(statement.as_str()).await {
+        Ok(result) => println!("INSERT acknowledgement: OK ({} row(s) affected)", result.rows_affected()),
+        Err(error) => println!("INSERT returned error: {error:?}"),
+    }
+    // Do not send a second command over the connection used for INSERT.
+    drop(conn);
+
+    println!("Opening a separate connection to check whether the account persisted...");
+    let _ = io::stdout().flush();
+    let mut verify = new_connection(options).await?;
+    let row = sqlx::query(
+        "SELECT COUNT(*) AS row_count FROM tb_users WHERE username = ? AND email = ? AND password = ?"
+    )
+    .bind(username)
+    .bind(email)
+    .bind(password_hash)
+    .fetch_one(&mut verify)
+    .await
+    .context("Could not verify autocommit INSERT from a fresh connection")?;
+    let count: i64 = row.try_get("row_count")?;
+    let persisted = count > 0;
+    println!("Probe account persisted after reconnect: {persisted}");
+
+    if persisted {
+        println!("Removing only this uniquely marked diagnostic account...");
+        match sqlx::query(
+            "DELETE FROM tb_users WHERE username = ? AND email = ? AND password = ?"
+        )
+        .bind(username)
+        .bind(email)
+        .bind(password_hash)
+        .execute(&mut verify)
+        .await
+        {
+            Ok(result) => println!("Diagnostic cleanup: {} row(s) deleted", result.rows_affected()),
+            Err(error) => println!("WARNING: automatic cleanup failed: {error:?}; remove username {username} manually in phpMyAdmin"),
+        }
+    }
+
+    drop(verify);
+    if persisted {
+        match verify_row_absent(options, username).await {
+            Ok(absent) => println!("Probe account absent after cleanup: {absent}"),
+            Err(error) => println!("Could not confirm cleanup after reconnect: {error:#}"),
+        }
+    }
+    Ok(persisted)
+}
+
 async fn run_probe(
     options: &MySqlConnectOptions,
     label: &str,
@@ -231,8 +306,11 @@ async fn run_diagnostic() -> Result<()> {
     let simple_user = format!("__tschat_diag_s_{stamp:x}");
     let prepared_email = format!("{prepared_user}@example.invalid");
     let simple_email = format!("{simple_user}@example.invalid");
+    let autocommit_user = format!("__tschat_diag_auto_{stamp:x}");
+    let autocommit_email = format!("{autocommit_user}@example.invalid");
     println!("Prepared probe username: {prepared_user}");
     println!("Simple-query probe username: {simple_user}");
+    println!("Autocommit probe username: {autocommit_user}");
     let _ = io::stdout().flush();
 
     let prepared_ok = run_probe(
@@ -261,10 +339,21 @@ async fn run_diagnostic() -> Result<()> {
         false
     });
 
+    let autocommit_ok = run_autocommit_probe(
+        &options,
+        &autocommit_user,
+        &autocommit_email,
+    )
+    .await
+    .unwrap_or_else(|error| {
+        println!("Autocommit probe could not complete: {error:#}");
+        false
+    });
+
     println!();
     println!("=== SUMMARY ===");
     println!("Prepared INSERT + rollback: {}", if prepared_ok { "PASS" } else { "FAIL" });
     println!("Simple INSERT + rollback: {}", if simple_ok { "PASS" } else { "FAIL" });
-    println!("No test account should remain in tb_users.");
+    println!("Application-style autocommit INSERT persisted: {}", if autocommit_ok { "YES (then cleanup attempted)" } else { "NO" });
     Ok(())
 }
