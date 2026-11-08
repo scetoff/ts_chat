@@ -36,6 +36,15 @@ jobs:
           path: target/release/tschat.exe
           if-no-files-found: error
           retention-days: 14
+      - name: Build Windows MySQL write diagnostic
+        run: cargo build --release --bin db_write_probe
+      - name: Upload Windows MySQL write diagnostic
+        uses: actions/upload-artifact@v4
+        with:
+          name: tschat-mysql-write-probe
+          path: target/release/db_write_probe.exe
+          if-no-files-found: error
+          retention-days: 14
 
   voice-build:
     needs: cargo-check
