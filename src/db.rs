@@ -52,6 +52,7 @@ fn mysql_utf8_literal(value: &str) -> String {
 #[derive(Clone)]
 pub struct Database {
     pool: MySqlPool,
+    connect_options: MySqlConnectOptions,
 }
 
 impl Database {
@@ -60,23 +61,28 @@ impl Database {
         Self::connect_url(&config.mysql_url()).await
     }
 
-    /// Connect using an explicit URL for the guarded disposable-database integration test.
-    async fn connect_url(url: &str) -> Result<Self> {
-        // FreeDB documents TLS support on port 3306. Require encryption and keep
-        // a small pool for shared/free database hosting; validate idle sockets before reuse.
-        let options = url.parse::<MySqlConnectOptions>()?
-            .ssl_mode(MySqlSslMode::Required);
-        let pool = MySqlPoolOptions::new()
+    /// Create the one-connection pool used by the desktop client and registration probes.
+    async fn create_pool(options: &MySqlConnectOptions) -> Result<MySqlPool> {
+        MySqlPoolOptions::new()
             .max_connections(1)
             .acquire_timeout(Duration::from_secs(30))
             // FreeDB may cap simultaneous sessions per account. Release an
             // idle pooled socket quickly so phpMyAdmin/other clients can connect.
             .idle_timeout(Some(Duration::from_secs(5)))
             .test_before_acquire(true)
-            .connect_with(options)
+            .connect_with(options.clone())
             .await
-            .context("Не удалось подключиться к MySQL")?;
-        Ok(Self { pool })
+            .context("Не удалось подключиться к MySQL")
+    }
+
+    /// Connect using an explicit URL for the guarded disposable-database integration test.
+    async fn connect_url(url: &str) -> Result<Self> {
+        // FreeDB documents TLS support on port 3306. Require encryption and keep
+        // a small pool for shared/free database hosting; validate idle sockets before reuse.
+        let connect_options = url.parse::<MySqlConnectOptions>()?
+            .ssl_mode(MySqlSslMode::Required);
+        let pool = Self::create_pool(&connect_options).await?;
+        Ok(Self { pool, connect_options })
     }
 
 
@@ -328,6 +334,32 @@ impl Database {
     }
 
     pub async fn register(
+        &self,
+        username: &str,
+        password_hash: &str,
+        email: &str,
+        avatar_base64: &str,
+    ) -> Result<()> {
+        // Registration uses a fresh one-connection pool instead of reusing the
+        // long-lived app pool that may have been through schema checks or sat idle
+        // while the user filled the form. FreeDB/shared gateways can reset those
+        // older sessions without SQLx having received a clean server shutdown.
+        let registration_pool = Self::create_pool(&self.connect_options)
+            .await
+            .context("Не удалось открыть новое соединение MySQL для регистрации")?;
+        let registration_db = Self {
+            pool: registration_pool,
+            connect_options: self.connect_options.clone(),
+        };
+
+        let result = registration_db
+            .register_on_fresh_pool(username, password_hash, email, avatar_base64)
+            .await;
+        registration_db.pool.close().await;
+        result
+    }
+
+    async fn register_on_fresh_pool(
         &self,
         username: &str,
         password_hash: &str,
