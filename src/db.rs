@@ -95,7 +95,7 @@ impl Database {
     /// between probes (test_before_acquire is enabled in connect_url).
     pub async fn verify_schema(&self) -> Result<()> {
         match self.verify_schema_once().await {
-            Ok(()) => Ok(()),
+            Ok(()) => {}
             Err(first_error) if is_transient_connection_error(&first_error) => {
                 // A transport reset is not evidence of a missing table. Give the
                 // host a moment and retry the read-only checks on a fresh pooled session.
@@ -104,10 +104,50 @@ impl Database {
                     anyhow::anyhow!(
                         "Проверка схемы MySQL не удалась после переподключения.                          Первая ошибка: {first_error:#}. Повторная ошибка: {retry_error:#}"
                     )
-                })
+                })?;
             }
-            Err(error) => Err(error),
+            Err(error) => return Err(error),
         }
+
+        // The legacy VB.NET project created tb_chat with DEFAULT CHARSET=latin1,
+        // which cannot represent Russian. Upgrade only this text column; MySQL
+        // converts existing values in place and keeps the row/id and all users.
+        self.ensure_chat_utf8mb4().await
+    }
+
+    async fn ensure_chat_utf8mb4(&self) -> Result<()> {
+        let charset: Option<String> = sqlx::query_scalar(
+            "SELECT CHARACTER_SET_NAME
+             FROM information_schema.COLUMNS
+             WHERE TABLE_SCHEMA = DATABASE()
+               AND TABLE_NAME = 'tb_chat'
+               AND COLUMN_NAME = 'chat'"
+        )
+        .fetch_optional(&self.pool)
+        .await
+        .context("Не удалось определить кодировку tb_chat.chat")?;
+
+        let charset = charset.context("В таблице tb_chat не найден столбец chat")?;
+        if charset.eq_ignore_ascii_case("utf8mb4") {
+            return Ok(());
+        }
+
+        let pool = Self::create_pool(&self.connect_options).await
+            .context("Не удалось открыть MySQL-соединение для настройки UTF-8 чата")?;
+        let result = (&pool)
+            .execute(
+                "ALTER TABLE tb_chat
+                 MODIFY chat LONGTEXT
+                 CHARACTER SET utf8mb4
+                 COLLATE utf8mb4_unicode_ci
+                 NOT NULL"
+            )
+            .await;
+        pool.close().await;
+        result.context(format!(
+            "Не удалось перевести tb_chat.chat из {charset} в utf8mb4"
+        ))?;
+        Ok(())
     }
 
     async fn verify_schema_once(&self) -> Result<()> {
