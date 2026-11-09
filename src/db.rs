@@ -80,7 +80,8 @@ impl Database {
         // FreeDB documents TLS support on port 3306. Require encryption and keep
         // a small pool for shared/free database hosting; validate idle sockets before reuse.
         let connect_options = url.parse::<MySqlConnectOptions>()?
-            .ssl_mode(MySqlSslMode::Required);
+            .ssl_mode(MySqlSslMode::Required)
+            .charset("utf8mb4");
         let pool = Self::create_pool(&connect_options).await?;
         Ok(Self { pool, connect_options })
     }
@@ -453,15 +454,35 @@ impl Database {
     }
 
     pub async fn write_chat(&self, chat: &str) -> Result<()> {
-        sqlx::query("UPDATE tb_chat SET chat = ? WHERE id = 1")
-            .bind(chat).execute(&self.pool).await?;
+        // Use one fresh connection and MySQL's simple-query protocol. FreeDB
+        // accepts ordinary COM_QUERY writes reliably, while prepared writes on
+        // older/pooled sessions can be followed by a TCP reset. Hex encoding
+        // preserves Cyrillic, quotes, newlines and emoji without SQL injection.
+        let pool = Self::create_pool(&self.connect_options).await
+            .context("Не удалось открыть свежее соединение для записи общего чата")?;
+        let statement = format!(
+            "UPDATE tb_chat SET chat = {} WHERE id = 1",
+            mysql_utf8_literal(chat),
+        );
+        let result = (&pool).execute(statement.as_str()).await;
+        pool.close().await;
+        result.context("Не удалось записать сообщение в tb_chat")?;
         Ok(())
     }
 
     pub async fn send_private_message(&self, to: &str, from: &str, subject: &str, message: &str) -> Result<()> {
-        sqlx::query("INSERT INTO tb_pm (username,fromuser,subject,message,isread) VALUES (?,?,?,?,0)")
-            .bind(to).bind(from).bind(subject).bind(message)
-            .execute(&self.pool).await?;
+        let pool = Self::create_pool(&self.connect_options).await
+            .context("Не удалось открыть свежее соединение для личного сообщения")?;
+        let statement = format!(
+            "INSERT INTO tb_pm (username,fromuser,subject,message,isread) VALUES ({},{},{},{},0)",
+            mysql_utf8_literal(to),
+            mysql_utf8_literal(from),
+            mysql_utf8_literal(subject),
+            mysql_utf8_literal(message),
+        );
+        let result = (&pool).execute(statement.as_str()).await;
+        pool.close().await;
+        result.context("Не удалось записать личное сообщение в tb_pm")?;
         Ok(())
     }
 
