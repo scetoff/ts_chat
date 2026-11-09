@@ -926,7 +926,7 @@ impl TsChatApp {
                     egui::Id::new("legacy-paint-window-drag"),
                     egui::Sense::drag(),
                 );
-                if drag_handle.dragged() { drag_delta = drag_handle.drag_delta(); }
+                if drag_handle.dragged() { drag_delta = ctx.input(|input| input.pointer.delta()); }
                 legacy_static_image(ui, &textures, "chat_icon", legacy_rect(origin, 0.0, 0.0, 35.0, 35.0));
                 if let Some(response) = legacy_image_button(
                     ui, &textures, "minimize", legacy_rect(origin, 191.0, 0.0, 35.0, 35.0),
@@ -955,6 +955,12 @@ impl TsChatApp {
                     "Заливка", egui::Color32::DARK_GRAY, egui::Color32::WHITE, 11.0,
                 ).clicked() {
                     fill_requested = true;
+                }
+                if legacy_button(
+                    ui, legacy_rect(origin, 135.0, 35.0, 43.0, 24.0),
+                    "Сброс", egui::Color32::DARK_GRAY, egui::Color32::WHITE, 10.0,
+                ).clicked() {
+                    clear_requested = true;
                 }
 
                 ui.allocate_ui_at_rect(legacy_rect(origin, 183.0, 37.0, 48.0, 21.0), |size_ui| {
@@ -1397,7 +1403,7 @@ impl TsChatApp {
                     egui::Id::new("legacy-radio-window-drag"),
                     egui::Sense::drag(),
                 );
-                if drag_handle.dragged() { drag_delta = drag_handle.drag_delta(); }
+                if drag_handle.dragged() { drag_delta = ctx.input(|input| input.pointer.delta()); }
                 legacy_static_image(ui, &textures, "chat_icon", legacy_rect(origin, 0.0, 0.0, 35.0, 35.0));
                 if let Some(response) = legacy_image_button(
                     ui, &textures, "minimize", legacy_rect(origin, 262.0, 0.0, 35.0, 35.0),
@@ -1769,6 +1775,25 @@ impl TsChatApp {
         ctx.request_repaint_after(remaining.max(Duration::from_millis(1)));
     }
 
+    fn advance_radio_animation(&mut self, ctx: &egui::Context) {
+        let Some(animation) = self.radio_animation.as_mut() else {
+            return;
+        };
+        if animation.frames.len() <= 1 {
+            return;
+        }
+
+        let now = Instant::now();
+        if now >= animation.next_frame_at {
+            animation.current_frame = (animation.current_frame + 1) % animation.frames.len();
+            let delay = animation.frame_durations[animation.current_frame];
+            animation.next_frame_at = now + delay;
+        }
+
+        let remaining = animation.next_frame_at.saturating_duration_since(Instant::now());
+        ctx.request_repaint_after(remaining.max(Duration::from_millis(1)));
+    }
+
     fn draw_legacy_auth_screen(&mut self, ctx: &egui::Context, ui: &mut egui::Ui) {
         let origin = ui.max_rect().min;
         let dark = self.dark_theme;
@@ -1962,7 +1987,7 @@ impl TsChatApp {
             let rect = legacy_rect(origin, x, menu_y, width, 27.0);
             let response = ui.put(
                 rect,
-                egui::Button::new(egui::RichText::new(text).color(foreground).size(12.0))
+                egui::Button::new(egui::RichText::new(text).color(foreground).size(if self.profile_expanded { 12.0 } else { 10.5 }))
                     .fill(menu_fill)
                     .stroke(egui::Stroke::new(0.0, menu_fill)),
             );
@@ -1972,27 +1997,27 @@ impl TsChatApp {
         };
 
         let file_icon = if dark { "file_dark" } else { "file_light" };
-        if menu_item(ui, "Файл", file_icon, 67.0).clicked() {
+        if menu_item(ui, "Файл", file_icon, if self.profile_expanded { 67.0 } else { 52.0 }).clicked() {
             self.edit_profile_open = true;
         }
         let fonts_icon = if dark { "fonts_dark" } else { "fonts_light" };
-        if menu_item(ui, "Шрифты", fonts_icon, 90.0).clicked() {
+        if menu_item(ui, "Шрифты", fonts_icon, if self.profile_expanded { 90.0 } else { 66.0 }).clicked() {
             self.chat_style_open = true;
         }
         let clear_icon = if dark { "clear_dark" } else { "clear_light" };
-        if menu_item(ui, "Очистка сообщений", clear_icon, 161.0).clicked() {
+        if menu_item(ui, "Очистка сообщений", clear_icon, if self.profile_expanded { 161.0 } else { 116.0 }).clicked() {
             self.show_clear_chat_confirmation = true;
         }
         let pm_icon = if dark { "pm_dark" } else { "pm_light" };
-        if menu_item(ui, "Личные сообщения", pm_icon, 150.0).clicked() {
+        if menu_item(ui, "Личные сообщения", pm_icon, if self.profile_expanded { 150.0 } else { 108.0 }).clicked() {
             self.load_inbox();
         }
         let radio_icon = if dark { "radio_dark" } else { "radio_light" };
-        if menu_item(ui, "Развлечения", radio_icon, 98.0).clicked() {
+        if menu_item(ui, "Развлечения", radio_icon, if self.profile_expanded { 98.0 } else { 82.0 }).clicked() {
             self.radio_open = true;
         }
         let notes_icon = if dark { "notes_dark" } else { "notes_light" };
-        if menu_item(ui, "Заметки", notes_icon, 78.0).clicked() {
+        if menu_item(ui, "Заметки", notes_icon, if self.profile_expanded { 78.0 } else { 66.0 }).clicked() {
             self.notes_open = true;
         }
         drop(menu_item);
@@ -2054,24 +2079,7 @@ impl TsChatApp {
                     }
                 });
             });
-    
-            let profile_icon = if dark { "profile_dark" } else { "profile_light" };
-            legacy_static_image(
-                ui,
-                &self.ui_textures,
-                profile_icon,
-                legacy_rect(origin, 466.0, 91.0, 32.0, 243.0),
-            );
-            let profile_hit = ui.interact(
-                legacy_rect(origin, 466.0, 91.0, 32.0, 243.0),
-                egui::Id::new("legacy-profile-button"),
-                egui::Sense::click(),
-            );
-            if profile_hit.clicked() {
-                self.edit_profile_open = true;
-            }
-    
-            legacy_static_image(
+legacy_static_image(
                 ui,
                 &self.ui_textures,
                 "brand_logo",
