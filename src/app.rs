@@ -47,6 +47,7 @@ pub struct TsChatApp {
     friend_profile: Option<User>,
     show_friend_profile: bool,
     notes_open: bool,
+    notes_window_pos: egui::Pos2,
     note_strokes: Vec<DrawStroke>,
     note_current_stroke: Option<DrawStroke>,
     note_brush_color: egui::Color32,
@@ -61,6 +62,8 @@ pub struct TsChatApp {
     radio_status: String,
     radio_player: Option<RadioPlayback>,
     radio_pending: Option<(std::sync::mpsc::Receiver<Result<RadioPlayback, String>>, String)>,
+    radio_animation: Option<AnimatedGif>,
+    radio_window_pos: egui::Pos2,
     smiley_textures: Vec<(String, egui::TextureHandle)>,
     command_input: String,
     command_status: String,
@@ -89,12 +92,14 @@ pub struct TsChatApp {
     voice_status: String,
     show_smileys: bool,
     edit_profile_open: bool,
+    profile_expanded: bool,
     chat_style_open: bool,
-    last_viewport_screen: Screen,
+    last_viewport_size: [f32; 2],
     ui_textures: std::collections::HashMap<String, egui::TextureHandle>,
     tavern_animation: Option<AnimatedGif>,
 }
 
+#[derive(Clone)]
 struct AnimatedGif {
     frames: Vec<egui::TextureHandle>,
     frame_durations: Vec<Duration>,
@@ -367,6 +372,40 @@ fn legacy_animated_image(
     }
 }
 
+fn decode_gif_animation(ctx: &egui::Context, prefix: &str, bytes: &[u8]) -> Option<AnimatedGif> {
+    use image::AnimationDecoder;
+    let decoder = image::codecs::gif::GifDecoder::new(Cursor::new(bytes)).ok()?;
+    let decoded = decoder.into_frames().collect_frames().ok()?;
+    if decoded.is_empty() { return None; }
+
+    let mut frames = Vec::with_capacity(decoded.len());
+    let mut frame_durations = Vec::with_capacity(decoded.len());
+    for (index, frame) in decoded.into_iter().enumerate() {
+        let (numerator_ms, denominator_ms) = frame.delay().numer_denom_ms();
+        let delay_ms = if numerator_ms == 0 || denominator_ms == 0 {
+            100
+        } else {
+            (numerator_ms / denominator_ms).clamp(20, 1000)
+        };
+        let rgba = frame.into_buffer();
+        let size = [rgba.width() as usize, rgba.height() as usize];
+        let image = egui::ColorImage::from_rgba_unmultiplied(size, rgba.as_raw());
+        frames.push(ctx.load_texture(
+            format!("{prefix}-{index}"),
+            image,
+            egui::TextureOptions::LINEAR,
+        ));
+        frame_durations.push(Duration::from_millis(delay_ms as u64));
+    }
+    let first_delay = frame_durations.first().copied().unwrap_or(Duration::from_millis(100));
+    Some(AnimatedGif {
+        frames,
+        frame_durations,
+        current_frame: 0,
+        next_frame_at: Instant::now() + first_delay,
+    })
+}
+
 fn legacy_image_button(
     ui: &mut egui::Ui,
     textures: &std::collections::HashMap<String, egui::TextureHandle>,
@@ -450,10 +489,12 @@ impl Default for TsChatApp {
             friend_avatar_texture: None, friend_avatar_cache_key: None,
             new_password: String::new(), repeat_password: String::new(),
             friend_profile: None, show_friend_profile: false,
-            notes_open: false, note_strokes: Vec::new(), note_current_stroke: None,
+            notes_open: false, notes_window_pos: egui::pos2(80.0, 70.0),
+            note_strokes: Vec::new(), note_current_stroke: None,
             note_brush_color: egui::Color32::BLACK, note_brush_width: 6.0,
             note_background: egui::Color32::from_rgb(192, 192, 192),
             radio_open: false,
+            radio_window_pos: egui::pos2(100.0, 70.0),
             radio_stations,
             selected_radio_station: 0,
             radio_volume: 0.75,
@@ -462,6 +503,7 @@ impl Default for TsChatApp {
             radio_status: "Выберите станцию и укажите её URL в настройках.".into(),
             radio_player: None,
             radio_pending: None,
+            radio_animation: None,
             smiley_textures: Vec::new(),
             command_input: String::new(),
             command_status: String::new(),
@@ -490,8 +532,9 @@ impl Default for TsChatApp {
             voice_status: "Выберите мультиязычную модель Whisper (.bin).".into(),
             show_smileys: false,
             edit_profile_open: false,
+            profile_expanded: false,
             chat_style_open: false,
-            last_viewport_screen: Screen::Login,
+            last_viewport_size: [590.0, 437.0],
             ui_textures: std::collections::HashMap::new(),
             tavern_animation: None,
         }
@@ -1605,7 +1648,7 @@ impl TsChatApp {
             return;
         }
 
-        let assets: [(&str, &[u8]); 35] = [
+        let assets: [(&str, &[u8]); 32] = [
             ("brand_logo", include_bytes!("../Resources/32323.png")),
             ("theme_day", include_bytes!("../Resources/b_day.png")),
             ("theme_night", include_bytes!("../Resources/b_night.png")),
@@ -1616,7 +1659,6 @@ impl TsChatApp {
             ("radio_stop", include_bytes!("../assets/stop_b.png")),
             ("radio_sound_on", include_bytes!("../assets/sound_on.png")),
             ("radio_sound_off", include_bytes!("../assets/sound_off.png")),
-            ("radio_mascot", include_bytes!("../assets/pingvin.gif")),
             ("minimize", include_bytes!("../assets/remove.png")),
             ("close", include_bytes!("../assets/clear_search.png")),
             ("send_dark", include_bytes!("../assets/Send_mail.png")),
@@ -1639,8 +1681,6 @@ impl TsChatApp {
             ("radio_light", include_bytes!("../assets/radio_b.png")),
             ("notes_dark", include_bytes!("../assets/pencil.png")),
             ("notes_light", include_bytes!("../assets/pencil_b.png")),
-            ("icq_dark", include_bytes!("../assets/icq_lgtp.png")),
-            ("icq_light", include_bytes!("../assets/icq_lgtp_b.png")),
         ];
 
         let mut loaded = std::collections::HashMap::with_capacity(assets.len());
@@ -1660,60 +1700,23 @@ impl TsChatApp {
     }
 
     fn ensure_tavern_animation(&mut self, ctx: &egui::Context) {
-        if self.tavern_animation.is_some() {
-            return;
-        }
-
-        use image::AnimationDecoder;
-
-        let gif_bytes = include_bytes!("../Resources/222.gif");
-        let decoder = match image::codecs::gif::GifDecoder::new(Cursor::new(gif_bytes.as_slice())) {
-            Ok(decoder) => decoder,
-            Err(error) => {
-                eprintln!("Не удалось прочитать GIF главного экрана: {error}");
-                return;
-            }
-        };
-        let decoded_frames = match decoder.into_frames().collect_frames() {
-            Ok(frames) => frames,
-            Err(error) => {
-                eprintln!("Не удалось декодировать кадры GIF главного экрана: {error}");
-                return;
-            }
-        };
-        if decoded_frames.is_empty() {
-            eprintln!("GIF главного экрана не содержит кадров.");
-            return;
-        }
-
-        let mut textures = Vec::with_capacity(decoded_frames.len());
-        let mut durations = Vec::with_capacity(decoded_frames.len());
-        for (index, frame) in decoded_frames.into_iter().enumerate() {
-            let (numerator_ms, denominator_ms) = frame.delay().numer_denom_ms();
-            let delay_ms = if denominator_ms == 0 || numerator_ms == 0 {
-                100
-            } else {
-                (numerator_ms / denominator_ms).clamp(20, 1000)
-            };
-            let rgba = frame.into_buffer();
-            let size = [rgba.width() as usize, rgba.height() as usize];
-            let color = egui::ColorImage::from_rgba_unmultiplied(size, rgba.as_raw());
-            let texture = ctx.load_texture(
-                format!("tschat-tavern-gif-frame-{index}"),
-                color,
-                egui::TextureOptions::LINEAR,
+        if self.tavern_animation.is_none() {
+            self.tavern_animation = decode_gif_animation(
+                ctx,
+                "tschat-tavern-gif-frame",
+                include_bytes!("../Resources/222.gif"),
             );
-            textures.push(texture);
-            durations.push(Duration::from_millis(delay_ms as u64));
         }
+    }
 
-        let first_delay = durations.first().copied().unwrap_or(Duration::from_millis(100));
-        self.tavern_animation = Some(AnimatedGif {
-            frames: textures,
-            frame_durations: durations,
-            current_frame: 0,
-            next_frame_at: Instant::now() + first_delay,
-        });
+    fn ensure_radio_animation(&mut self, ctx: &egui::Context) {
+        if self.radio_animation.is_none() {
+            self.radio_animation = decode_gif_animation(
+                ctx,
+                "tschat-radio-penguin-frame",
+                include_bytes!("../assets/pingvin.gif"),
+            );
+        }
     }
 
     fn advance_tavern_animation(&mut self, ctx: &egui::Context) {
