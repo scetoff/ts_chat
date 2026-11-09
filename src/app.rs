@@ -1689,12 +1689,11 @@ impl TsChatApp {
             return;
         }
 
-        let assets: [(&str, &[u8]); 32] = [
+        let assets: [(&str, &[u8]); 31] = [
             ("brand_logo", include_bytes!("../Resources/32323.png")),
             ("theme_day", include_bytes!("../Resources/b_day.png")),
             ("theme_night", include_bytes!("../Resources/b_night.png")),
             ("chat_icon", include_bytes!("../assets/ICOCOS1.png")),
-            ("icq_logo", include_bytes!("../assets/icq_logo.png")),
             ("radio_start", include_bytes!("../assets/start_b.png")),
             ("radio_pause", include_bytes!("../assets/pause_b.png")),
             ("radio_stop", include_bytes!("../assets/stop_b.png")),
@@ -1836,16 +1835,6 @@ impl TsChatApp {
                 field_foreground,
             );
 
-            if let Some(response) = legacy_image_button(
-                ui,
-                &self.ui_textures,
-                "icq_logo",
-                legacy_rect(origin, 50.0, 237.0, 33.0, 33.0),
-            ) {
-                if response.clicked() {
-                    self.status = "TSchat".into();
-                }
-            }
             if legacy_button(
                 ui,
                 legacy_rect(origin, 106.0, 237.0, 140.0, 33.0),
@@ -1983,7 +1972,7 @@ impl TsChatApp {
         let close_x = if self.profile_expanded { 757.0 } else { 462.0 };
         legacy_title_bar(ui, ctx, &self.ui_textures, origin, chat_width, 2.0, minimize_x, close_x);
 
-        // Original WinForms MenuStrip: File, Fonts, Clear, Private messages, Entertainment and ICQ.
+        // Original WinForms MenuStrip, excluding the retired ICQ module.
         let menu_y = 38.0;
         let mut x = 0.0;
         let menu_textures = self.ui_textures.clone();
