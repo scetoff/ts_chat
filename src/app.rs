@@ -207,9 +207,13 @@ fn legacy_color_hex(color: egui::Color32) -> String {
 }
 
 fn styled_rich_text<'a>(text: &'a str, style: Option<&ChatStyle>) -> egui::RichText {
-    let Some(style) = style else { return egui::RichText::new(text); };
+    let Some(style) = style else {
+        return egui::RichText::new(text).size(15.0);
+    };
+    // Keep user-selected sizes, but make the legacy 16px default more readable.
+    let display_size = (style.font_size + 2).clamp(10, 50);
     let mut rich = egui::RichText::new(text)
-        .size(style.font_size.clamp(8, 48) as f32);
+        .size(display_size as f32);
     if let Some(color) = parse_legacy_argb(&style.color) { rich = rich.color(color); }
     match style.font_style.to_lowercase().as_str() {
         "bold" => { rich = rich.strong(); }
@@ -2263,12 +2267,14 @@ legacy_static_image(
         }
         let mut open = self.chat_style_open;
         let mut close_requested = false;
+        let mut save_requested = false;
+
         egui::Window::new("Оформление сообщений")
             .id(egui::Id::new("legacy-chat-style-window"))
             .title_bar(false)
             .collapsible(false)
             .resizable(false)
-            .fixed_size([390.0, 260.0])
+            .fixed_size([420.0, 292.0])
             .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
             .frame(egui::Frame::none())
             .open(&mut open)
@@ -2277,53 +2283,99 @@ legacy_static_image(
                 let origin = rect.min;
                 let bg = if self.dark_theme { egui::Color32::BLACK } else { egui::Color32::WHITE };
                 let fg = if self.dark_theme { egui::Color32::WHITE } else { egui::Color32::BLACK };
+                let border = if self.dark_theme { egui::Color32::DARK_GRAY } else { egui::Color32::GRAY };
                 ui.painter().rect_filled(rect, 0.0, bg);
-                ui.painter().rect_filled(legacy_rect(origin, 0.0, 0.0, 390.0, 35.0), 0.0, egui::Color32::from_rgb(0, 0, 128));
+                ui.painter().rect_filled(
+                    legacy_rect(origin, 0.0, 0.0, 420.0, 35.0),
+                    0.0,
+                    egui::Color32::from_rgb(0, 0, 128),
+                );
                 legacy_static_image(ui, &self.ui_textures, "chat_icon", legacy_rect(origin, 0.0, 0.0, 35.0, 35.0));
-                if let Some(response) = legacy_image_button(ui, &self.ui_textures, "close", legacy_rect(origin, 349.0, 0.0, 35.0, 35.0)) {
+                if let Some(response) = legacy_image_button(
+                    ui,
+                    &self.ui_textures,
+                    "close",
+                    legacy_rect(origin, 379.0, 0.0, 35.0, 35.0),
+                ) {
                     if response.clicked() { close_requested = true; }
                 }
-                legacy_text(ui, legacy_rect(origin, 12.0, 43.0, 300.0, 24.0), "Оформление сообщений", fg, 15.0);
+                legacy_text(ui, legacy_rect(origin, 48.0, 5.0, 300.0, 25.0), "Оформление сообщений", egui::Color32::WHITE, 16.0);
 
-                legacy_text(ui, legacy_rect(origin, 12.0, 78.0, 180.0, 20.0), "Цвет", fg, 12.0);
-                ui.allocate_ui_at_rect(legacy_rect(origin, 150.0, 75.0, 50.0, 28.0), |color_ui| {
+                legacy_group(ui, legacy_rect(origin, 18.0, 47.0, 384.0, 178.0), bg, border);
+
+                legacy_text(ui, legacy_rect(origin, 32.0, 59.0, 112.0, 24.0), "Цвет текста", fg, 13.0);
+                ui.allocate_ui_at_rect(legacy_rect(origin, 160.0, 56.0, 70.0, 28.0), |color_ui| {
                     color_ui.color_edit_button_srgba(&mut self.chat_style_color);
                 });
-                legacy_text(ui, legacy_rect(origin, 12.0, 112.0, 180.0, 20.0), "Шрифт", fg, 12.0);
-                egui::ComboBox::from_id_source("legacy-chat-font")
-                    .selected_text(&self.chat_style_font)
-                    .show_ui(ui, |ui| {
-                        for font in ["Candara", "Arial", "Tahoma", "Verdana", "Consolas"] {
-                            ui.selectable_value(&mut self.chat_style_font, font.to_string(), font);
-                        }
-                    });
-                ui.put(legacy_rect(origin, 12.0, 149.0, 350.0, 22.0), egui::Slider::new(&mut self.chat_style_size, 8..=36).text("Размер"));
-                legacy_text(ui, legacy_rect(origin, 12.0, 179.0, 150.0, 20.0), "Начертание", fg, 12.0);
-                egui::ComboBox::from_id_source("legacy-chat-style")
-                    .selected_text(&self.chat_style_effect)
-                    .show_ui(ui, |ui| {
-                        for effect in ["Regular", "Bold", "Italic", "Underline", "Strikeout"] {
-                            ui.selectable_value(&mut self.chat_style_effect, effect.to_string(), effect);
-                        }
-                    });
+
+                legacy_text(ui, legacy_rect(origin, 32.0, 96.0, 112.0, 24.0), "Шрифт", fg, 13.0);
+                ui.allocate_ui_at_rect(legacy_rect(origin, 160.0, 90.0, 220.0, 28.0), |font_ui| {
+                    egui::ComboBox::from_id_salt("legacy-chat-font")
+                        .width(210.0)
+                        .selected_text(&self.chat_style_font)
+                        .show_ui(font_ui, |ui| {
+                            for font in ["Candara", "Arial", "Tahoma", "Verdana", "Consolas"] {
+                                ui.selectable_value(&mut self.chat_style_font, font.to_string(), font);
+                            }
+                        });
+                });
+
+                legacy_text(
+                    ui,
+                    legacy_rect(origin, 32.0, 135.0, 112.0, 24.0),
+                    format!("Размер: {} pt", self.chat_style_size),
+                    fg,
+                    13.0,
+                );
+                ui.allocate_ui_at_rect(legacy_rect(origin, 160.0, 130.0, 220.0, 30.0), |size_ui| {
+                    size_ui.add(egui::Slider::new(&mut self.chat_style_size, 10..=36).show_value(false));
+                });
+
+                legacy_text(ui, legacy_rect(origin, 32.0, 176.0, 112.0, 24.0), "Начертание", fg, 13.0);
+                ui.allocate_ui_at_rect(legacy_rect(origin, 160.0, 169.0, 220.0, 28.0), |style_ui| {
+                    egui::ComboBox::from_id_salt("legacy-chat-style")
+                        .width(210.0)
+                        .selected_text(&self.chat_style_effect)
+                        .show_ui(style_ui, |ui| {
+                            for effect in ["Regular", "Bold", "Italic", "Underline", "Strikeout"] {
+                                ui.selectable_value(&mut self.chat_style_effect, effect.to_string(), effect);
+                            }
+                        });
+                });
+
+                legacy_text(ui, legacy_rect(origin, 32.0, 235.0, 110.0, 22.0), "Пример", fg, 13.0);
+                let preview_style = ChatStyle {
+                    color: legacy_color_hex(self.chat_style_color),
+                    font: self.chat_style_font.clone(),
+                    font_size: self.chat_style_size,
+                    font_style: self.chat_style_effect.clone(),
+                };
+                let preview_rect = legacy_rect(origin, 150.0, 229.0, 230.0, 30.0);
+                legacy_group(ui, preview_rect, bg, border);
+                ui.put(
+                    legacy_rect(origin, 158.0, 231.0, 216.0, 26.0),
+                    egui::Label::new(styled_rich_text("Привет! Это пример сообщения.", Some(&preview_style))),
+                );
+
                 if legacy_button(
                     ui,
-                    legacy_rect(origin, 176.0, 216.0, 190.0, 34.0),
+                    legacy_rect(origin, 215.0, 263.0, 165.0, 25.0),
                     "Сохранить",
                     egui::Color32::BLACK,
                     egui::Color32::WHITE,
-                    13.0,
-                )
-                .clicked()
-                {
-                    self.save_chat_style();
-                    self.chat_style_open = false;
+                    14.0,
+                ).clicked() {
+                    save_requested = true;
                 }
             });
+
         if close_requested { open = false; }
         self.chat_style_open = open && self.chat_style_open;
+        if save_requested {
+            self.save_chat_style();
+            self.chat_style_open = false;
+        }
     }
-
 }
 
 
