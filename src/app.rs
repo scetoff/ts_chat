@@ -892,6 +892,7 @@ impl TsChatApp {
         let mut clear_requested = false;
         let mut save_requested = false;
         let mut fill_requested = false;
+        let mut drag_delta = egui::Vec2::ZERO;
 
         let strokes = &mut self.note_strokes;
         let current = &mut self.note_current_stroke;
@@ -906,7 +907,8 @@ impl TsChatApp {
             .collapsible(false)
             .resizable(false)
             .fixed_size([267.0, 350.0])
-            .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+            .current_pos(self.notes_window_pos)
+            .movable(false)
             .frame(egui::Frame::none())
             .open(&mut open)
             .show(ctx, |ui| {
@@ -919,6 +921,12 @@ impl TsChatApp {
                     0.0,
                     egui::Color32::from_rgb(0, 0, 128),
                 );
+                let drag_handle = ui.interact(
+                    legacy_rect(origin, 36.0, 0.0, 150.0, 35.0),
+                    egui::Id::new("legacy-paint-window-drag"),
+                    egui::Sense::drag(),
+                );
+                if drag_handle.dragged() { drag_delta = drag_handle.drag_delta(); }
                 legacy_static_image(ui, &textures, "chat_icon", legacy_rect(origin, 0.0, 0.0, 35.0, 35.0));
                 if let Some(response) = legacy_image_button(
                     ui, &textures, "minimize", legacy_rect(origin, 191.0, 0.0, 35.0, 35.0),
@@ -1009,6 +1017,7 @@ impl TsChatApp {
             });
 
         if close_requested { open = false; }
+        self.notes_window_pos += drag_delta;
         self.notes_open = open && self.notes_open;
 
         if fill_requested {
@@ -1337,8 +1346,12 @@ impl TsChatApp {
         }
 
         if !self.radio_open { return; }
+        self.ensure_radio_animation(ctx);
+        self.advance_radio_animation(ctx);
+        let radio_animation = self.radio_animation.clone();
 
         let mut open = self.radio_open;
+        let mut drag_delta = egui::Vec2::ZERO;
         let mut close_requested = false;
         let mut minimize_requested = false;
         let mut start_request: Option<(String, String)> = self.radio_autoplay_pending
@@ -1365,7 +1378,8 @@ impl TsChatApp {
             .collapsible(false)
             .resizable(false)
             .fixed_size([344.0, 512.0])
-            .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+            .current_pos(self.radio_window_pos)
+            .movable(false)
             .frame(egui::Frame::none())
             .open(&mut open)
             .show(ctx, |ui| {
@@ -1378,6 +1392,12 @@ impl TsChatApp {
                     0.0,
                     egui::Color32::from_rgb(0, 0, 128),
                 );
+                let drag_handle = ui.interact(
+                    legacy_rect(origin, 36.0, 0.0, 220.0, 35.0),
+                    egui::Id::new("legacy-radio-window-drag"),
+                    egui::Sense::drag(),
+                );
+                if drag_handle.dragged() { drag_delta = drag_handle.drag_delta(); }
                 legacy_static_image(ui, &textures, "chat_icon", legacy_rect(origin, 0.0, 0.0, 35.0, 35.0));
                 if let Some(response) = legacy_image_button(
                     ui, &textures, "minimize", legacy_rect(origin, 262.0, 0.0, 35.0, 35.0),
@@ -1444,8 +1464,8 @@ impl TsChatApp {
                     egui::Color32::WHITE,
                     9.0,
                 );
-                legacy_static_image(
-                    ui, &textures, "radio_mascot", legacy_rect(origin, 291.0, 402.0, 46.0, 50.0),
+                legacy_animated_image(
+                    ui, radio_animation.as_ref(), legacy_rect(origin, 291.0, 402.0, 46.0, 50.0),
                 );
 
                 ui.painter().rect_filled(
@@ -1475,6 +1495,7 @@ impl TsChatApp {
         if close_requested || minimize_requested {
             open = false;
         }
+        self.radio_window_pos += drag_delta;
         self.radio_open = open && self.radio_open;
 
         if edit_url_requested {
@@ -1569,11 +1590,21 @@ impl TsChatApp {
 
     fn send_chat(&mut self) {
         let Some(user) = self.current_user.as_ref() else { return; };
-        if self.draft.trim().is_empty() { return; }
-        let next = format!("{}\n\n{}: {}", self.chat_text, user.username, self.draft.trim());
+        let message = self.draft.trim().to_string();
+        if message.is_empty() { return; }
+        let line = format!("{}: {}", user.username, message);
+        let next = if self.chat_text.trim().is_empty() {
+            line
+        } else {
+            format!("{}\n\n{}", self.chat_text.trim_end(), line)
+        };
         match self.run_db(|rt, db| rt.block_on(db.write_chat(&next))) {
-            Ok(()) => { self.chat_text = next; self.draft.clear(); }
-            Err(e) => self.status = format!("Ошибка отправки: {e:#}"),
+            Ok(()) => {
+                self.chat_text = next;
+                self.draft.clear();
+                self.status = "Сообщение отправлено.".into();
+            }
+            Err(error) => self.status = format!("Ошибка отправки сообщения: {error:#}"),
         }
     }
 
@@ -1918,7 +1949,10 @@ impl TsChatApp {
         let menu_fill = background;
 
         ui.painter().rect_filled(ui.max_rect(), 0.0, background);
-        legacy_title_bar(ui, ctx, &self.ui_textures, origin, 796.0, 2.0, 716.0, 757.0);
+        let chat_width = if self.profile_expanded { 796.0 } else { 497.0 };
+        let minimize_x = if self.profile_expanded { 716.0 } else { 421.0 };
+        let close_x = if self.profile_expanded { 757.0 } else { 462.0 };
+        legacy_title_bar(ui, ctx, &self.ui_textures, origin, chat_width, 2.0, minimize_x, close_x);
 
         // Original WinForms MenuStrip: File, Fonts, Clear, Private messages, Entertainment and ICQ.
         let menu_y = 38.0;
@@ -1928,7 +1962,7 @@ impl TsChatApp {
             let rect = legacy_rect(origin, x, menu_y, width, 27.0);
             let response = ui.put(
                 rect,
-                egui::Button::new(egui::RichText::new(text).color(foreground).size(10.0))
+                egui::Button::new(egui::RichText::new(text).color(foreground).size(12.0))
                     .fill(menu_fill)
                     .stroke(egui::Stroke::new(0.0, menu_fill)),
             );
@@ -1961,15 +1995,11 @@ impl TsChatApp {
         if menu_item(ui, "Заметки", notes_icon, 78.0).clicked() {
             self.notes_open = true;
         }
-        let icq_icon = if dark { "icq_dark" } else { "icq_light" };
-        if menu_item(ui, "ICQ", icq_icon, 62.0).clicked() {
-            self.status = "ICQ-модуль пока не перенесён.".into();
-        }
         drop(menu_item);
 
         let chat_group = legacy_rect(origin, 14.0, 72.0, 437.0, 275.0);
         legacy_group(ui, chat_group, panel, border);
-        legacy_text(ui, legacy_rect(origin, 22.0, 74.0, 180.0, 18.0), "Общий чат", foreground, 10.0);
+        legacy_text(ui, legacy_rect(origin, 22.0, 74.0, 180.0, 18.0), "Общий чат", foreground, 12.0);
 
         let chat_rect = legacy_rect(origin, 21.0, 83.0, 424.0, 258.0);
         let smileys = self.smiley_textures.clone();
@@ -1985,44 +2015,71 @@ impl TsChatApp {
                 });
         });
 
-        let users_group = legacy_rect(origin, 498.0, 72.0, 285.0, 275.0);
-        legacy_group(ui, users_group, panel, border);
-        let avatar_rect = legacy_rect(origin, 504.0, 87.0, 120.0, 120.0);
-        if let Some(texture) = &self.avatar_texture {
-            ui.painter().image(
-                texture.id(),
-                avatar_rect,
-                egui::Rect::from_min_max(egui::Pos2::ZERO, egui::pos2(1.0, 1.0)),
-                egui::Color32::WHITE,
-            );
-        } else {
-            ui.painter().rect_filled(avatar_rect, 0.0, egui::Color32::DARK_GRAY);
-            legacy_text(ui, legacy_rect(origin, 512.0, 137.0, 105.0, 20.0), "Аватар", foreground, 12.0);
-        }
-        let avatar_response = ui.interact(avatar_rect, egui::Id::new("legacy-own-avatar"), egui::Sense::click());
-        if avatar_response.clicked() {
-            self.edit_profile_open = true;
-        }
-
-        let info_group = legacy_rect(origin, 630.0, 80.0, 146.0, 127.0);
-        legacy_group(ui, info_group, panel, border);
-        let user = self.current_user.as_ref();
-        legacy_text(ui, legacy_rect(origin, 636.0, 91.0, 132.0, 24.0), user.map(|u| u.username.as_str()).unwrap_or("Никнейм"), foreground, 12.0);
-        legacy_text(ui, legacy_rect(origin, 636.0, 158.0, 132.0, 18.0), user.map(|u| u.mobile.as_str()).unwrap_or("Номер телефона"), foreground, 10.0);
-        legacy_text(ui, legacy_rect(origin, 636.0, 181.0, 132.0, 20.0), user.map(|u| u.email.as_str()).unwrap_or("Почта"), foreground, 10.0);
-
-        let friends_rect = legacy_rect(origin, 507.0, 217.0, 268.0, 119.0);
-        ui.allocate_ui_at_rect(friends_rect, |friends_ui| {
-            egui::ScrollArea::vertical().auto_shrink([false, false]).show(friends_ui, |list_ui| {
-                for name in self.friends.clone() {
-                    let selected = self.selected_friend.as_deref() == Some(name.as_str());
-                    if list_ui.selectable_label(selected, &name).clicked() {
-                        self.selected_friend = Some(name.clone());
-                        self.load_selected_profile();
+        if self.profile_expanded {
+            let users_group = legacy_rect(origin, 498.0, 72.0, 285.0, 275.0);
+            legacy_group(ui, users_group, panel, border);
+            let avatar_rect = legacy_rect(origin, 504.0, 87.0, 120.0, 120.0);
+            if let Some(texture) = &self.avatar_texture {
+                ui.painter().image(
+                    texture.id(),
+                    avatar_rect,
+                    egui::Rect::from_min_max(egui::Pos2::ZERO, egui::pos2(1.0, 1.0)),
+                    egui::Color32::WHITE,
+                );
+            } else {
+                ui.painter().rect_filled(avatar_rect, 0.0, egui::Color32::DARK_GRAY);
+                legacy_text(ui, legacy_rect(origin, 512.0, 137.0, 105.0, 20.0), "Аватар", foreground, 12.0);
+            }
+            let avatar_response = ui.interact(avatar_rect, egui::Id::new("legacy-own-avatar"), egui::Sense::click());
+            if avatar_response.clicked() {
+                self.edit_profile_open = true;
+            }
+    
+            let info_group = legacy_rect(origin, 630.0, 80.0, 146.0, 127.0);
+            legacy_group(ui, info_group, panel, border);
+            let user = self.current_user.as_ref();
+            legacy_text(ui, legacy_rect(origin, 636.0, 91.0, 132.0, 24.0), user.map(|u| u.username.as_str()).unwrap_or("Никнейм"), foreground, 12.0);
+            legacy_text(ui, legacy_rect(origin, 636.0, 158.0, 132.0, 18.0), user.map(|u| u.mobile.as_str()).unwrap_or("Номер телефона"), foreground, 10.0);
+            legacy_text(ui, legacy_rect(origin, 636.0, 181.0, 132.0, 20.0), user.map(|u| u.email.as_str()).unwrap_or("Почта"), foreground, 10.0);
+    
+            let friends_rect = legacy_rect(origin, 507.0, 217.0, 268.0, 119.0);
+            ui.allocate_ui_at_rect(friends_rect, |friends_ui| {
+                egui::ScrollArea::vertical().auto_shrink([false, false]).show(friends_ui, |list_ui| {
+                    for name in self.friends.clone() {
+                        let selected = self.selected_friend.as_deref() == Some(name.as_str());
+                        if list_ui.selectable_label(selected, &name).clicked() {
+                            self.selected_friend = Some(name.clone());
+                            self.load_selected_profile();
+                        }
                     }
-                }
+                });
             });
-        });
+    
+            let profile_icon = if dark { "profile_dark" } else { "profile_light" };
+            legacy_static_image(
+                ui,
+                &self.ui_textures,
+                profile_icon,
+                legacy_rect(origin, 466.0, 91.0, 32.0, 243.0),
+            );
+            let profile_hit = ui.interact(
+                legacy_rect(origin, 466.0, 91.0, 32.0, 243.0),
+                egui::Id::new("legacy-profile-button"),
+                egui::Sense::click(),
+            );
+            if profile_hit.clicked() {
+                self.edit_profile_open = true;
+            }
+    
+            legacy_static_image(
+                ui,
+                &self.ui_textures,
+                "brand_logo",
+                legacy_rect(origin, 533.0, 322.0, 218.0, 140.0),
+            );
+    
+    
+        }
 
         let profile_icon = if dark { "profile_dark" } else { "profile_light" };
         legacy_static_image(
@@ -2037,15 +2094,8 @@ impl TsChatApp {
             egui::Sense::click(),
         );
         if profile_hit.clicked() {
-            self.edit_profile_open = true;
+            self.profile_expanded = !self.profile_expanded;
         }
-
-        legacy_static_image(
-            ui,
-            &self.ui_textures,
-            "brand_logo",
-            legacy_rect(origin, 533.0, 322.0, 218.0, 140.0),
-        );
 
         let composer_group = legacy_rect(origin, 14.0, 353.0, 437.0, 90.0);
         legacy_group(ui, composer_group, panel, border);
@@ -2114,16 +2164,22 @@ impl TsChatApp {
             }
         }
 
-        // The original menu exposes profile editing under File and chat appearance under Fonts.
-        let current_user_name = self.current_user.as_ref().map(|u| u.username.clone()).unwrap_or_default();
-        let connection = if self.connected { "MySQL: подключено" } else { "MySQL: нет подключения" };
-        legacy_text(
-            ui,
-            legacy_rect(origin, 500.0, 440.0, 280.0, 10.0),
-            format!("{connection}  {current_user_name}"),
-            if self.connected { egui::Color32::from_rgb(46, 139, 87) } else { egui::Color32::GRAY },
-            8.0,
-        );
+        if !self.status.is_empty() {
+            let status_color = if self.status.starts_with("Ошибка")
+                || self.status.starts_with("Не удалось")
+            {
+                egui::Color32::from_rgb(230, 100, 100)
+            } else {
+                foreground
+            };
+            legacy_text(
+                ui,
+                legacy_rect(origin, 18.0, 443.0, 430.0, 9.0),
+                self.status.clone(),
+                status_color,
+                8.5,
+            );
+        }
     }
 
     fn show_legacy_profile_window(&mut self, ctx: &egui::Context) {
@@ -2509,14 +2565,15 @@ impl eframe::App for TsChatApp {
             }
         }
 
-        if self.last_viewport_screen != self.screen {
-            let size = match self.screen {
-                Screen::Login | Screen::Register => [590.0, 437.0],
-                Screen::Chat => [796.0, 451.0],
-            };
-            ctx.send_viewport_cmd(egui::ViewportCommand::InnerSize(egui::vec2(size[0], size[1])));
+        let target_size = match self.screen {
+            Screen::Login | Screen::Register => [590.0, 437.0],
+            Screen::Chat if self.profile_expanded => [796.0, 451.0],
+            Screen::Chat => [497.0, 451.0],
+        };
+        if self.last_viewport_size != target_size {
+            ctx.send_viewport_cmd(egui::ViewportCommand::InnerSize(egui::vec2(target_size[0], target_size[1])));
             ctx.send_viewport_cmd(egui::ViewportCommand::Resizable(false));
-            self.last_viewport_screen = self.screen;
+            self.last_viewport_size = target_size;
         }
 
         self.ensure_avatar_texture(ctx);
