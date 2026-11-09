@@ -1987,13 +1987,14 @@ impl TsChatApp {
         let menu_y = 38.0;
         let mut x = 0.0;
         let menu_textures = self.ui_textures.clone();
+        let profile_expanded = self.profile_expanded;
         let mut menu_item = |ui: &mut egui::Ui, text: &str, icon: &str, width: f32| {
             let rect = legacy_rect(origin, x, menu_y, width, 27.0);
             let response = ui.put(
                 rect,
-                egui::Button::new(egui::RichText::new(text).color(foreground).size(if self.profile_expanded { 12.0 } else { 10.5 }))
+                egui::Button::new(egui::RichText::new(text).color(foreground).size(if profile_expanded { 12.0 } else { 10.5 }))
                     .fill(menu_fill)
-                    .stroke(egui::Stroke::new(0.0, menu_fill)),
+                    .stroke(egui::Stroke::new(0.0_f32, menu_fill)),
             );
             legacy_static_image(ui, &menu_textures, icon, legacy_rect(origin, x + 3.0, menu_y + 5.0, 17.0, 17.0));
             x += width;
@@ -2001,27 +2002,27 @@ impl TsChatApp {
         };
 
         let file_icon = if dark { "file_dark" } else { "file_light" };
-        if menu_item(ui, "Файл", file_icon, if self.profile_expanded { 67.0 } else { 52.0 }).clicked() {
+        if menu_item(ui, "Файл", file_icon, if profile_expanded { 67.0 } else { 52.0 }).clicked() {
             self.edit_profile_open = true;
         }
         let fonts_icon = if dark { "fonts_dark" } else { "fonts_light" };
-        if menu_item(ui, "Шрифты", fonts_icon, if self.profile_expanded { 90.0 } else { 66.0 }).clicked() {
+        if menu_item(ui, "Шрифты", fonts_icon, if profile_expanded { 90.0 } else { 66.0 }).clicked() {
             self.chat_style_open = true;
         }
         let clear_icon = if dark { "clear_dark" } else { "clear_light" };
-        if menu_item(ui, "Очистка сообщений", clear_icon, if self.profile_expanded { 161.0 } else { 116.0 }).clicked() {
+        if menu_item(ui, "Очистка сообщений", clear_icon, if profile_expanded { 161.0 } else { 116.0 }).clicked() {
             self.show_clear_chat_confirmation = true;
         }
         let pm_icon = if dark { "pm_dark" } else { "pm_light" };
-        if menu_item(ui, "Личные сообщения", pm_icon, if self.profile_expanded { 150.0 } else { 108.0 }).clicked() {
+        if menu_item(ui, "Личные сообщения", pm_icon, if profile_expanded { 150.0 } else { 108.0 }).clicked() {
             self.load_inbox();
         }
         let radio_icon = if dark { "radio_dark" } else { "radio_light" };
-        if menu_item(ui, "Развлечения", radio_icon, if self.profile_expanded { 98.0 } else { 82.0 }).clicked() {
+        if menu_item(ui, "Развлечения", radio_icon, if profile_expanded { 98.0 } else { 82.0 }).clicked() {
             self.radio_open = true;
         }
         let notes_icon = if dark { "notes_dark" } else { "notes_light" };
-        if menu_item(ui, "Заметки", notes_icon, if self.profile_expanded { 78.0 } else { 66.0 }).clicked() {
+        if menu_item(ui, "Заметки", notes_icon, if profile_expanded { 78.0 } else { 66.0 }).clicked() {
             self.notes_open = true;
         }
         drop(menu_item);
