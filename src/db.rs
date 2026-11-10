@@ -13,9 +13,10 @@ fn is_transient_sqlx_error(error: &sqlx::Error) -> bool {
         | sqlx::Error::PoolTimedOut
         | sqlx::Error::WorkerCrashed => true,
         sqlx::Error::Database(database_error) => {
-            // 1203 is a provider-side connection-cap rejection; retry it
-            // through the same bounded retry paths as dropped sessions.
-            matches!(database_error.code().as_deref(), Some("1203" | "2006" | "2013" | "2055"))
+            // MySQL exposes 1203 as SQLSTATE 42000 on many drivers, so detect
+            // the vendor error number from the rendered message as well.
+            matches!(database_error.code().as_deref(), Some("2006" | "2013" | "2055"))
+                || is_mysql_connection_limit_error(error)
         }
         _ => false,
     }
@@ -30,15 +31,17 @@ fn is_transient_connection_error(error: &anyhow::Error) -> bool {
     })
 }
 
+fn is_mysql_connection_limit_message(message: &str) -> bool {
+    let message = message.to_ascii_lowercase();
+    message.contains("1203") || message.contains("max_user_connections")
+}
+
 fn is_mysql_connection_limit_error(error: &sqlx::Error) -> bool {
     matches!(
         error,
         sqlx::Error::Database(database_error)
             if database_error.code().as_deref() == Some("1203")
-    ) || {
-        let message = error.to_string().to_ascii_lowercase();
-        message.contains("1203") || message.contains("max_user_connections")
-    }
+    ) || is_mysql_connection_limit_message(&error.to_string())
 }
 
 fn is_duplicate_key_error(error: &sqlx::Error) -> bool {
@@ -794,7 +797,7 @@ impl Database {
 
 #[cfg(test)]
 mod sql_literal_tests {
-    use super::mysql_utf8_literal;
+    use super::{is_mysql_connection_limit_message, mysql_utf8_literal};
 
     #[test]
     fn user_text_is_encoded_as_hex_and_cannot_break_out_of_literal() {
@@ -803,6 +806,23 @@ mod sql_literal_tests {
             "CONVERT(X'6127625C63' USING utf8mb4)"
         );
         assert_eq!(mysql_utf8_literal(""), "CONVERT(X'' USING utf8mb4)");
+    }
+
+    #[test]
+    fn russian_chat_text_is_encoded_as_utf8mb4_bytes() {
+        assert_eq!(
+            mysql_utf8_literal("Привет"),
+            "CONVERT(X'D09FD180D0B8D0B2D0B5D182' USING utf8mb4)"
+        );
+    }
+
+    #[test]
+    fn detects_mysql_max_user_connections_by_error_text() {
+        assert!(is_mysql_connection_limit_message(
+            "1203 (42000): User already has more than 'max_user_connections' active connections"
+        ));
+        assert!(is_mysql_connection_limit_message("max_user_connections reached"));
+        assert!(!is_mysql_connection_limit_message("Access denied for user"));
     }
 }
 
