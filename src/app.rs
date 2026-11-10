@@ -46,13 +46,6 @@ pub struct TsChatApp {
     repeat_password: String,
     friend_profile: Option<User>,
     show_friend_profile: bool,
-    notes_open: bool,
-    notes_window_pos: egui::Pos2,
-    note_strokes: Vec<DrawStroke>,
-    note_current_stroke: Option<DrawStroke>,
-    note_brush_color: egui::Color32,
-    note_brush_width: f32,
-    note_background: egui::Color32,
     radio_open: bool,
     radio_stations: Vec<RadioStation>,
     selected_radio_station: usize,
@@ -106,80 +99,6 @@ struct AnimatedGif {
     current_frame: usize,
     next_frame_at: Instant,
 }
-
-
-#[derive(Clone)]
-struct DrawStroke {
-    points: Vec<egui::Vec2>,
-    color: egui::Color32,
-    width: f32,
-}
-
-fn paint_stroke(painter: &egui::Painter, rect: egui::Rect, stroke: &DrawStroke) {
-    let to_screen = |p: egui::Vec2| egui::pos2(rect.left() + p.x, rect.top() + p.y);
-    match stroke.points.as_slice() {
-        [] => {}
-        [point] => { painter.circle_filled(to_screen(*point), stroke.width * 0.5, stroke.color); }
-        points => {
-            for pair in points.windows(2) {
-                painter.line_segment(
-                    [to_screen(pair[0]), to_screen(pair[1])],
-                    egui::Stroke::new(stroke.width, stroke.color),
-                );
-            }
-        }
-    }
-}
-
-fn stamp_brush(image: &mut image::RgbaImage, cx: i32, cy: i32, radius: i32, color: image::Rgba<u8>) {
-    let r2 = radius * radius;
-    for y in (cy - radius)..=(cy + radius) {
-        for x in (cx - radius)..=(cx + radius) {
-            if (x - cx) * (x - cx) + (y - cy) * (y - cy) <= r2
-                && x >= 0 && y >= 0
-                && (x as u32) < image.width() && (y as u32) < image.height()
-            {
-                image.put_pixel(x as u32, y as u32, color);
-            }
-        }
-    }
-}
-
-fn render_strokes_png(
-    strokes: &[DrawStroke],
-    background: egui::Color32,
-    width: u32,
-    height: u32,
-) -> image::RgbaImage {
-    let [br, bg, bb, ba] = background.to_array();
-    let mut output = image::RgbaImage::from_pixel(width, height, image::Rgba([br, bg, bb, ba]));
-    for stroke in strokes {
-        let [r, g, b, a] = stroke.color.to_array();
-        let color = image::Rgba([r, g, b, a]);
-        let radius = (stroke.width * 0.5).ceil().max(1.0) as i32;
-        match stroke.points.as_slice() {
-            [] => {}
-            [point] => stamp_brush(&mut output, point.x.round() as i32, point.y.round() as i32, radius, color),
-            points => {
-                for pair in points.windows(2) {
-                    let start = pair[0];
-                    let end = pair[1];
-                    let dx = end.x - start.x;
-                    let dy = end.y - start.y;
-                    let steps = dx.abs().max(dy.abs()).ceil().max(1.0) as u32;
-                    for step in 0..=steps {
-                        let t = step as f32 / steps as f32;
-                        let x = (start.x + dx * t).round() as i32;
-                        let y = (start.y + dy * t).round() as i32;
-                        stamp_brush(&mut output, x, y, radius, color);
-                    }
-                }
-            }
-        }
-    }
-    output
-}
-
 
 
 fn parse_legacy_argb(value: &str) -> Option<egui::Color32> {
@@ -493,10 +412,6 @@ impl Default for TsChatApp {
             friend_avatar_texture: None, friend_avatar_cache_key: None,
             new_password: String::new(), repeat_password: String::new(),
             friend_profile: None, show_friend_profile: false,
-            notes_open: false, notes_window_pos: egui::pos2(80.0, 70.0),
-            note_strokes: Vec::new(), note_current_stroke: None,
-            note_brush_color: egui::Color32::BLACK, note_brush_width: 6.0,
-            note_background: egui::Color32::from_rgb(192, 192, 192),
             radio_open: false,
             radio_window_pos: egui::pos2(100.0, 70.0),
             radio_stations,
@@ -876,180 +791,10 @@ impl TsChatApp {
     }
 
 
-    fn save_notes_png(&mut self) {
-        let Some(path) = rfd::FileDialog::new()
-            .set_file_name("tschat-notes.png")
-            .add_filter("PNG image", &["png"])
-            .save_file() else { return; };
-        let image = render_strokes_png(&self.note_strokes, self.note_background, 268, 286);
-        match image.save(&path) {
-            Ok(()) => self.status = format!("Рисунок сохранён: {}", path.display()),
-            Err(error) => self.status = format!("Не удалось сохранить PNG: {error}"),
-        }
-    }
-
-    fn show_notes_window(&mut self, ctx: &egui::Context) {
-        if !self.notes_open { return; }
-
-        let mut open = self.notes_open;
-        let mut close_requested = false;
-        let mut clear_requested = false;
-        let mut save_requested = false;
-        let mut fill_requested = false;
-        let mut drag_delta = egui::Vec2::ZERO;
-
-        let strokes = &mut self.note_strokes;
-        let current = &mut self.note_current_stroke;
-        let brush_color = &mut self.note_brush_color;
-        let brush_width = &mut self.note_brush_width;
-        let background = &mut self.note_background;
-        let textures = self.ui_textures.clone();
-
-        egui::Window::new("Заметки")
-            .id(egui::Id::new("legacy-paint-window"))
-            .title_bar(false)
-            .collapsible(false)
-            .resizable(false)
-            .fixed_size([267.0, 350.0])
-            .current_pos(self.notes_window_pos)
-            .movable(false)
-            .frame(egui::Frame::none())
-            .open(&mut open)
-            .show(ctx, |ui| {
-                let rect = ui.max_rect();
-                let origin = rect.min;
-                ui.painter().rect_filled(rect, 0.0, egui::Color32::BLACK);
-
-                ui.painter().rect_filled(
-                    legacy_rect(origin, 0.0, 0.0, 267.0, 35.0),
-                    0.0,
-                    egui::Color32::from_rgb(0, 0, 128),
-                );
-                let drag_handle = ui.interact(
-                    legacy_rect(origin, 36.0, 0.0, 150.0, 35.0),
-                    egui::Id::new("legacy-paint-window-drag"),
-                    egui::Sense::drag(),
-                );
-                if drag_handle.dragged() { drag_delta = ctx.input(|input| input.pointer.delta()); }
-                legacy_static_image(ui, &textures, "chat_icon", legacy_rect(origin, 0.0, 0.0, 35.0, 35.0));
-                if let Some(response) = legacy_image_button(
-                    ui, &textures, "minimize", legacy_rect(origin, 191.0, 0.0, 35.0, 35.0),
-                ) {
-                    if response.clicked() { close_requested = true; }
-                }
-                if let Some(response) = legacy_image_button(
-                    ui, &textures, "close", legacy_rect(origin, 232.0, 0.0, 35.0, 35.0),
-                ) {
-                    if response.clicked() { close_requested = true; }
-                }
-
-                ui.painter().rect_filled(
-                    legacy_rect(origin, 0.0, 34.0, 267.0, 26.0),
-                    0.0,
-                    egui::Color32::DARK_GRAY,
-                );
-                if legacy_button(
-                    ui, legacy_rect(origin, 2.0, 35.0, 52.0, 24.0),
-                    "Файл", egui::Color32::DARK_GRAY, egui::Color32::WHITE, 11.0,
-                ).clicked() {
-                    save_requested = true;
-                }
-                if legacy_button(
-                    ui, legacy_rect(origin, 57.0, 35.0, 75.0, 24.0),
-                    "Заливка", egui::Color32::DARK_GRAY, egui::Color32::WHITE, 11.0,
-                ).clicked() {
-                    fill_requested = true;
-                }
-                if legacy_button(
-                    ui, legacy_rect(origin, 135.0, 35.0, 43.0, 24.0),
-                    "Сброс", egui::Color32::DARK_GRAY, egui::Color32::WHITE, 10.0,
-                ).clicked() {
-                    clear_requested = true;
-                }
-
-                ui.allocate_ui_at_rect(legacy_rect(origin, 183.0, 37.0, 48.0, 21.0), |size_ui| {
-                    egui::ComboBox::from_id_salt("legacy-paint-brush-size")
-                        .width(48.0)
-                        .selected_text(format!("{:.0}", *brush_width))
-                        .show_ui(size_ui, |ui| {
-                            for width in [1.0_f32, 2.0, 3.0, 4.0, 6.0, 8.0, 12.0, 16.0, 24.0, 32.0] {
-                                ui.selectable_value(brush_width, width, format!("{width:.0}"));
-                            }
-                        });
-                });
-                ui.allocate_ui_at_rect(legacy_rect(origin, 240.0, 35.0, 24.0, 24.0), |color_ui| {
-                    color_ui.color_edit_button_srgba(brush_color);
-                });
-
-                let canvas_rect = legacy_rect(origin, 0.0, 63.0, 267.0, 286.0);
-                let response = ui.interact(
-                    canvas_rect,
-                    egui::Id::new("legacy-paint-canvas"),
-                    egui::Sense::drag(),
-                );
-                let painter = ui.painter_at(canvas_rect);
-                painter.rect_filled(canvas_rect, 0.0, *background);
-
-                if response.drag_started() {
-                    if let Some(pointer) = response.interact_pointer_pos() {
-                        *current = Some(DrawStroke {
-                            points: vec![pointer - canvas_rect.min],
-                            color: *brush_color,
-                            width: *brush_width,
-                        });
-                    }
-                }
-                if response.dragged() {
-                    if let Some(pointer) = response.interact_pointer_pos() {
-                        let point = pointer - canvas_rect.min;
-                        if current.is_none() {
-                            *current = Some(DrawStroke {
-                                points: vec![point],
-                                color: *brush_color,
-                                width: *brush_width,
-                            });
-                        } else if let Some(stroke) = current.as_mut() {
-                            let should_add = stroke.points.last()
-                                .map(|last| (*last - point).length() >= 1.0)
-                                .unwrap_or(true);
-                            if should_add { stroke.points.push(point); }
-                        }
-                    }
-                }
-                if response.drag_stopped() {
-                    if let Some(stroke) = current.take() {
-                        strokes.push(stroke);
-                    }
-                }
-
-                for stroke in strokes.iter() { paint_stroke(&painter, canvas_rect, stroke); }
-                if let Some(stroke) = current.as_ref() { paint_stroke(&painter, canvas_rect, stroke); }
-            });
-
-        if close_requested { open = false; }
-        self.notes_window_pos += drag_delta;
-        self.notes_open = open && self.notes_open;
-
-        if fill_requested {
-            self.note_background = self.note_brush_color;
-        }
-        if clear_requested {
-            self.note_strokes.clear();
-            self.note_current_stroke = None;
-        }
-        if save_requested {
-            if let Some(stroke) = self.note_current_stroke.take() {
-                self.note_strokes.push(stroke);
-            }
-            self.save_notes_png();
-        }
-    }
-
-
     fn execute_command(&mut self, input: &str) {
         match parse_command(input) {
             ChatCommand::OpenRadio => {
-                self.radio_open = true;
+                self.open_radio();
                 self.command_status = "Открыто радио.".into();
             }
             ChatCommand::CloseRadio => {
@@ -1057,7 +802,7 @@ impl TsChatApp {
                 self.command_status = "Окно радио закрыто; воспроизведение не остановлено.".into();
             }
             ChatCommand::PlayRadio => {
-                self.radio_open = true;
+                self.open_radio();
                 if let Some(player) = self.radio_player.as_ref() {
                     if player.is_paused() {
                         player.toggle_pause();
@@ -1082,14 +827,6 @@ impl TsChatApp {
                 if let Some(player) = self.radio_player.take() { player.stop(); }
                 self.radio_status = "Радио остановлено.".into();
                 self.command_status = "Радио остановлено.".into();
-            }
-            ChatCommand::OpenNotes => {
-                self.notes_open = true;
-                self.command_status = "Открыты заметки.".into();
-            }
-            ChatCommand::CloseNotes => {
-                self.notes_open = false;
-                self.command_status = "Окно заметок закрыто.".into();
             }
             ChatCommand::RequestClearChat => {
                 self.show_clear_chat_confirmation = true;
@@ -1323,6 +1060,29 @@ impl TsChatApp {
         }
     }
 
+    fn open_radio(&mut self) {
+        self.radio_open = true;
+        if self.radio_player.is_some() || self.radio_pending.is_some() || self.radio_autoplay_pending.is_some() {
+            return;
+        }
+
+        let first_configured = self.radio_stations.iter().position(|station| {
+            let Ok(url) = url::Url::parse(station.url.trim()) else { return false; };
+            matches!(url.scheme(), "http" | "https") && url.host_str().is_some()
+        });
+
+        if let Some(index) = first_configured {
+            self.selected_radio_station = index;
+            self.radio_autoplay_pending = Some(index);
+            self.radio_status = format!(
+                "Подключение к настроенной станции «{}»…",
+                self.radio_stations[index].name
+            );
+        } else {
+            self.radio_status = "В config.toml не найдена радиостанция с корректным HTTP(S) URL.".into();
+        }
+    }
+
     fn save_radio_settings(&mut self) {
         self.config.radio.stations = self.radio_stations.clone();
         match self.config.save() {
@@ -1436,6 +1196,9 @@ impl TsChatApp {
                                 );
                                 if response.clicked() {
                                     *selected = index;
+                                    if let Some(station) = stations.get(index) {
+                                        start_request = Some((station.url.trim().to_string(), station.name.clone()));
+                                    }
                                 }
                             }
                         });
@@ -1483,6 +1246,21 @@ impl TsChatApp {
                     0.0,
                     egui::Color32::BLACK,
                 );
+                let status_color = if displayed_radio_status.starts_with("Не удалось")
+                    || displayed_radio_status.starts_with("В config.toml")
+                {
+                    egui::Color32::from_rgb(255, 110, 110)
+                } else {
+                    egui::Color32::from_rgb(120, 220, 140)
+                };
+                legacy_text(
+                    ui,
+                    legacy_rect(origin, 2.0, 447.0, 288.0, 14.0),
+                    displayed_radio_status.clone(),
+                    status_color,
+                    8.5,
+                );
+
                 let sound_icon = if muted { "radio_sound_off" } else { "radio_sound_on" };
                 if let Some(response) = legacy_image_button(
                     ui, &textures, sound_icon, legacy_rect(origin, 26.0, 466.0, 40.0, 40.0),
@@ -1990,8 +1768,8 @@ impl TsChatApp {
             response
         };
 
-        let file_icon = if dark { "file_dark" } else { "file_light" };
-        if menu_item(ui, "Файл", file_icon, if profile_expanded { 67.0 } else { 52.0 }).clicked() {
+        let profile_menu_icon = if dark { "profile_dark" } else { "profile_light" };
+        if menu_item(ui, "Профиль", profile_menu_icon, if profile_expanded { 78.0 } else { 66.0 }).clicked() {
             self.edit_profile_open = true;
         }
         let fonts_icon = if dark { "fonts_dark" } else { "fonts_light" };
@@ -2008,11 +1786,7 @@ impl TsChatApp {
         }
         let radio_icon = if dark { "radio_dark" } else { "radio_light" };
         if menu_item(ui, "Развлечения", radio_icon, if profile_expanded { 98.0 } else { 82.0 }).clicked() {
-            self.radio_open = true;
-        }
-        let notes_icon = if dark { "notes_dark" } else { "notes_light" };
-        if menu_item(ui, "Заметки", notes_icon, if profile_expanded { 78.0 } else { 66.0 }).clicked() {
-            self.notes_open = true;
+            self.open_radio();
         }
         drop(menu_item);
 
@@ -2608,8 +2382,8 @@ impl eframe::App for TsChatApp {
 
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         if self.screen == Screen::Chat {
-            ctx.request_repaint_after(Duration::from_secs(2));
-            if self.last_refresh.elapsed() >= Duration::from_secs(2) {
+            ctx.request_repaint_after(Duration::from_secs(10));
+            if self.last_refresh.elapsed() >= Duration::from_secs(10) {
                 self.refresh_chat();
                 self.last_refresh = Instant::now();
             }
@@ -2735,7 +2509,6 @@ impl eframe::App for TsChatApp {
             }
         }
 
-        self.show_notes_window(ctx);
         self.show_radio_window(ctx);
         self.show_clear_chat_confirmation(ctx);
         #[cfg(feature = "voice")]
