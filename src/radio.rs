@@ -41,6 +41,10 @@ impl RadioPlayback {
         .context("Не удалось установить HTTP-соединение с радиостанцией")?;
 
         let icy_headers = IcyHeaders::parse_from_headers(stream.headers());
+        let mime_type = stream
+            .content_type()
+            .unwrap_or("audio/mpeg")
+            .to_string();
         // Two seconds of initial audio is enough to start decoding without
         // making the first connection wait for a large live-stream buffer.
         let bitrate_kbps = icy_headers.bitrate().unwrap_or(128) as u64;
@@ -82,7 +86,11 @@ impl RadioPlayback {
         let decoder = tokio::time::timeout(
             Duration::from_secs(10),
             tokio::task::spawn_blocking(move || {
-                Decoder::try_from(BufReader::new(metadata_reader))
+                Decoder::builder()
+                    .with_data(BufReader::new(metadata_reader))
+                    .with_seekable(false)
+                    .with_mime_type(&mime_type)
+                    .build()
             }),
         )
         .await
