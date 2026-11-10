@@ -27,6 +27,8 @@ pub struct TsChatApp {
     private_subject: String,
     private_text: String,
     inbox: Vec<crate::models::PrivateMessage>,
+    inbox_pending: Option<std::sync::mpsc::Receiver<Result<Vec<crate::models::PrivateMessage>, String>>>,
+    inbox_loading: bool,
     status: String,
     dark_theme: bool,
     connected: bool,
@@ -403,6 +405,7 @@ impl Default for TsChatApp {
             current_user: None, friends: Vec::new(), chat_text: String::new(),
             draft: String::new(), selected_friend: None, private_subject: String::new(),
             private_text: String::new(), inbox: Vec::new(),
+            inbox_pending: None, inbox_loading: false,
             status: "Соединение проверяется при входе или регистрации.".into(),
             dark_theme: true, connected: false, show_inbox: false, private_message_open: false,
             confirm_delete_message: None,
@@ -1368,6 +1371,8 @@ impl TsChatApp {
                 station.url = url;
             }
             self.save_radio_settings();
+            self.radio_autoplay_pending = Some(selected_index);
+            self.radio_open = true;
             open = false;
         }
         self.radio_url_editor_open = open;
@@ -1439,11 +1444,52 @@ impl TsChatApp {
     }
 
     fn load_inbox(&mut self) {
+        if self.inbox_loading {
+            self.show_inbox = true;
+            return;
+        }
         let Some(user) = self.current_user.as_ref() else { return; };
+        let Some(db) = self.db.clone() else {
+            self.status = "Сначала подключитесь к базе данных.".into();
+            return;
+        };
+
         let name = user.username.clone();
-        match self.run_db(|rt, db| rt.block_on(db.inbox(&name))) {
-            Ok(items) => { self.inbox = items; self.show_inbox = true; }
-            Err(e) => self.status = format!("Ошибка загрузки входящих: {e:#}"),
+        let (sender, receiver) = std::sync::mpsc::channel();
+        self.inbox_pending = Some(receiver);
+        self.inbox_loading = true;
+        self.show_inbox = true;
+        self.status = "Загрузка входящих сообщений…".into();
+
+        self.runtime.spawn(async move {
+            let result = db.inbox(&name).await.map_err(|error| format!("{error:#}"));
+            let _ = sender.send(result);
+        });
+    }
+
+    fn poll_inbox_load(&mut self, ctx: &egui::Context) {
+        let result = self.inbox_pending.as_ref().map(|receiver| receiver.try_recv());
+        match result {
+            Some(Ok(Ok(items))) => {
+                self.inbox = items;
+                self.inbox_pending = None;
+                self.inbox_loading = false;
+                self.status.clear();
+            }
+            Some(Ok(Err(error))) => {
+                self.inbox_pending = None;
+                self.inbox_loading = false;
+                self.status = format!("Ошибка загрузки входящих: {error}");
+            }
+            Some(Err(std::sync::mpsc::TryRecvError::Disconnected)) => {
+                self.inbox_pending = None;
+                self.inbox_loading = false;
+                self.status = "Загрузка входящих прервана: задача базы данных завершилась неожиданно.".into();
+            }
+            Some(Err(std::sync::mpsc::TryRecvError::Empty)) => {
+                ctx.request_repaint_after(Duration::from_millis(150));
+            }
+            None => {}
         }
     }
 
@@ -2379,6 +2425,8 @@ impl TsChatApp {
 impl eframe::App for TsChatApp {
 
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        self.poll_inbox_load(ctx);
+
         if self.screen == Screen::Chat {
             ctx.request_repaint_after(Duration::from_secs(10));
             if self.last_refresh.elapsed() >= Duration::from_secs(10) {
@@ -2436,8 +2484,19 @@ impl eframe::App for TsChatApp {
             let mut delete_requested = None;
             let mut reply_requested: Option<(String, String)> = None;
             egui::Window::new("Входящие сообщения").show(ctx, |ui| {
+                if ui.button("Обновить").clicked() {
+                    self.load_inbox();
+                }
                 if ui.button("Закрыть").clicked() {
                     close_inbox = true;
+                }
+                if self.inbox_loading && inbox_items.is_empty() {
+                    ui.horizontal(|ui| {
+                        ui.spinner();
+                        ui.label("Загружаем входящие сообщения…");
+                    });
+                } else if inbox_items.is_empty() {
+                    ui.label("Входящих сообщений пока нет.");
                 }
                 for message in inbox_items {
                     ui.collapsing(
