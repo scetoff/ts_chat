@@ -70,10 +70,13 @@ impl Database {
     async fn create_pool(options: &MySqlConnectOptions) -> Result<MySqlPool> {
         MySqlPoolOptions::new()
             .max_connections(1)
-            .acquire_timeout(Duration::from_secs(30))
-            // FreeDB may cap simultaneous sessions per account. Release an
-            // idle pooled socket quickly so phpMyAdmin/other clients can connect.
-            .idle_timeout(Some(Duration::from_secs(5)))
+            .min_connections(0)
+            // Keep UI actions from waiting half a minute if FreeDB has no slot.
+            .acquire_timeout(Duration::from_secs(10))
+            // The chat is polled every 10 seconds. Reap the idle connection
+            // after 2 seconds so the shared FreeDB account does not hold a slot
+            // while the user is reading or typing.
+            .idle_timeout(Some(Duration::from_secs(2)))
             .test_before_acquire(true)
             .connect_with(options.clone())
             .await
