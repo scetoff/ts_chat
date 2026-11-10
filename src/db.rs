@@ -13,7 +13,9 @@ fn is_transient_sqlx_error(error: &sqlx::Error) -> bool {
         | sqlx::Error::PoolTimedOut
         | sqlx::Error::WorkerCrashed => true,
         sqlx::Error::Database(database_error) => {
-            matches!(database_error.code().as_deref(), Some("2006" | "2013" | "2055"))
+            // 1203 is a provider-side connection-cap rejection; retry it
+            // through the same bounded retry paths as dropped sessions.
+            matches!(database_error.code().as_deref(), Some("1203" | "2006" | "2013" | "2055"))
         }
         _ => false,
     }
@@ -29,8 +31,14 @@ fn is_transient_connection_error(error: &anyhow::Error) -> bool {
 }
 
 fn is_mysql_connection_limit_error(error: &sqlx::Error) -> bool {
-    let message = error.to_string().to_ascii_lowercase();
-    message.contains("1203") || message.contains("max_user_connections")
+    matches!(
+        error,
+        sqlx::Error::Database(database_error)
+            if database_error.code().as_deref() == Some("1203")
+    ) || {
+        let message = error.to_string().to_ascii_lowercase();
+        message.contains("1203") || message.contains("max_user_connections")
+    }
 }
 
 fn is_duplicate_key_error(error: &sqlx::Error) -> bool {
@@ -56,8 +64,9 @@ fn mysql_utf8_literal(value: &str) -> String {
 
 #[derive(Clone)]
 pub struct Database {
+    // All operations in one app instance share this single pool. Creating
+    // operation-specific pools counts as extra sessions for the same MySQL user.
     pool: MySqlPool,
-    connect_options: MySqlConnectOptions,
 }
 
 impl Database {
@@ -66,17 +75,16 @@ impl Database {
         Self::connect_url(&config.mysql_url()).await
     }
 
-    /// Create the one-connection pool used by the desktop client and registration probes.
+    /// Create the single shared pool used by the whole desktop client.
     async fn create_pool(options: &MySqlConnectOptions) -> Result<MySqlPool> {
         MySqlPoolOptions::new()
             .max_connections(1)
             .min_connections(0)
-            // Keep UI actions from waiting half a minute if FreeDB has no slot.
-            .acquire_timeout(Duration::from_secs(10))
-            // The chat is polled every 10 seconds. Reap the idle connection
-            // after 2 seconds so the shared FreeDB account does not hold a slot
-            // while the user is reading or typing.
-            .idle_timeout(Some(Duration::from_secs(2)))
+            // Keep one idle connection instead of opening/closing one every few
+            // seconds. Shared MySQL hosts may briefly count just-closed sessions
+            // against max_user_connections.
+            .idle_timeout(None)
+            .acquire_timeout(Duration::from_secs(15))
             .test_before_acquire(true)
             .connect_with(options.clone())
             .await
@@ -91,7 +99,7 @@ impl Database {
             .ssl_mode(MySqlSslMode::Required)
             .charset("utf8mb4");
         let pool = Self::create_pool(&connect_options).await?;
-        Ok(Self { pool, connect_options })
+        Ok(Self { pool })
     }
 
 
@@ -124,6 +132,12 @@ impl Database {
     }
 
     async fn ensure_chat_utf8mb4(&self) -> Result<()> {
+        // Keep the metadata read and optional ALTER on the same physical
+        // connection. A second pool can exceed max_user_connections while
+        // the application's main pool already holds a session.
+        let mut connection = self.pool.acquire().await
+            .context("Не удалось получить MySQL-соединение для проверки кодировки tb_chat.chat")?;
+
         let charset: Option<String> = sqlx::query_scalar(
             "SELECT CHARACTER_SET_NAME
              FROM information_schema.COLUMNS
@@ -131,7 +145,7 @@ impl Database {
                AND TABLE_NAME = 'tb_chat'
                AND COLUMN_NAME = 'chat'"
         )
-        .fetch_optional(&self.pool)
+        .fetch_optional(&mut *connection)
         .await
         .context("Не удалось определить кодировку tb_chat.chat")?;
 
@@ -140,21 +154,19 @@ impl Database {
             return Ok(());
         }
 
-        let pool = Self::create_pool(&self.connect_options).await
-            .context("Не удалось открыть MySQL-соединение для настройки UTF-8 чата")?;
-        let result = (&pool)
-            .execute(
-                "ALTER TABLE tb_chat
-                 MODIFY chat LONGTEXT
-                 CHARACTER SET utf8mb4
-                 COLLATE utf8mb4_unicode_ci
-                 NOT NULL"
-            )
-            .await;
-        pool.close().await;
-        result.context(format!(
+        sqlx::query(
+            "ALTER TABLE tb_chat
+             MODIFY chat LONGTEXT
+             CHARACTER SET utf8mb4
+             COLLATE utf8mb4_unicode_ci
+             NOT NULL"
+        )
+        .execute(&mut *connection)
+        .await
+        .context(format!(
             "Не удалось перевести tb_chat.chat из {charset} в utf8mb4"
         ))?;
+
         Ok(())
     }
 
@@ -225,30 +237,17 @@ impl Database {
 
 
     pub async fn user_with_password(&self, username: &str) -> Result<Option<(User, String)>> {
-        // The login form may be idle for minutes while FreeDB closes the
-        // application's original socket. Do not authenticate through that
-        // long-lived pool: create, use and close a fresh one-connection pool.
-        let login_pool = Self::create_pool(&self.connect_options)
-            .await
-            .context("Не удалось открыть свежее MySQL-соединение для авторизации")?;
-        let login_db = Self {
-            pool: login_pool,
-            connect_options: self.connect_options.clone(),
-        };
-
+        // Reuse the application pool; a separate pool for every login can
+        // temporarily exceed the hosting provider's MySQL session limit.
         let mut last_error = None;
         for attempt in 0..2 {
-            match login_db.user_with_password_once(username).await {
-                Ok(user) => {
-                    login_db.pool.close().await;
-                    return Ok(user);
-                }
+            match self.user_with_password_once(username).await {
+                Ok(user) => return Ok(user),
                 Err(error) if is_transient_connection_error(&error) && attempt == 0 => {
                     last_error = Some(error);
-                    tokio::time::sleep(Duration::from_millis(400)).await;
+                    tokio::time::sleep(Duration::from_millis(500)).await;
                 }
                 Err(error) => {
-                    login_db.pool.close().await;
                     if let Some(first_error) = last_error.as_ref() {
                         return Err(error.context(format!(
                             "Авторизация не удалась и после повторного запроса. Первая ошибка: {first_error:#}"
@@ -259,7 +258,6 @@ impl Database {
             }
         }
 
-        login_db.pool.close().await;
         Err(last_error.unwrap_or_else(|| anyhow::anyhow!("Не удалось выполнить запрос авторизации")))
     }
 
@@ -428,26 +426,12 @@ impl Database {
         email: &str,
         avatar_base64: &str,
     ) -> Result<()> {
-        // Registration uses a fresh one-connection pool instead of reusing the
-        // long-lived app pool that may have been through schema checks or sat idle
-        // while the user filled the form. FreeDB/shared gateways can reset those
-        // older sessions without SQLx having received a clean server shutdown.
-        let registration_pool = Self::create_pool(&self.connect_options)
+        // Registration shares the same pool as chat, login and inbox reads.
+        self.register_on_shared_pool(username, password_hash, email, avatar_base64)
             .await
-            .context("Не удалось открыть новое соединение MySQL для регистрации")?;
-        let registration_db = Self {
-            pool: registration_pool,
-            connect_options: self.connect_options.clone(),
-        };
-
-        let result = registration_db
-            .register_on_fresh_pool(username, password_hash, email, avatar_base64)
-            .await;
-        registration_db.pool.close().await;
-        result
     }
 
-    async fn register_on_fresh_pool(
+    async fn register_on_shared_pool(
         &self,
         username: &str,
         password_hash: &str,
@@ -625,9 +609,9 @@ impl Database {
     }
 
     pub async fn inbox(&self, username: &str) -> Result<Vec<PrivateMessage>> {
-        // FreeDB rejects connection attempts when all five account sessions
-        // are occupied. Retry this read on the same single-connection pool
-        // rather than creating another pool and worsening the limit.
+        // The inbox runs in the background and reuses the application's only
+        // pool. Retry connection-cap rejections and stale-session errors without
+        // creating additional MySQL sessions.
         for attempt in 0..3 {
             let result = sqlx::query(
                 "SELECT id,fromuser,subject,message,isread FROM tb_pm WHERE username = ? ORDER BY id DESC"
@@ -646,12 +630,15 @@ impl Database {
                         is_read: r.get::<i32,_>("isread") != 0,
                     }).collect());
                 }
-                Err(error) if is_mysql_connection_limit_error(&error) && attempt < 2 => {
+                Err(error)
+                    if (is_mysql_connection_limit_error(&error) || is_transient_sqlx_error(&error))
+                        && attempt < 2 =>
+                {
                     tokio::time::sleep(Duration::from_millis(700 * (attempt + 1) as u64)).await;
                 }
                 Err(error) if is_mysql_connection_limit_error(&error) => {
                     anyhow::bail!(
-                        "FreeDB временно занял все 5 подключений аккаунта (1203). Закройте другие экземпляры TSchat и вкладки phpMyAdmin, подождите несколько секунд и откройте «Личные сообщения» снова. Последняя ошибка: {error}"
+                        "MySQL отклонил соединение (1203): достигнут лимит max_user_connections для этой учётной записи. TSchat использует один общий пул; закройте другие экземпляры приложения и другие программы, подключённые к этой БД, затем повторите загрузку. Последняя ошибка: {error}"
                     );
                 }
                 Err(error) => return Err(error.into()),
@@ -764,19 +751,13 @@ impl Database {
     }
 
     pub async fn update_password(&self, username: &str, password_hash: &str) -> Result<()> {
-        // This path is used only to upgrade a legacy password after successful
-        // authentication. Reuse the same short-lived connection strategy.
-        let pool = Self::create_pool(&self.connect_options)
-            .await
-            .context("Не удалось открыть новое MySQL-соединение для обновления пароля")?;
         let statement = format!(
             "UPDATE tb_users SET password = {} WHERE username = {}",
             mysql_utf8_literal(password_hash),
             mysql_utf8_literal(username),
         );
-        let result = (&pool).execute(statement.as_str()).await;
-        pool.close().await;
-        result.context("Не удалось обновить хеш пароля")?;
+        self.execute_simple_query_with_retry(&statement, "обновление хеша пароля")
+            .await?;
         Ok(())
     }
 }
