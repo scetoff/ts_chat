@@ -5,8 +5,6 @@ pub enum ChatCommand {
     PlayRadio,
     PauseRadio,
     StopRadio,
-    OpenNotes,
-    CloseNotes,
     RequestClearChat,
     SelectStation(usize),
     Unknown,
@@ -32,8 +30,6 @@ pub fn parse_command(input: &str) -> ChatCommand {
         "выключи радио" | "отключи радио" => return ChatCommand::StopRadio,
         "включи радио" => return ChatCommand::PlayRadio,
         "пауза радио" | "приостанови радио" => return ChatCommand::PauseRadio,
-        "открой заметки" => return ChatCommand::OpenNotes,
-        "закрой заметки" => return ChatCommand::CloseNotes,
         "очисти чат" | "очисти весь чат" => return ChatCommand::RequestClearChat,
         _ => {}
     }
@@ -80,12 +76,10 @@ mod tests {
     }
 
     #[test]
-    fn parses_radio_and_notes_controls() {
+    fn parses_radio_controls() {
         assert_eq!(parse_command("Открой радио"), ChatCommand::OpenRadio);
         assert_eq!(parse_command("Выключи радио"), ChatCommand::StopRadio);
         assert_eq!(parse_command("Пауза радио"), ChatCommand::PauseRadio);
-        assert_eq!(parse_command("Открой заметки"), ChatCommand::OpenNotes);
-        assert_eq!(parse_command("Закрой заметки"), ChatCommand::CloseNotes);
         assert_eq!(parse_command("Очисти чат"), ChatCommand::RequestClearChat);
         assert_eq!(parse_command("Очисти весь чат."), ChatCommand::RequestClearChat);
     }
