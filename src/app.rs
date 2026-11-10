@@ -1467,7 +1467,7 @@ impl TsChatApp {
             return;
         }
 
-        let assets: [(&str, &[u8]); 31] = [
+        let assets: [(&str, &[u8]); 27] = [
             ("brand_logo", include_bytes!("../Resources/32323.png")),
             ("theme_day", include_bytes!("../Resources/b_day.png")),
             ("theme_night", include_bytes!("../Resources/b_night.png")),
@@ -1485,8 +1485,6 @@ impl TsChatApp {
             ("attach_light", include_bytes!("../assets/prikrep_b.png")),
             ("profile_dark", include_bytes!("../assets/profile.png")),
             ("profile_light", include_bytes!("../assets/profile_b.png")),
-            ("file_dark", include_bytes!("../assets/Fail.png")),
-            ("file_light", include_bytes!("../assets/Fail_b.png")),
             ("edit_dark", include_bytes!("../assets/redakt.png")),
             ("edit_light", include_bytes!("../assets/redakt_b.png")),
             ("fonts_dark", include_bytes!("../assets/fontes.png")),
@@ -1497,8 +1495,6 @@ impl TsChatApp {
             ("pm_light", include_bytes!("../assets/lmseg_b.png")),
             ("radio_dark", include_bytes!("../assets/radio.png")),
             ("radio_light", include_bytes!("../assets/radio_b.png")),
-            ("notes_dark", include_bytes!("../assets/pencil.png")),
-            ("notes_light", include_bytes!("../assets/pencil_b.png")),
         ];
 
         let mut loaded = std::collections::HashMap::with_capacity(assets.len());
