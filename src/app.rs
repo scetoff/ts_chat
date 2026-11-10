@@ -22,6 +22,7 @@ pub struct TsChatApp {
     current_user: Option<User>,
     friends: Vec<String>,
     chat_text: String,
+    chat_refresh_pending: Option<std::sync::mpsc::Receiver<Result<String, String>>>,
     draft: String,
     selected_friend: Option<String>,
     private_subject: String,
@@ -403,6 +404,7 @@ impl Default for TsChatApp {
             db: None, screen: Screen::Login,
             username: String::new(), password: String::new(), email: String::new(),
             current_user: None, friends: Vec::new(), chat_text: String::new(),
+            chat_refresh_pending: None,
             draft: String::new(), selected_friend: None, private_subject: String::new(),
             private_text: String::new(), inbox: Vec::new(),
             inbox_pending: None, inbox_loading: false,
@@ -1380,7 +1382,48 @@ impl TsChatApp {
 
 
     fn refresh_chat(&mut self) {
-        if let Ok(chat) = self.run_db(|rt, db| rt.block_on(db.read_chat())) { self.chat_text = chat; }
+        // Never block egui's UI thread while waiting for the shared, single-
+        // connection MySQL pool. Inbox reads and the 10-second chat poll can
+        // otherwise wait on each other and make the whole window appear frozen.
+        if self.chat_refresh_pending.is_some() {
+            return;
+        }
+        let Some(db) = self.db.clone() else {
+            return;
+        };
+
+        let (sender, receiver) = std::sync::mpsc::channel();
+        self.chat_refresh_pending = Some(receiver);
+        self.runtime.spawn(async move {
+            let result = db.read_chat().await.map_err(|error| format!("{error:#}"));
+            let _ = sender.send(result);
+        });
+    }
+
+    fn poll_chat_refresh(&mut self, ctx: &egui::Context) {
+        let result = self.chat_refresh_pending.as_ref().map(|receiver| receiver.try_recv());
+        match result {
+            Some(Ok(Ok(chat))) => {
+                self.chat_text = chat;
+                self.chat_refresh_pending = None;
+            }
+            Some(Ok(Err(error))) => {
+                self.chat_refresh_pending = None;
+                if self.status.is_empty() {
+                    self.status = format!("Не удалось обновить общий чат: {error}");
+                }
+            }
+            Some(Err(std::sync::mpsc::TryRecvError::Disconnected)) => {
+                self.chat_refresh_pending = None;
+                if self.status.is_empty() {
+                    self.status = "Обновление общего чата прервано.".into();
+                }
+            }
+            Some(Err(std::sync::mpsc::TryRecvError::Empty)) => {
+                ctx.request_repaint_after(Duration::from_millis(150));
+            }
+            None => {}
+        }
     }
 
     fn send_chat(&mut self) {
@@ -2425,6 +2468,7 @@ impl TsChatApp {
 impl eframe::App for TsChatApp {
 
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        self.poll_chat_refresh(ctx);
         self.poll_inbox_load(ctx);
 
         if self.screen == Screen::Chat {
