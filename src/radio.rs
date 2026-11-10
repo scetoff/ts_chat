@@ -39,6 +39,7 @@ impl RadioPlayback {
         if parsed.scheme() != "http" && parsed.scheme() != "https" {
             anyhow::bail!("Радиопоток должен использовать http:// или https://");
         }
+        let mime_type = mime_hint(&parsed);
 
         // Icecast/Shoutcast stations may insert ICY metadata blocks into the
         // audio byte stream. Request the metadata interval and strip those
@@ -59,7 +60,6 @@ impl RadioPlayback {
         .context("Не удалось установить HTTP-соединение с радиостанцией")?;
 
         let icy_headers = IcyHeaders::parse_from_headers(stream.headers());
-        let mime_type = mime_hint(&parsed);
         // Prefetch five seconds of audio, matching the ICY integration's
         // recommended startup buffer calculation.
         let bitrate_kbps = icy_headers.bitrate().unwrap_or(128) as u64;
