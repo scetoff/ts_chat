@@ -222,6 +222,45 @@ impl Database {
 
 
     pub async fn user_with_password(&self, username: &str) -> Result<Option<(User, String)>> {
+        // The login form may be idle for minutes while FreeDB closes the
+        // application's original socket. Do not authenticate through that
+        // long-lived pool: create, use and close a fresh one-connection pool.
+        let login_pool = Self::create_pool(&self.connect_options)
+            .await
+            .context("Не удалось открыть свежее MySQL-соединение для авторизации")?;
+        let login_db = Self {
+            pool: login_pool,
+            connect_options: self.connect_options.clone(),
+        };
+
+        let mut last_error = None;
+        for attempt in 0..2 {
+            match login_db.user_with_password_once(username).await {
+                Ok(user) => {
+                    login_db.pool.close().await;
+                    return Ok(user);
+                }
+                Err(error) if is_transient_connection_error(&error) && attempt == 0 => {
+                    last_error = Some(error);
+                    tokio::time::sleep(Duration::from_millis(400)).await;
+                }
+                Err(error) => {
+                    login_db.pool.close().await;
+                    if let Some(first_error) = last_error {
+                        return Err(error.context(format!(
+                            "Авторизация не удалась и после повторного запроса. Первая ошибка: {first_error:#}"
+                        )));
+                    }
+                    return Err(error).context("Не удалось прочитать аккаунт для авторизации");
+                }
+            }
+        }
+
+        login_db.pool.close().await;
+        Err(last_error.unwrap_or_else(|| anyhow::anyhow!("Не удалось выполнить запрос авторизации")))
+    }
+
+    async fn user_with_password_once(&self, username: &str) -> Result<Option<(User, String)>> {
         let row = sqlx::query(
             "SELECT id, username, password, email, name, dp, mobile, chatcolor, chatfont, chatfontsize, chatfontstyle FROM tb_users WHERE username = ?"
         ).bind(username).fetch_optional(&self.pool).await?;
@@ -660,9 +699,19 @@ impl Database {
     }
 
     pub async fn update_password(&self, username: &str, password_hash: &str) -> Result<()> {
-        sqlx::query("UPDATE tb_users SET password = ? WHERE username = ?")
-            .bind(password_hash).bind(username)
-            .execute(&self.pool).await?;
+        // This path is used only to upgrade a legacy password after successful
+        // authentication. Reuse the same short-lived connection strategy.
+        let pool = Self::create_pool(&self.connect_options)
+            .await
+            .context("Не удалось открыть новое MySQL-соединение для обновления пароля")?;
+        let statement = format!(
+            "UPDATE tb_users SET password = {} WHERE username = {}",
+            mysql_utf8_literal(password_hash),
+            mysql_utf8_literal(username),
+        );
+        let result = (&pool).execute(statement.as_str()).await;
+        pool.close().await;
+        result.context("Не удалось обновить хеш пароля")?;
         Ok(())
     }
 }
