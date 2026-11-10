@@ -113,8 +113,17 @@ impl RadioPlayback {
         .context("Потоковый декодер завершился с ошибкой")?
         .context("Не удалось декодировать аудиопоток. Проверьте, что URL ведёт непосредственно на MP3/AAC/OGG поток")?;
 
-        let output = DeviceSinkBuilder::open_default_sink()
-            .context("Не удалось открыть устройство вывода звука Windows")?;
+        // Windows audio-device enumeration/opening can block inside the host
+        // audio API. Keep it off the runtime worker and always resolve the UI's
+        // "Связь…" state with an actionable timeout/error.
+        let output = tokio::time::timeout(
+            Duration::from_secs(10),
+            tokio::task::spawn_blocking(DeviceSinkBuilder::open_default_sink),
+        )
+        .await
+        .context("Тайм-аут: устройство вывода звука не открылось за 10 секунд")?
+        .context("Не удалось выполнить открытие аудиоустройства в фоновом потоке")?
+        .context("Не удалось открыть устройство вывода звука Windows")?;
         let player = Player::connect_new(output.mixer());
         player.set_volume(volume.clamp(0.0, 1.0));
         player.append(decoder);
