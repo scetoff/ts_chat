@@ -81,8 +81,6 @@ impl RadioPlayback {
         if parsed.scheme() != "http" && parsed.scheme() != "https" {
             anyhow::bail!("Радиопоток должен использовать http:// или https://");
         }
-        let mime_type = mime_hint(&parsed);
-
         // Icecast/Shoutcast stations may insert ICY metadata blocks into the
         // audio byte stream. Request the metadata interval and strip those
         // blocks before passing MP3/AAC bytes to Rodio.
@@ -95,7 +93,7 @@ impl RadioPlayback {
 
         let stream = tokio::time::timeout(
             Duration::from_secs(15),
-            HttpStream::new(client, parsed),
+            HttpStream::new(client, parsed.clone()),
         )
         .await
         .context("Тайм-аут: сервер радиостанции не ответил за 15 секунд")?
