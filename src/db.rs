@@ -531,6 +531,43 @@ impl Database {
         }))
     }
 
+    async fn execute_simple_query_with_retry(
+        &self,
+        statement: &str,
+        operation: &str,
+    ) -> Result<u64> {
+        let mut last_error = None;
+        for attempt in 0..3 {
+            match self.pool.execute(statement).await {
+                Ok(result) => return Ok(result.rows_affected()),
+                Err(error)
+                    if attempt < 2
+                        && (is_mysql_connection_limit_error(&error)
+                            || is_transient_sqlx_error(&error)) =>
+                {
+                    last_error = Some(error);
+                    tokio::time::sleep(Duration::from_millis(500 * (attempt + 1) as u64)).await;
+                }
+                Err(error) if is_mysql_connection_limit_error(&error) => {
+                    anyhow::bail!(
+                        "FreeDB отклонил {operation}: все 5 одновременных подключений аккаунта заняты (1203). Закройте другие экземпляры TSchat/phpMyAdmin и повторите операцию. Последняя ошибка: {error}"
+                    );
+                }
+                Err(error) => {
+                    return Err(anyhow::Error::new(error)
+                        .context(format!("Не удалось выполнить операцию: {operation}")));
+                }
+            }
+        }
+
+        let error = last_error
+            .map(|error| error.to_string())
+            .unwrap_or_else(|| "неизвестная ошибка соединения".into());
+        anyhow::bail!(
+            "FreeDB не выполнил {operation} после трёх попыток. Проверьте доступность соединения. Последняя ошибка: {error}"
+        )
+    }
+
     pub async fn read_chat(&self) -> Result<String> {
         // Force the result expression to UTF-8 even if a legacy table still
         // reports a non-UTF8 default collation at the table level.
@@ -542,25 +579,19 @@ impl Database {
     }
 
     pub async fn write_chat(&self, chat: &str) -> Result<()> {
-        // Use one fresh connection and MySQL's simple-query protocol. FreeDB
-        // accepts ordinary COM_QUERY writes reliably, while prepared writes on
-        // older/pooled sessions can be followed by a TCP reset. Hex encoding
-        // preserves Cyrillic, quotes, newlines and emoji without SQL injection.
-        let pool = Self::create_pool(&self.connect_options).await
-            .context("Не удалось открыть свежее соединение для записи общего чата")?;
+        // Use the application's one shared pool to avoid opening a second
+        // FreeDB session for every message. The COM_QUERY literal is hex-based,
+        // so UTF-8 text remains safe even for quotes/newlines/emoji.
         let statement = format!(
             "UPDATE tb_chat SET chat = {} WHERE id = 1",
             mysql_utf8_literal(chat),
         );
-        let result = (&pool).execute(statement.as_str()).await;
-        pool.close().await;
-        result.context("Не удалось записать сообщение в tb_chat")?;
+        self.execute_simple_query_with_retry(&statement, "запись общего чата")
+            .await?;
         Ok(())
     }
 
     pub async fn send_private_message(&self, to: &str, from: &str, subject: &str, message: &str) -> Result<()> {
-        let pool = Self::create_pool(&self.connect_options).await
-            .context("Не удалось открыть свежее соединение для личного сообщения")?;
         let statement = format!(
             "INSERT INTO tb_pm (username,fromuser,subject,message,isread) VALUES ({},{},{},{},0)",
             mysql_utf8_literal(to),
@@ -568,9 +599,8 @@ impl Database {
             mysql_utf8_literal(subject),
             mysql_utf8_literal(message),
         );
-        let result = (&pool).execute(statement.as_str()).await;
-        pool.close().await;
-        result.context("Не удалось записать личное сообщение в tb_pm")?;
+        self.execute_simple_query_with_retry(&statement, "отправка личного сообщения")
+            .await?;
         Ok(())
     }
 
