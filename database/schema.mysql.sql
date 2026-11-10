@@ -1,15 +1,16 @@
--- TSchat legacy MySQL schema, transcribed from function.vb::InitilizeDatabase.
+-- TSchat MySQL schema, preserving the legacy table and column names.
 -- Run this manually ONLY against a brand-new, disposable test database.
 -- Do not run against production or a database containing real user data.
 --
--- The legacy client used latin1 and these exact table/column names.
+-- The legacy VB.NET client originally created these tables as latin1. The Rust
+-- client writes UTF-8, so new test databases use utf8mb4 from the beginning.
 -- No existing table is altered by this script.
 
 CREATE TABLE IF NOT EXISTS `tb_chat` (
     `id` INT(11) NOT NULL,
     `chat` LONGTEXT NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `tb_pm` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -19,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `tb_pm` (
     `message` TEXT NOT NULL,
     `isread` INT(11) NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `tb_users` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -34,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `tb_users` (
     `chatfontsize` INT(11) NOT NULL,
     `chatfontstyle` VARCHAR(40) NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT IGNORE INTO `tb_chat` (`id`, `chat`)
 VALUES (1, 'Добро пожаловать в Таверну!');
