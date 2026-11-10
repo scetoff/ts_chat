@@ -28,6 +28,11 @@ fn is_transient_connection_error(error: &anyhow::Error) -> bool {
     })
 }
 
+fn is_mysql_connection_limit_error(error: &sqlx::Error) -> bool {
+    let message = error.to_string().to_ascii_lowercase();
+    message.contains("1203") || message.contains("max_user_connections")
+}
+
 fn is_duplicate_key_error(error: &sqlx::Error) -> bool {
     matches!(
         error,
@@ -616,16 +621,34 @@ impl Database {
         font_size: i32,
         font_style: &str,
     ) -> Result<()> {
-        sqlx::query(
-            "UPDATE tb_users SET chatcolor = ?, chatfont = ?, chatfontsize = ?, chatfontstyle = ? WHERE username = ?"
-        )
-        .bind(color)
-        .bind(font)
-        .bind(font_size)
-        .bind(font_style)
-        .bind(username)
-        .execute(&self.pool)
-        .await?;
+        // Keep this write on the existing one-connection pool (do not open a
+        // second pool while FreeDB is near its max_user_connections limit).
+        // Hex literals preserve UTF-8 and prevent user-controlled SQL syntax.
+        let statement = format!(
+            "UPDATE tb_users SET chatcolor = {}, chatfont = {}, chatfontsize = {}, chatfontstyle = {} WHERE username = {}",
+            mysql_utf8_literal(color),
+            mysql_utf8_literal(font),
+            font_size,
+            mysql_utf8_literal(font_style),
+            mysql_utf8_literal(username),
+        );
+
+        for attempt in 0..3 {
+            match self.pool.execute(statement.as_str()).await {
+                Ok(_) => return Ok(()),
+                Err(error) if is_mysql_connection_limit_error(&error) && attempt < 2 => {
+                    // FreeDB's per-user cap may be momentarily occupied by
+                    // phpMyAdmin or another TSchat instance. Retry briefly.
+                    tokio::time::sleep(Duration::from_millis(500 * (attempt + 1) as u64)).await;
+                }
+                Err(error) if is_mysql_connection_limit_error(&error) => {
+                    anyhow::bail!(
+                        "FreeDB отклонил подключение: достигнут лимит одновременных соединений этого аккаунта (1203). Закройте другие окна TSchat и лишние подключения phpMyAdmin, затем повторите сохранение."
+                    );
+                }
+                Err(error) => return Err(error.into()),
+            }
+        }
         Ok(())
     }
 
