@@ -246,7 +246,7 @@ impl Database {
                 }
                 Err(error) => {
                     login_db.pool.close().await;
-                    if let Some(first_error) = last_error {
+                    if let Some(first_error) = last_error.as_ref() {
                         return Err(error.context(format!(
                             "Авторизация не удалась и после повторного запроса. Первая ошибка: {first_error:#}"
                         )));
