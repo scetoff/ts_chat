@@ -13,7 +13,7 @@ The initial desktop client is built with Rust, egui/eframe, Tokio and SQLx. Impl
 - Authenticate against the existing `tb_users` table.
 - Register users using the original user table columns.
 - Read and send messages using the legacy shared `tb_chat` record.
-- Poll the shared chat every two seconds while the chat screen is open.
+- Poll the shared chat every ten seconds while the chat screen is open; the MySQL pool releases its idle connection between polls to respect FreeDB's per-user connection cap.
 - List registered users, view friend profiles, and show their avatars.
 - Read and save per-user message color, font family preference, size, and style in the legacy `tb_users` columns; render each author's chat lines accordingly.
 - Edit own nickname, display name, email and phone; change the password. Profile, password and private-message sender/recipient rename updates are committed in one MySQL transaction.
@@ -21,7 +21,6 @@ The initial desktop client is built with Rust, egui/eframe, Tokio and SQLx. Impl
 - Import and render all 16 original PNG smileys in the composer and message history; shortcode compatibility is retained.
 - Send private messages, view the inbox, mark received messages as read, reply to a sender with a prefilled `Re:` subject, and delete an individual message after confirmation. Message deletion is scoped by both message ID and the recipient's username.
 - Toggle light and dark themes.
-- Draw in a Paint-style notes window with adjustable brush size/color, clear canvas, and export to PNG.
 - Radio station panel with the original station list, configurable stream URLs, native playback, pause/resume, stop and volume control.
 - Optional offline Russian voice commands (`voice` Cargo feature): user-selected multilingual Whisper model, push-to-talk recording via CPAL, 12-second automatic recording limit, and command dispatch after local transcription. Microphone is never opened until the user starts a recording. The legacy `Очисти чат` / `Очисти весь чат` command opens a confirmation dialog before replacing the shared history.
 
@@ -33,14 +32,11 @@ first responsive prototype:
 - Authentication/registration window: 590×437, borderless dark-blue title strip,
   original logo and tavern artwork, original field/button positions, and day/night
   switch images.
-- Main chat window: 796×451, original title strip and menu row, chat history panel
-  at (14, 72) with size 437×275, users panel at (498, 72) with size 285×275,
-  and message composer at (14, 353) with size 437×90.
+- Main chat window: 497×451 when the profile panel is collapsed and 796×451 when expanded; the vertical Profile strip toggles the original users panel. The chat history and composer keep their original positions.
 - Profile editor: original 617×384 form size and original title/header-panel structure.
 - Existing repository artwork is loaded from `Resources/` and `assets/`; original
   smiley images retain their legacy positions and message shortcodes.
-- The dark/light palette, profile, font/colour, clear-chat, inbox, radio and notes
-  controls remain wired to the migrated application logic.
+- The dark/light palette, Profile, font/colour, clear-chat, inbox and radio controls remain wired to the migrated application logic. The Notes section and retired ICQ entry are removed from the Rust client.
 
 The original VB.NET/WinForms Designer and resource files are retained unchanged as
 the visual source of truth. Some old WinForms widgets are represented by native egui
@@ -138,13 +134,21 @@ when that secret is absent; it never reuses the read-only smoke-test credentials
 automatically. Never point this setting at production or a database with real users.
 
 Radio station URLs can be entered in the Radio window and saved to the local
-`config.toml`. The original repository did not include its `База/URL.txt` stream
-list, so the station names are restored but stream URLs are intentionally blank.
-The native player supports HTTP/HTTPS live audio streams using Rodio and
-stream-download. It uses a bounded adaptive cache for live streams and performs
-the network connection in the background so the UI remains responsive. Playback
-depends on the URL being a compatible audio stream and the Windows audio output
-device being available.
+`config.toml`. When the Radio window opens, the client automatically tries the first
+station with a valid HTTP(S) URL; clicking another station starts that stream too.
+A station can also be configured with TOML array-table syntax:
+
+```toml
+[[radio.stations]]
+name = "My radio"
+url = "https://example.org/live.mp3"
+```
+
+The native player supports direct HTTP/HTTPS live audio streams using Rodio and
+stream-download. It uses a bounded adaptive cache and performs the network
+connection in the background. The Radio window shows connection and decoder
+errors; playback still depends on the URL serving a compatible audio stream and
+the Windows audio output device being available.
 
 ## Compatibility and remaining work
 
@@ -155,7 +159,7 @@ legacy client. The next migration stages are:
 2. Image attachments (the legacy attachment button was commented out in the VB.NET source).
 3. Final Windows installer packaging and code signing.
 
-The command parser has unit tests for all 15 legacy station aliases, radio/notes actions, the clear-chat confirmation request, punctuation emitted by speech recognition, and unsupported phrases. It is separate from the recognizer so manual text and Whisper transcription use the same command dispatcher.
+The command parser has unit tests for all 15 legacy station aliases, radio actions, the clear-chat confirmation request, punctuation emitted by speech recognition, and unsupported phrases. It is separate from the recognizer so manual text and Whisper transcription use the same command dispatcher.
 
 ### Optional Russian voice control
 
