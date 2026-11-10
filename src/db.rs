@@ -532,7 +532,11 @@ impl Database {
     }
 
     pub async fn read_chat(&self) -> Result<String> {
-        let row = sqlx::query("SELECT chat FROM tb_chat WHERE id = 1")
+        // Force the result expression to UTF-8 even if a legacy table still
+        // reports a non-UTF8 default collation at the table level.
+        let row = sqlx::query(
+            "SELECT CONVERT(chat USING utf8mb4) AS chat FROM tb_chat WHERE id = 1"
+        )
             .fetch_one(&self.pool).await?;
         Ok(row.get("chat"))
     }
@@ -588,12 +592,40 @@ impl Database {
     }
 
     pub async fn inbox(&self, username: &str) -> Result<Vec<PrivateMessage>> {
-        let rows = sqlx::query("SELECT id,fromuser,subject,message,isread FROM tb_pm WHERE username = ? ORDER BY id DESC")
-            .bind(username).fetch_all(&self.pool).await?;
-        Ok(rows.into_iter().map(|r| PrivateMessage {
-            id: r.get("id"), from_user: r.get("fromuser"), subject: r.get("subject"),
-            message: r.get("message"), is_read: r.get::<i32,_>("isread") != 0
-        }).collect())
+        // FreeDB rejects connection attempts when all five account sessions
+        // are occupied. Retry this read on the same single-connection pool
+        // rather than creating another pool and worsening the limit.
+        for attempt in 0..3 {
+            let result = sqlx::query(
+                "SELECT id,fromuser,subject,message,isread FROM tb_pm WHERE username = ? ORDER BY id DESC"
+            )
+                .bind(username)
+                .fetch_all(&self.pool)
+                .await;
+
+            match result {
+                Ok(rows) => {
+                    return Ok(rows.into_iter().map(|r| PrivateMessage {
+                        id: r.get("id"),
+                        from_user: r.get("fromuser"),
+                        subject: r.get("subject"),
+                        message: r.get("message"),
+                        is_read: r.get::<i32,_>("isread") != 0,
+                    }).collect());
+                }
+                Err(error) if is_mysql_connection_limit_error(&error) && attempt < 2 => {
+                    tokio::time::sleep(Duration::from_millis(700 * (attempt + 1) as u64)).await;
+                }
+                Err(error) if is_mysql_connection_limit_error(&error) => {
+                    anyhow::bail!(
+                        "FreeDB временно занял все 5 подключений аккаунта (1203). Закройте другие экземпляры TSchat и вкладки phpMyAdmin, подождите несколько секунд и откройте «Личные сообщения» снова. Последняя ошибка: {error}"
+                    );
+                }
+                Err(error) => return Err(error.into()),
+            }
+        }
+
+        unreachable!("inbox retries always return or fail on the final attempt")
     }
 
     pub async fn update_profile_with_messages(
