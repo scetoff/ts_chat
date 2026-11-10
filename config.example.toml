@@ -5,6 +5,8 @@ user = "tschat"
 password = "change-me"
 name = "db_TSchat"
 
+# When the Radio window opens, the first station with a valid HTTP(S) URL starts automatically.
+# Selecting a different station in the Radio window also starts it.
 [radio]
 [[radio.stations]]
 name = "Музыка без АП"
