@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use sqlx::{mysql::{MySqlConnectOptions, MySqlPoolOptions, MySqlSslMode}, Executor, MySqlPool, Row};
+use sqlx::{mysql::{MySqlConnectOptions, MySqlPoolOptions, MySqlSslMode}, Executor, MySqlConnection, MySqlPool, Row};
 use std::time::Duration;
 use crate::{config::Config, models::{ChatStyle, PrivateMessage, User}};
 
@@ -103,41 +103,43 @@ impl Database {
     }
 
 
-    /// Verify the legacy tables without changing schema or data.
+    /// Verify the legacy tables and the chat text column using one checked-out
+    /// MySQL connection. The shared hosting account may allow only one session.
     ///
-    /// Run each metadata probe through the pool instead of pinning one physical
-    /// session for the whole sequence. Some shared MySQL hosts reset idle/metadata
-    /// probe connections; SQLx can validate or replace the pooled connection
-    /// between probes (test_before_acquire is enabled in connect_url).
+    /// If that session is reset by the server, acquire a replacement and retry
+    /// the whole read-only verification once.
     pub async fn verify_schema(&self) -> Result<()> {
-        match self.verify_schema_once().await {
-            Ok(()) => {}
-            Err(first_error) if is_transient_connection_error(&first_error) => {
-                // A transport reset is not evidence of a missing table. Give the
-                // host a moment and retry the read-only checks on a fresh pooled session.
-                tokio::time::sleep(Duration::from_millis(350)).await;
-                self.verify_schema_once().await.map_err(|retry_error| {
-                    anyhow::anyhow!(
-                        "Проверка схемы MySQL не удалась после переподключения.                          Первая ошибка: {first_error:#}. Повторная ошибка: {retry_error:#}"
-                    )
-                })?;
+        for attempt in 0..2 {
+            let mut connection = self.pool.acquire().await
+                .context("Не удалось получить MySQL-соединение для проверки структуры БД")?;
+
+            match self.verify_schema_on_connection(&mut connection).await {
+                Ok(()) => return Ok(()),
+                Err(error) if attempt == 0 && is_transient_connection_error(&error) => {
+                    drop(connection);
+                    tokio::time::sleep(Duration::from_millis(500)).await;
+                }
+                Err(error) => return Err(error),
             }
-            Err(error) => return Err(error),
         }
 
-        // The legacy VB.NET project created tb_chat with DEFAULT CHARSET=latin1,
-        // which cannot represent Russian. Upgrade only this text column; MySQL
-        // converts existing values in place and keeps the row/id and all users.
-        self.ensure_chat_utf8mb4().await
+        unreachable!("schema verification retries either return or fail on the second attempt")
     }
 
-    async fn ensure_chat_utf8mb4(&self) -> Result<()> {
-        // Keep the metadata read and optional ALTER on the same physical
-        // connection. A second pool can exceed max_user_connections while
-        // the application's main pool already holds a session.
-        let mut connection = self.pool.acquire().await
-            .context("Не удалось получить MySQL-соединение для проверки кодировки tb_chat.chat")?;
+    async fn verify_schema_on_connection(
+        &self,
+        connection: &mut MySqlConnection,
+    ) -> Result<()> {
+        self.verify_schema_once(connection).await?;
+        self.ensure_chat_utf8mb4(connection).await
+    }
 
+    async fn ensure_chat_utf8mb4(
+        &self,
+        connection: &mut MySqlConnection,
+    ) -> Result<()> {
+        // Keep the metadata read and optional ALTER on the very same checked-out
+        // connection. This avoids another pool acquisition during login.
         let charset: Option<String> = sqlx::query_scalar(
             "SELECT CHARACTER_SET_NAME
              FROM information_schema.COLUMNS
@@ -170,7 +172,7 @@ impl Database {
         Ok(())
     }
 
-    async fn verify_schema_once(&self) -> Result<()> {
+    async fn verify_schema_once(&self, connection: &mut MySqlConnection) -> Result<()> {
         // Validate all required columns and the shared-chat seed in one round-trip.
         // A few shared MySQL hosts reset TCP sessions between otherwise valid
         // metadata probes; keeping this read-only check to one statement avoids
@@ -204,7 +206,7 @@ impl Database {
                       AND isread IS NOT NULL) AS pm_schema,
                 (SELECT COUNT(*) FROM tb_chat WHERE id = 1) AS chat_seed"
         )
-        .fetch_one(&self.pool)
+        .fetch_one(&mut *connection)
         .await
         .context("Не удалось проверить структуру tb_users, tb_chat и tb_pm одним запросом; проверьте соединение и таблицы")?;
 
