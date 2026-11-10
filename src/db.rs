@@ -109,21 +109,49 @@ impl Database {
     /// If that session is reset by the server, acquire a replacement and retry
     /// the whole read-only verification once.
     pub async fn verify_schema(&self) -> Result<()> {
+        let mut first_error: Option<anyhow::Error> = None;
+
         for attempt in 0..2 {
-            let mut connection = self.pool.acquire().await
-                .context("Не удалось получить MySQL-соединение для проверки структуры БД")?;
+            let mut connection = match self.pool.acquire().await {
+                Ok(connection) => connection,
+                Err(error) if attempt == 0 && is_transient_sqlx_error(&error) => {
+                    first_error = Some(anyhow::Error::new(error));
+                    tokio::time::sleep(Duration::from_millis(500)).await;
+                    continue;
+                }
+                Err(error) => {
+                    let error = anyhow::Error::new(error)
+                        .context("Не удалось получить MySQL-соединение для проверки структуры БД");
+                    return Err(match first_error {
+                        Some(first) => error.context(format!(
+                            "Повторная попытка проверки структуры БД также не удалась. Первая ошибка: {first:#}"
+                        )),
+                        None => error,
+                    });
+                }
+            };
 
             match self.verify_schema_on_connection(&mut connection).await {
                 Ok(()) => return Ok(()),
                 Err(error) if attempt == 0 && is_transient_connection_error(&error) => {
+                    first_error = Some(error);
                     drop(connection);
                     tokio::time::sleep(Duration::from_millis(500)).await;
                 }
-                Err(error) => return Err(error),
+                Err(error) => {
+                    return Err(match first_error {
+                        Some(first) => error.context(format!(
+                            "Повторная проверка структуры БД не удалась. Первая ошибка: {first:#}"
+                        )),
+                        None => error,
+                    });
+                }
             }
         }
 
-        unreachable!("schema verification retries either return or fail on the second attempt")
+        Err(first_error.unwrap_or_else(|| {
+            anyhow::anyhow!("Не удалось проверить структуру БД после повторного подключения")
+        }))
     }
 
     async fn verify_schema_on_connection(
