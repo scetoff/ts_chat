@@ -174,9 +174,8 @@ impl Database {
 
     async fn verify_schema_once(&self, connection: &mut MySqlConnection) -> Result<()> {
         // Validate all required columns and the shared-chat seed in one round-trip.
-        // A few shared MySQL hosts reset TCP sessions between otherwise valid
-        // metadata probes; keeping this read-only check to one statement avoids
-        // depending on a connection surviving several sequential requests.
+        // The caller already holds the only pooled connection, so the following
+        // charset check and optional ALTER do not acquire another session.
         let row = sqlx::query(
             "SELECT
                 (SELECT COUNT(*) FROM tb_users
