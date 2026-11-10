@@ -99,7 +99,9 @@ impl RadioPlayback {
         .context("Тайм-аут: сервер радиостанции не ответил за 15 секунд")?
         .context("Не удалось установить HTTP-соединение с радиостанцией")?;
 
-        let response_content_type = stream.content_type().map(str::to_owned);
+        let response_content_type = stream.content_type().map(|content_type| {
+            format!("{}/{}", content_type.r#type, content_type.subtype)
+        });
         let mime_type = mime_hint(&parsed, response_content_type.as_deref())
             .context("Не удалось определить формат ответа радиосервера")?;
 
