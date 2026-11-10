@@ -809,8 +809,10 @@ impl TsChatApp {
                         self.radio_status = "Воспроизведение продолжено.".into();
                     }
                     self.command_status = "Команда воспроизведения выполнена.".into();
+                } else if self.radio_pending.is_some() || self.radio_autoplay_pending.is_some() {
+                    self.command_status = "Подключение к настроенной радиостанции…".into();
                 } else {
-                    self.command_status = "Выберите станцию в окне радио.".into();
+                    self.command_status = "В config.toml не задан URL радиостанции.".into();
                 }
             }
             ChatCommand::PauseRadio => {
