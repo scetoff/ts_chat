@@ -9,6 +9,24 @@ use stream_download::{
     Settings, StreamDownload,
 };
 
+/// Infer the decoder hint from a stream URL. HostingRadio's extensionless
+/// ep128 endpoint is documented as a 128 kbps MP3 stream, so MP3 is the safe
+/// fallback for extensionless internet-radio URLs.
+fn mime_hint(url: &url::Url) -> &'static str {
+    let path = url.path().to_ascii_lowercase();
+    if path.ends_with(".aac") || path.ends_with(".aacp") {
+        "audio/aac"
+    } else if path.ends_with(".ogg") || path.ends_with(".oga") || path.ends_with(".opus") {
+        "audio/ogg"
+    } else if path.ends_with(".wav") {
+        "audio/vnd.wav"
+    } else if path.ends_with(".flac") {
+        "audio/flac"
+    } else {
+        "audio/mpeg"
+    }
+}
+
 /// Keeps both the operating-system audio device and player alive while a radio stream plays.
 pub struct RadioPlayback {
     _output: MixerDeviceSink,
@@ -41,15 +59,12 @@ impl RadioPlayback {
         .context("Не удалось установить HTTP-соединение с радиостанцией")?;
 
         let icy_headers = IcyHeaders::parse_from_headers(stream.headers());
-        let mime_type = stream
-            .content_type()
-            .unwrap_or("audio/mpeg")
-            .to_string();
-        // Two seconds of initial audio is enough to start decoding without
-        // making the first connection wait for a large live-stream buffer.
+        let mime_type = mime_hint(&parsed);
+        // Prefetch five seconds of audio, matching the ICY integration's
+        // recommended startup buffer calculation.
         let bitrate_kbps = icy_headers.bitrate().unwrap_or(128) as u64;
-        let prefetch_bytes = (bitrate_kbps.saturating_mul(1024).saturating_mul(2) / 8)
-            .clamp(16 * 1024, 128 * 1024);
+        let prefetch_bytes = (bitrate_kbps.saturating_mul(1024).saturating_mul(5) / 8)
+            .clamp(32 * 1024, 256 * 1024);
 
         let reader_result = tokio::time::timeout(
             Duration::from_secs(15),
@@ -126,5 +141,31 @@ impl RadioPlayback {
 
     pub fn stop(&self) {
         self.player.stop();
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::mime_hint;
+
+    #[test]
+    fn recognizes_common_radio_stream_formats() {
+        assert_eq!(
+            mime_hint(&url::Url::parse("https://radio.example/live.aac").unwrap()),
+            "audio/aac"
+        );
+        assert_eq!(
+            mime_hint(&url::Url::parse("https://radio.example/live.ogg").unwrap()),
+            "audio/ogg"
+        );
+        assert_eq!(
+            mime_hint(&url::Url::parse("https://radio.example/live.wav").unwrap()),
+            "audio/vnd.wav"
+        );
+        assert_eq!(
+            mime_hint(&url::Url::parse("https://europaplus.hostingradio.ru:8030/ep128").unwrap()),
+            "audio/mpeg"
+        );
     }
 }
