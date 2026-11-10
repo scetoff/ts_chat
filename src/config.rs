@@ -167,6 +167,28 @@ mod tests {
     use super::Config;
 
     #[test]
+    fn loads_a_single_configured_radio_station() {
+        let config: super::Config = toml::from_str(
+            r#"
+                [database]
+                host = "127.0.0.1"
+                port = 3306
+                user = "tester"
+                password = "secret"
+                name = "chat"
+
+                [[radio.stations]]
+                name = "My radio"
+                url = "https://radio.example.test/live.mp3"
+            "#
+        ).expect("valid config with one radio station");
+
+        assert_eq!(config.radio.stations.len(), 1);
+        assert_eq!(config.radio.stations[0].name, "My radio");
+        assert_eq!(config.radio.stations[0].url, "https://radio.example.test/live.mp3");
+    }
+
+    #[test]
     fn mysql_url_encodes_credentials_and_database_name() {
         let url = Config::build_mysql_url(
             "db.example.test",
