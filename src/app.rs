@@ -135,11 +135,13 @@ fn normalize_legacy_welcome(chat: &str) -> String {
         .chars()
         .map(|character| if character.is_ascii() { character } else { '?' })
         .collect();
-    if chat.trim() == placeholder {
-        WELCOME_CHAT.to_owned()
-    } else {
-        chat.to_owned()
+    let trimmed = chat.trim();
+    if let Some(rest) = trimmed.strip_prefix(&placeholder) {
+        if rest.is_empty() || rest.starts_with('\n') {
+            return format!("{WELCOME_CHAT}{rest}");
+        }
     }
+    chat.to_owned()
 }
 
 fn styled_rich_text<'a>(text: &'a str, style: Option<&ChatStyle>, dark_theme: bool) -> egui::RichText {
