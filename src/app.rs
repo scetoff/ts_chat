@@ -284,7 +284,7 @@ fn paint_sketch_icon(painter: &egui::Painter, rect: egui::Rect, icon: &str, colo
         "attach" => {
             painter.add(egui::Shape::line(vec![c + egui::vec2(3.0, -9.0), c + egui::vec2(-5.0, -1.0), c + egui::vec2(-5.0, 5.0), c + egui::vec2(-2.0, 8.0), c + egui::vec2(1.0, 8.0), c + egui::vec2(8.0, 1.0), c + egui::vec2(8.0, -2.0), c + egui::vec2(5.0, -5.0), c + egui::vec2(2.0, -5.0), c + egui::vec2(-3.0, 0.0)], stroke));
         }
-        "minimize" => line(c + egui::vec2(-6.0, 0.0), c + egui::vec2(6.0, 0.0)),
+        "minimize" => { line(c + egui::vec2(-6.0, 0.0), c + egui::vec2(6.0, 0.0)); }
         "maximize" => { painter.rect_stroke(egui::Rect::from_center_size(c, egui::vec2(11.0, 11.0)), 1.0, stroke); }
         _ => painter.circle_stroke(c, 7.0, stroke),
     }
@@ -2120,7 +2120,7 @@ impl TsChatApp {
                     if let Some((author, body)) = line.split_once(": ") {
                         let is_self = self.current_user.as_ref().map(|user| user.username == author).unwrap_or(false);
                         content.with_layout(if is_self { egui::Layout::right_to_left(egui::Align::Min) } else { egui::Layout::left_to_right(egui::Align::Min) }, |content| {
-                            egui::Frame::none().fill(if is_self { egui::Color32::from_rgb(88, 68, 44) } else { soft }).rounding(egui::Rounding::same(14.0)).inner_margin(egui::Margin::symmetric(14, 9)).show(content, |bubble| {
+                            egui::Frame::none().fill(if is_self { egui::Color32::from_rgb(88, 68, 44) } else { soft }).rounding(egui::Rounding::same(14.0)).inner_margin(egui::Margin::symmetric(14.0, 9.0)).show(content, |bubble| {
                                 bubble.set_max_width(messages.width() * 0.72);
                                 bubble.vertical(|bubble| {
                                     bubble.label(egui::RichText::new(author).size(12.0).strong().color(if is_self { amber } else { egui::Color32::from_rgb(190, 198, 184) }));
@@ -2131,7 +2131,7 @@ impl TsChatApp {
                     } else {
                         content.horizontal(|content| {
                             content.add_space(content.available_width() * 0.3);
-                            egui::Frame::none().fill(surface).rounding(egui::Rounding::same(12.0)).inner_margin(egui::Margin::symmetric(12, 6)).show(content, |system| {
+                            egui::Frame::none().fill(surface).rounding(egui::Rounding::same(12.0)).inner_margin(egui::Margin::symmetric(12.0, 6.0)).show(content, |system| {
                                 system.label(egui::RichText::new(line).size(12.0).color(secondary));
                             });
                         });
