@@ -2413,7 +2413,7 @@ impl TsChatApp {
                 let cream = egui::Color32::from_rgb(235, 231, 219);
                 let secondary = egui::Color32::from_rgb(159, 173, 163);
                 let foreground = if dark { cream } else { egui::Color32::from_rgb(35, 46, 39) };
-                let painter = ui.painter();
+                let painter = ui.painter().clone();
                 painter.rect_filled(rect, 16.0, background);
                 let title = egui::Rect::from_min_size(origin, egui::vec2(rect.width(), 48.0));
                 painter.rect_filled(title, 16.0, egui::Color32::from_rgb(11, 20, 17));
