@@ -222,6 +222,74 @@ fn show_chat_line(
 
 
 
+fn paint_sketch_icon(painter: &egui::Painter, rect: egui::Rect, icon: &str, color: egui::Color32) {
+    let c = rect.center();
+    let stroke = egui::Stroke::new(1.8, color);
+    let line = |a, b| painter.line_segment([a, b], stroke);
+    match icon {
+        "chat" => {
+            let r = egui::Rect::from_center_size(c + egui::vec2(0.0, -1.0), egui::vec2(rect.width() * 0.66, rect.height() * 0.52));
+            painter.rect_stroke(r, 5.0, stroke);
+            line(egui::pos2(r.left() + 5.0, r.bottom() - 1.0), egui::pos2(r.left() + 1.0, r.bottom() + 5.0));
+            line(egui::pos2(r.left() + 1.0, r.bottom() + 5.0), egui::pos2(r.left() + 10.0, r.bottom() - 1.0));
+        }
+        "users" => {
+            painter.circle_stroke(c + egui::vec2(0.0, -5.0), 4.0, stroke);
+            painter.circle_stroke(c + egui::vec2(-9.0, -3.0), 3.0, stroke);
+            painter.circle_stroke(c + egui::vec2(9.0, -3.0), 3.0, stroke);
+            line(c + egui::vec2(-7.0, 8.0), c + egui::vec2(-7.0, 5.0));
+            painter.add(egui::Shape::line(vec![c + egui::vec2(-7.0, 5.0), c + egui::vec2(-4.0, 1.0), c + egui::vec2(4.0, 1.0), c + egui::vec2(7.0, 5.0), c + egui::vec2(7.0, 8.0)], stroke));
+            painter.add(egui::Shape::line(vec![c + egui::vec2(-14.0, 7.0), c + egui::vec2(-13.0, 3.0), c + egui::vec2(-10.0, 1.0)], stroke));
+            painter.add(egui::Shape::line(vec![c + egui::vec2(10.0, 1.0), c + egui::vec2(13.0, 3.0), c + egui::vec2(14.0, 7.0)], stroke));
+        }
+        "music" => {
+            line(c + egui::vec2(1.0, -10.0), c + egui::vec2(1.0, 5.0));
+            line(c + egui::vec2(1.0, -10.0), c + egui::vec2(9.0, -12.0));
+            line(c + egui::vec2(9.0, -12.0), c + egui::vec2(9.0, 3.0));
+            painter.circle_filled(c + egui::vec2(-3.0, 6.0), 3.5, color);
+            painter.circle_filled(c + egui::vec2(5.0, 4.0), 3.5, color);
+        }
+        "settings" => {
+            painter.circle_stroke(c, 6.0, stroke);
+            painter.circle_stroke(c, 2.0, stroke);
+            for i in 0..8 {
+                let a = i as f32 * std::f32::consts::TAU / 8.0;
+                line(c + egui::vec2(a.cos() * 8.0, a.sin() * 8.0), c + egui::vec2(a.cos() * 12.0, a.sin() * 12.0));
+            }
+        }
+        "bell" => {
+            painter.add(egui::Shape::line(vec![c + egui::vec2(-9.0, 6.0), c + egui::vec2(-6.0, 2.0), c + egui::vec2(-5.0, -5.0), c, c + egui::vec2(5.0, -5.0), c + egui::vec2(6.0, 2.0), c + egui::vec2(9.0, 6.0)], stroke));
+            line(c + egui::vec2(-9.0, 6.0), c + egui::vec2(9.0, 6.0));
+            painter.circle_filled(c + egui::vec2(0.0, 9.0), 1.7, color);
+        }
+        "search" => {
+            painter.circle_stroke(c + egui::vec2(-2.0, -2.0), 6.0, stroke);
+            line(c + egui::vec2(2.0, 2.0), c + egui::vec2(9.0, 9.0));
+        }
+        "more" => for x in [-7.0, 0.0, 7.0] { painter.circle_filled(c + egui::vec2(x, 0.0), 1.8, color); },
+        "close" => {
+            line(c + egui::vec2(-5.0, -5.0), c + egui::vec2(5.0, 5.0));
+            line(c + egui::vec2(5.0, -5.0), c + egui::vec2(-5.0, 5.0));
+        }
+        "send" => {
+            painter.add(egui::Shape::closed_line(vec![c + egui::vec2(-9.0, -7.0), c + egui::vec2(10.0, 0.0), c + egui::vec2(-9.0, 7.0), c + egui::vec2(-5.0, 0.0)], stroke));
+            line(c + egui::vec2(-5.0, 0.0), c + egui::vec2(10.0, 0.0));
+        }
+        "smile" => {
+            painter.circle_stroke(c, 10.0, stroke);
+            painter.circle_filled(c + egui::vec2(-3.5, -3.0), 1.2, color);
+            painter.circle_filled(c + egui::vec2(3.5, -3.0), 1.2, color);
+            painter.add(egui::Shape::line(vec![c + egui::vec2(-4.0, 2.0), c + egui::vec2(-2.0, 4.0), c, c + egui::vec2(2.0, 4.0), c + egui::vec2(4.0, 2.0)], stroke));
+        }
+        "attach" => {
+            painter.add(egui::Shape::line(vec![c + egui::vec2(3.0, -9.0), c + egui::vec2(-5.0, -1.0), c + egui::vec2(-5.0, 5.0), c + egui::vec2(-2.0, 8.0), c + egui::vec2(1.0, 8.0), c + egui::vec2(8.0, 1.0), c + egui::vec2(8.0, -2.0), c + egui::vec2(5.0, -5.0), c + egui::vec2(2.0, -5.0), c + egui::vec2(-3.0, 0.0)], stroke));
+        }
+        "minimize" => line(c + egui::vec2(-6.0, 0.0), c + egui::vec2(6.0, 0.0)),
+        "maximize" => { painter.rect_stroke(egui::Rect::from_center_size(c, egui::vec2(11.0, 11.0)), 1.0, stroke); }
+        _ => painter.circle_stroke(c, 7.0, stroke),
+    }
+}
+
 fn legacy_rect(origin: egui::Pos2, x: f32, y: f32, width: f32, height: f32) -> egui::Rect {
     egui::Rect::from_min_size(origin + egui::vec2(x, y), egui::vec2(width, height))
 }
@@ -1828,271 +1896,311 @@ impl TsChatApp {
         ctx.request_repaint_after(remaining.max(Duration::from_millis(1)));
     }
 
-    fn draw_legacy_auth_screen(&mut self, ctx: &egui::Context, ui: &mut egui::Ui) {
-        let dark = self.dark_theme;
-        let bg = if dark { egui::Color32::from_rgb(18, 25, 23) } else { egui::Color32::from_rgb(242, 240, 233) };
-        let card = if dark { egui::Color32::from_rgb(30, 39, 36) } else { egui::Color32::WHITE };
-        let accent = egui::Color32::from_rgb(204, 157, 99);
-        ui.painter().rect_filled(ui.max_rect(), 0.0, bg);
+        fn draw_legacy_auth_screen(&mut self, ctx: &egui::Context, ui: &mut egui::Ui) {
+        let rect = ui.max_rect();
+        let bg = egui::Color32::from_rgb(13, 24, 20);
+        let surface = egui::Color32::from_rgb(22, 37, 31);
+        let surface_inner = egui::Color32::from_rgb(12, 24, 20);
+        let amber = egui::Color32::from_rgb(232, 170, 91);
+        let cream = egui::Color32::from_rgb(235, 231, 219);
+        let secondary = egui::Color32::from_rgb(159, 173, 163);
+        ui.painter().rect_filled(rect, 0.0, bg);
 
-        ui.vertical(|ui| {
-            ui.add_space(10.0);
-            ui.horizontal(|ui| {
-                ui.add_space(18.0);
-                ui.label(egui::RichText::new("TSchat").size(19.0).strong().color(accent));
-                ui.label(egui::RichText::new("Таверна странника").size(14.0).color(if dark { egui::Color32::from_rgb(205, 213, 207) } else { egui::Color32::from_rgb(70, 80, 74) }));
-                ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                    ui.add_space(12.0);
-                    if ui.button("×").on_hover_text("Закрыть").clicked() { ctx.send_viewport_cmd(egui::ViewportCommand::Close); }
-                    if ui.button("—").on_hover_text("Свернуть").clicked() { ctx.send_viewport_cmd(egui::ViewportCommand::Minimized(true)); }
-                    if ui.button(if dark { "☀" } else { "☾" }).on_hover_text("Сменить тему").clicked() { self.dark_theme = !self.dark_theme; }
-                });
-                ui.add_space(10.0);
-            });
-            ui.add_space(18.0);
-            ui.horizontal(|ui| {
-                ui.add_space(24.0);
-                egui::Frame::none().fill(card).rounding(egui::Rounding::same(14.0)).inner_margin(20.0).show(ui, |ui| {
-                    ui.set_min_width(340.0);
-                    ui.set_max_width(340.0);
-                    ui.set_min_height(330.0);
-                    ui.vertical_centered(|ui| {
-                        let (rect, _) = ui.allocate_exact_size(egui::vec2(175.0, 145.0), egui::Sense::hover());
-                        legacy_animated_image(ui, self.tavern_animation.as_ref(), rect);
-                        ui.add_space(4.0);
-                        ui.label(egui::RichText::new("Место для своих").size(23.0).strong().color(accent));
-                        ui.add_space(5.0);
-                        ui.label(egui::RichText::new("Небольшой локальный чат,
-где всегда можно собраться.").size(14.0));
-                    });
-                });
-                ui.add_space(18.0);
-                egui::Frame::none().fill(card).rounding(egui::Rounding::same(14.0)).inner_margin(20.0).show(ui, |ui| {
-                    ui.set_min_width(350.0);
-                    ui.set_max_width(390.0);
-                    ui.set_min_height(330.0);
-                    ui.vertical(|ui| {
-                        let registering = self.screen == Screen::Register;
-                        ui.label(egui::RichText::new(if registering { "Создать аккаунт" } else { "С возвращением" }).size(24.0).strong());
-                        ui.label(egui::RichText::new(if registering { "Присоединяйтесь к Таверне странника" } else { "Войдите, чтобы продолжить общение" }).size(13.0).color(if dark { egui::Color32::LIGHT_GRAY } else { egui::Color32::DARK_GRAY }));
-                        ui.add_space(18.0);
-                        ui.label("Имя пользователя");
-                        ui.add(egui::TextEdit::singleline(&mut self.username).desired_width(f32::INFINITY).hint_text("Никнейм"));
-                        ui.add_space(8.0);
-                        ui.label(if registering { "Придумайте пароль" } else { "Пароль" });
-                        ui.add(egui::TextEdit::singleline(&mut self.password).desired_width(f32::INFINITY).password(true).hint_text("Пароль"));
-                        if registering {
-                            ui.add_space(8.0);
-                            ui.label("Электронная почта");
-                            ui.add(egui::TextEdit::singleline(&mut self.email).desired_width(f32::INFINITY).hint_text("name@example.com"));
-                        }
-                        ui.add_space(14.0);
-                        let primary = egui::Button::new(egui::RichText::new(if registering { "Зарегистрироваться" } else { "Войти" }).strong().color(egui::Color32::from_rgb(28, 32, 29))).fill(accent);
-                        if ui.add_sized([ui.available_width(), 40.0], primary).clicked() {
-                            if registering { self.register(); } else { self.login(); }
-                        }
-                        ui.add_space(8.0);
-                        if ui.button(if registering { "Уже есть аккаунт? Войти" } else { "Создать аккаунт" }).clicked() {
-                            self.screen = if registering { Screen::Login } else { Screen::Register };
-                            self.status.clear();
-                            self.email.clear();
-                        }
-                        if !self.status.is_empty() {
-                            ui.add_space(8.0);
-                            let color = if self.status.starts_with("Ошибка") || self.status.starts_with("Не удалось") || self.status.starts_with("Проверьте") { egui::Color32::from_rgb(225, 115, 105) } else { egui::Color32::from_rgb(130, 190, 145) };
-                            ui.label(egui::RichText::new(self.status.clone()).color(color).size(12.0));
-                        }
-                    });
-                });
-                ui.add_space(24.0);
-            });
-        });
+        let bar = egui::Rect::from_min_size(rect.min, egui::vec2(rect.width(), 44.0));
+        ui.painter().rect_filled(bar, 0.0, egui::Color32::from_rgb(11, 20, 17));
+        ui.painter().line_segment([bar.left_bottom(), bar.right_bottom()], egui::Stroke::new(1.0, egui::Color32::from_rgb(48, 66, 56)));
+        ui.put(egui::Rect::from_min_size(rect.min + egui::vec2(14.0, 7.0), egui::vec2(90.0, 28.0)),
+            egui::Label::new(egui::RichText::new("TSchat").size(18.0).strong().color(amber)));
+        ui.put(egui::Rect::from_min_size(rect.min + egui::vec2(92.0, 7.0), egui::vec2(190.0, 28.0)),
+            egui::Label::new(egui::RichText::new("Таверна странника").size(13.0).color(cream)));
+
+        let controls = [("theme", "☼", 3), ("min", "—", 2), ("close", "×", 1)];
+        let mut x = rect.right() - 34.0;
+        for (kind, glyph, _) in controls {
+            let b = egui::Rect::from_min_size(egui::pos2(x, rect.top() + 8.0), egui::vec2(26.0, 25.0));
+            if ui.put(b, egui::Button::new(glyph).fill(egui::Color32::from_rgb(35, 47, 41))).clicked() {
+                match kind {
+                    "theme" => self.dark_theme = !self.dark_theme,
+                    "min" => ctx.send_viewport_cmd(egui::ViewportCommand::Minimized(true)),
+                    _ => ctx.send_viewport_cmd(egui::ViewportCommand::Close),
+                }
+            }
+            x -= 31.0;
+        }
+
+        let card_width = rect.width().min(970.0) - 48.0;
+        let card_height = (rect.height() - 92.0).min(570.0);
+        let card = egui::Rect::from_center_size(egui::pos2(rect.center().x, rect.center().y + 20.0), egui::vec2(card_width, card_height));
+        ui.painter().rect_filled(card, 18.0, surface);
+        ui.painter().rect_stroke(card, 18.0, egui::Stroke::new(1.0, egui::Color32::from_rgb(56, 77, 64)));
+
+        let left_width = card.width() * 0.47;
+        let left = egui::Rect::from_min_max(card.left_top(), egui::pos2(card.left() + left_width, card.bottom()));
+        let right = egui::Rect::from_min_max(egui::pos2(left.right(), card.top()), card.right_bottom());
+        ui.painter().line_segment([egui::pos2(left.right(), card.top() + 18.0), egui::pos2(left.right(), card.bottom() - 18.0)], egui::Stroke::new(1.0, egui::Color32::from_rgb(46, 68, 56)));
+
+        let registering = self.screen == Screen::Register;
+        let animation_rect = egui::Rect::from_center_size(egui::pos2(left.center().x, left.center().y - 58.0), egui::vec2(230.0, 200.0));
+        legacy_animated_image(ui, self.tavern_animation.as_ref(), animation_rect);
+        ui.put(egui::Rect::from_center_size(egui::pos2(left.center().x, left.center().y + 78.0), egui::vec2(left.width() - 34.0, 38.0)),
+            egui::Label::new(egui::RichText::new("Место для своих").size(25.0).strong().color(amber)).halign(egui::Align::Center));
+        ui.put(egui::Rect::from_center_size(egui::pos2(left.center().x, left.center().y + 124.0), egui::vec2(left.width() - 60.0, 54.0)),
+            egui::Label::new(egui::RichText::new("Небольшой локальный чат,\nгде всегда можно собраться.").size(15.0).color(secondary)).halign(egui::Align::Center));
+
+        let form_x = right.left() + 38.0;
+        let form_width = right.width() - 76.0;
+        let top = right.top() + (right.height() - if registering { 390.0 } else { 330.0 }) * 0.5;
+        ui.put(egui::Rect::from_min_size(egui::pos2(form_x, top), egui::vec2(form_width, 40.0)),
+            egui::Label::new(egui::RichText::new(if registering { "Создать аккаунт" } else { "С возвращением" }).size(27.0).color(cream)));
+        ui.put(egui::Rect::from_min_size(egui::pos2(form_x, top + 39.0), egui::vec2(form_width, 28.0)),
+            egui::Label::new(egui::RichText::new(if registering { "Присоединяйтесь к Таверне странника" } else { "Войдите, чтобы продолжить общение" }).size(14.0).color(secondary)));
+        let mut y = top + 88.0;
+        let field = |ui: &mut egui::Ui, y: f32, label: &str, text: &mut String, secret: bool| {
+            ui.put(egui::Rect::from_min_size(egui::pos2(form_x, y), egui::vec2(form_width, 18.0)),
+                egui::Label::new(egui::RichText::new(label).size(12.0).color(secondary)));
+            ui.put(egui::Rect::from_min_size(egui::pos2(form_x, y + 21.0), egui::vec2(form_width, 38.0)),
+                egui::TextEdit::singleline(text).password(secret).desired_width(form_width));
+        };
+        field(ui, y, "Имя пользователя", &mut self.username, false);
+        y += 72.0;
+        field(ui, y, if registering { "Придумайте пароль" } else { "Пароль" }, &mut self.password, true);
+        y += 72.0;
+        if registering {
+            field(ui, y, "Электронная почта", &mut self.email, false);
+            y += 72.0;
+        }
+        let primary = egui::Rect::from_min_size(egui::pos2(form_x, y + 4.0), egui::vec2(form_width, 42.0));
+        if ui.put(primary, egui::Button::new(egui::RichText::new(if registering { "Зарегистрироваться" } else { "Войти" }).size(15.0).strong().color(egui::Color32::from_rgb(28, 32, 29))).fill(amber)).clicked() {
+            if registering { self.register(); } else { self.login(); }
+        }
+        let switch = egui::Rect::from_min_size(egui::pos2(form_x, y + 58.0), egui::vec2(form_width, 34.0));
+        if ui.put(switch, egui::Button::new(egui::RichText::new(if registering { "Уже есть аккаунт?  Войти" } else { "Создать аккаунт" }).size(13.0).color(cream)).fill(surface_inner)).clicked() {
+            self.screen = if registering { Screen::Login } else { Screen::Register };
+            self.status.clear();
+            self.email.clear();
+        }
+        if !self.status.is_empty() {
+            let color = if self.status.starts_with("Ошибка") || self.status.starts_with("Не удалось") || self.status.starts_with("Проверьте") { egui::Color32::from_rgb(239, 117, 105) } else { egui::Color32::from_rgb(133, 202, 149) };
+            ui.put(egui::Rect::from_min_size(egui::pos2(form_x, y + 98.0), egui::vec2(form_width, 52.0)),
+                egui::Label::new(egui::RichText::new(self.status.clone()).size(12.0).color(color)).wrap());
+        }
     }
 
-    fn draw_legacy_chat_screen(&mut self, ctx: &egui::Context, ui: &mut egui::Ui) {
-        let dark = self.dark_theme;
-        let bg = if dark { egui::Color32::from_rgb(18, 25, 23) } else { egui::Color32::from_rgb(242, 240, 233) };
-        let surface = if dark { egui::Color32::from_rgb(30, 39, 36) } else { egui::Color32::WHITE };
-        let inset = if dark { egui::Color32::from_rgb(23, 31, 28) } else { egui::Color32::from_rgb(248, 247, 243) };
-        let accent = egui::Color32::from_rgb(204, 157, 99);
-        let secondary = if dark { egui::Color32::from_rgb(154, 169, 160) } else { egui::Color32::from_rgb(99, 110, 103) };
-        ui.painter().rect_filled(ui.max_rect(), 0.0, bg);
+        fn draw_legacy_chat_screen(&mut self, ctx: &egui::Context, ui: &mut egui::Ui) {
+        let full = ui.max_rect();
+        let bg = egui::Color32::from_rgb(13, 23, 20);
+        let surface = egui::Color32::from_rgb(22, 37, 31);
+        let inset = egui::Color32::from_rgb(14, 27, 22);
+        let soft = egui::Color32::from_rgb(29, 47, 39);
+        let amber = egui::Color32::from_rgb(232, 170, 91);
+        let cream = egui::Color32::from_rgb(235, 231, 219);
+        let secondary = egui::Color32::from_rgb(157, 172, 161);
+        let green = egui::Color32::from_rgb(116, 198, 139);
+        ui.painter().rect_filled(full, 0.0, bg);
 
-        ui.vertical(|ui| {
-            ui.add_space(7.0);
-            ui.horizontal(|ui| {
-                ui.add_space(16.0);
-                ui.label(egui::RichText::new("TSchat").size(18.0).strong().color(accent));
-                ui.label(egui::RichText::new("Таверна странника").size(13.0).color(secondary));
-                ui.separator();
-                ui.label(egui::RichText::new(if self.connected { "● В сети" } else { "● Не подключено" }).size(12.0).color(if self.connected { egui::Color32::from_rgb(115, 190, 137) } else { secondary }));
-                ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                    ui.add_space(14.0);
-                    if ui.button("×").on_hover_text("Закрыть").clicked() { ctx.send_viewport_cmd(egui::ViewportCommand::Close); }
-                    if ui.button("—").on_hover_text("Свернуть").clicked() { ctx.send_viewport_cmd(egui::ViewportCommand::Minimized(true)); }
-                    if ui.button(if dark { "☀" } else { "☾" }).on_hover_text("Сменить тему").clicked() { self.dark_theme = !self.dark_theme; }
-                    if ui.button("♫").on_hover_text("Радио").clicked() { self.open_radio(); }
-                    if ui.button("✉").on_hover_text("Личные сообщения").clicked() { self.load_inbox(); }
-                    if ui.button("Aa").on_hover_text("Оформление").clicked() { self.chat_style_open = true; }
-                    if ui.button("⌫").on_hover_text("Очистить чат").clicked() { self.show_clear_chat_confirmation = true; }
-                });
-                ui.add_space(8.0);
-            });
-            ui.add_space(6.0);
-            ui.separator();
-            ui.add_space(7.0);
+        let title_h = 42.0;
+        let title = egui::Rect::from_min_size(full.min, egui::vec2(full.width(), title_h));
+        ui.painter().rect_filled(title, 0.0, egui::Color32::from_rgb(11, 20, 17));
+        ui.painter().line_segment([title.left_bottom(), title.right_bottom()], egui::Stroke::new(1.0, egui::Color32::from_rgb(48, 67, 56)));
+        ui.put(egui::Rect::from_min_size(full.min + egui::vec2(14.0, 6.0), egui::vec2(76.0, 28.0)),
+            egui::Label::new(egui::RichText::new("TSchat").size(17.0).strong().color(amber)));
+        ui.put(egui::Rect::from_min_size(full.min + egui::vec2(89.0, 6.0), egui::vec2(145.0, 28.0)),
+            egui::Label::new(egui::RichText::new("Таверна странника").size(12.0).color(secondary)));
+        ui.painter().line_segment([egui::pos2(full.left() + 230.0, title.top() + 9.0), egui::pos2(full.left() + 230.0, title.bottom() - 9.0)], egui::Stroke::new(1.0, egui::Color32::from_rgb(66, 83, 70)));
+        ui.painter().circle_filled(egui::pos2(full.left() + 248.0, title.center().y), 3.0, if self.connected { green } else { egui::Color32::from_rgb(228, 154, 107) });
+        ui.put(egui::Rect::from_min_size(egui::pos2(full.left() + 256.0, title.top() + 7.0), egui::vec2(88.0, 26.0)),
+            egui::Label::new(egui::RichText::new(if self.connected { "В сети" } else { "Не в сети" }).size(11.0).color(if self.connected { green } else { secondary })));
 
-            let available_width = ui.available_width();
-            let nav_width = 58.0;
-            let chats_width = 224.0;
-            let details_width = if self.profile_expanded { 226.0 } else { 0.0 };
-            let gaps = 8.0 * if self.profile_expanded { 3.0 } else { 2.0 };
-            let main_width = (available_width - nav_width - chats_width - details_width - gaps).max(420.0);
-            let body_height = (ui.available_height() - 16.0).max(480.0);
-            ui.horizontal(|ui| {
-                egui::Frame::none().fill(surface).rounding(egui::Rounding::same(14.0)).inner_margin(8.0).show(ui, |nav| {
-                    nav.set_min_width(nav_width);
-                    nav.set_max_width(nav_width);
-                    nav.set_min_height(body_height);
-                    nav.vertical_centered(|nav| {
-                        nav.add_space(10.0);
-                        if nav.button("▣").on_hover_text("Чаты").clicked() { self.selected_friend = None; }
-                        if nav.button("♙").on_hover_text("Собеседники").clicked() { self.profile_expanded = true; }
-                        if nav.button("♫").on_hover_text("Радио").clicked() { self.open_radio(); }
-                        if nav.button("⚙").on_hover_text("Профиль").clicked() { self.edit_profile_open = true; }
-                        nav.with_layout(egui::Layout::bottom_up(egui::Align::Center), |nav| {
-                            if let Some(texture) = &self.avatar_texture {
-                                if nav.add(egui::Image::new((texture.id(), egui::vec2(36.0, 36.0))).sense(egui::Sense::click())).clicked() {
-                                    self.edit_profile_open = true;
-                                }
-                            }
-                        });
-                    });
-                });
+        let mut x = full.right() - 34.0;
+        for (glyph, tooltip, action) in [("×", "Закрыть", "close"), ("—", "Свернуть", "min"), ("☼", "Сменить тему", "theme"), ("♫", "Радио", "radio"), ("✉", "Входящие", "inbox"), ("Aa", "Оформление", "style")] {
+            x -= 32.0;
+            let r = egui::Rect::from_min_size(egui::pos2(x, title.top() + 7.0), egui::vec2(27.0, 27.0));
+            if ui.put(r, egui::Button::new(egui::RichText::new(glyph).size(13.0).color(cream)).fill(egui::Color32::from_rgb(34, 47, 40))).on_hover_text(tooltip).clicked() {
+                match action {
+                    "close" => ctx.send_viewport_cmd(egui::ViewportCommand::Close),
+                    "min" => ctx.send_viewport_cmd(egui::ViewportCommand::Minimized(true)),
+                    "theme" => self.dark_theme = !self.dark_theme,
+                    "radio" => self.open_radio(),
+                    "inbox" => self.load_inbox(),
+                    _ => self.chat_style_open = true,
+                }
+            }
+        }
 
-                ui.add_space(8.0);
-                egui::Frame::none().fill(surface).rounding(egui::Rounding::same(14.0)).inner_margin(12.0).show(ui, |list| {
-                    list.set_min_width(chats_width);
-                    list.set_max_width(chats_width);
-                    list.set_min_height(body_height);
-                    list.vertical(|list| {
-                        list.horizontal(|list| {
-                            list.label(egui::RichText::new("Чаты").size(18.0).strong());
-                            list.with_layout(egui::Layout::right_to_left(egui::Align::Center), |list| {
-                                if list.small_button("+").on_hover_text("Новый чат").clicked() {
-                                    self.status = "Личные сообщения доступны через значок конверта.".into();
-                                }
-                            });
-                        });
-                        list.add_space(8.0);
-                        list.add(egui::TextEdit::singleline(&mut self.command_input).desired_width(f32::INFINITY).hint_text("Поиск"));
-                        let selected = self.selected_friend.is_none();
-                        let chat_item = egui::Button::new(egui::RichText::new("◉  Общий чат").strong().color(if selected { accent } else { secondary }))
-                            .fill(if selected { inset } else { surface });
-                        let chat_item_width = list.available_width();
-                        if list.add_sized([chat_item_width, 42.0], chat_item).clicked() {
-                            self.selected_friend = None;
-                        }
-                        list.label(egui::RichText::new("УЧАСТНИКИ").size(10.0).color(secondary).strong());
-                        egui::ScrollArea::vertical().auto_shrink([false, false]).show(list, |people| {
-                            for name in self.friends.clone() {
-                                let is_selected = self.selected_friend.as_deref() == Some(name.as_str());
-                                let response = people.selectable_label(is_selected, format!("◦  {name}"));
-                                if response.clicked() {
-                                    self.selected_friend = Some(name.clone());
-                                    self.load_selected_profile();
-                                }
-                            }
-                        });
-                    });
-                });
+        let margin = 12.0;
+        let gap = 14.0;
+        let nav_w = 72.0;
+        let list_w = 248.0;
+        let details_w = if self.profile_expanded { 208.0 } else { 0.0 };
+        let body_top = full.top() + title_h + 12.0;
+        let body_h = (full.bottom() - body_top - margin).max(500.0);
+        let nav = egui::Rect::from_min_size(egui::pos2(full.left(), body_top), egui::vec2(nav_w, body_h));
+        let chats = egui::Rect::from_min_size(egui::pos2(nav.right() + gap, body_top), egui::vec2(list_w, body_h));
+        let details_x = full.right() - margin - details_w;
+        let center_x = chats.right() + gap;
+        let center_w = (details_x - gap - center_x).max(420.0);
+        let main = egui::Rect::from_min_size(egui::pos2(center_x, body_top), egui::vec2(center_w, body_h));
+        let details = egui::Rect::from_min_size(egui::pos2(details_x, body_top), egui::vec2(details_w, body_h));
+        for r in [nav, chats, main] { ui.painter().rect_filled(r, 15.0, surface); }
+        if self.profile_expanded { ui.painter().rect_filled(details, 15.0, surface); }
 
-                ui.add_space(8.0);
-                egui::Frame::none().fill(surface).rounding(egui::Rounding::same(14.0)).inner_margin(14.0).show(ui, |chat| {
-                    chat.set_min_width(main_width);
-                    chat.set_max_width(main_width);
-                    chat.set_min_height(body_height);
-                    chat.vertical(|chat| {
-                        chat.horizontal(|chat| {
-                            let title = "Общий чат";
-                            chat.label(egui::RichText::new(title).size(19.0).strong());
-                            chat.label(egui::RichText::new(format!("{} участника", self.friends.len() + 1)).size(11.0).color(secondary));
-                            chat.with_layout(egui::Layout::right_to_left(egui::Align::Center), |chat| {
-                                if chat.button("•••").on_hover_text("Действия").clicked() { self.show_clear_chat_confirmation = true; }
-                                if chat.button("⌕").on_hover_text("Найти в чате").clicked() { self.status = "Поиск по истории скоро появится.".into(); }
-                            });
-                        });
-                        chat.separator();
-                        let smileys = self.smiley_textures.clone();
-                        let styles = self.chat_styles.clone();
-                        egui::Frame::none().fill(inset).rounding(egui::Rounding::same(12.0)).inner_margin(12.0).show(chat, |content| {
-                            content.set_min_height((content.available_height() - 100.0).max(260.0));
-                            egui::ScrollArea::vertical().stick_to_bottom(true).auto_shrink([false, false]).show(content, |content| {
-                                for line in self.chat_text.lines() {
-                                    show_chat_line(content, line, &smileys, &styles, dark);
-                                    content.add_space(7.0);
-                                }
-                            });
-                        });
-                        chat.add_space(10.0);
-                        chat.horizontal(|chat| {
-                            if chat.button("☺").on_hover_text("Смайлики").clicked() { self.show_smileys = !self.show_smileys; }
-                            let input_width = (chat.available_width() - 100.0).max(180.0);
-                            chat.add(egui::TextEdit::multiline(&mut self.draft).desired_rows(2).desired_width(input_width).hint_text("Сообщение…"));
-                            if chat.add_sized([78.0, 48.0], egui::Button::new(egui::RichText::new("➤").size(20.0).strong().color(egui::Color32::from_rgb(28, 32, 29))).fill(accent)).clicked() {
-                                self.send_chat();
-                            }
-                        });
-                        if self.show_smileys {
-                            chat.horizontal_wrapped(|chat| {
-                                for (code, texture) in self.smiley_textures.clone() {
-                                    if chat.add(egui::Image::new((texture.id(), egui::vec2(28.0, 28.0))).sense(egui::Sense::click())).clicked() {
-                                        self.add_smiley(&code);
-                                        self.show_smileys = false;
-                                    }
-                                }
-                            });
-                        }
-                        if !self.status.is_empty() {
-                            let color = if self.status.starts_with("Ошибка") || self.status.starts_with("Не удалось") { egui::Color32::from_rgb(225, 115, 105) } else { secondary };
-                            chat.label(egui::RichText::new(self.status.clone()).size(10.0).color(color));
-                        }
-                    });
-                });
+        let nav_icons = [("chat", self.selected_friend.is_none()), ("users", self.profile_expanded), ("music", false), ("bell", self.show_inbox), ("settings", self.edit_profile_open)];
+        for (i, (name, active)) in nav_icons.iter().enumerate() {
+            let b = egui::Rect::from_min_size(egui::pos2(nav.left() + 11.0, nav.top() + 16.0 + i as f32 * 48.0), egui::vec2(50.0, 42.0));
+            if ui.put(b, egui::Button::new("").fill(if *active { egui::Color32::from_rgb(91, 70, 44) } else { surface })).on_hover_text(match *name { "chat" => "Общий чат", "users" => "Участники", "music" => "Радио", "bell" => "Входящие", _ => "Профиль" }).clicked() {
+                match *name {
+                    "chat" => self.selected_friend = None,
+                    "users" => self.profile_expanded = !self.profile_expanded,
+                    "music" => self.open_radio(),
+                    "bell" => self.load_inbox(),
+                    _ => self.edit_profile_open = true,
+                }
+            }
+            paint_sketch_icon(ui.painter(), b.shrink(8.0), name, if *active { amber } else { cream });
+        }
+        if let Some(texture) = &self.avatar_texture {
+            let avatar_rect = egui::Rect::from_min_size(egui::pos2(nav.center().x - 18.0, nav.bottom() - 58.0), egui::vec2(36.0, 36.0));
+            ui.put(avatar_rect, egui::Image::new((texture.id(), avatar_rect.size())).sense(egui::Sense::click())).on_hover_text("Ваш профиль").clicked().then(|| self.edit_profile_open = true);
+            ui.painter().circle_filled(avatar_rect.right_bottom() - egui::vec2(3.0, 3.0), 5.0, green);
+        }
 
-                if self.profile_expanded {
-                    ui.add_space(8.0);
-                    egui::Frame::none().fill(surface).rounding(egui::Rounding::same(14.0)).inner_margin(14.0).show(ui, |details| {
-                        details.set_min_width(details_width);
-                        details.set_max_width(details_width);
-                        details.set_min_height(body_height);
-                        details.vertical(|details| {
-                            details.label(egui::RichText::new("Участник").size(17.0).strong());
-                            details.add_space(12.0);
-                            if let Some(texture) = &self.avatar_texture {
-                                details.add(egui::Image::new((texture.id(), egui::vec2(72.0, 72.0))));
-                            }
-                            if let Some(user) = &self.current_user {
-                                details.label(egui::RichText::new(&user.username).size(15.0).strong());
-                                details.label(egui::RichText::new(if self.connected { "● В сети" } else { "● Не в сети" }).size(11.0).color(egui::Color32::from_rgb(115, 190, 137)));
-                            }
-                            details.add_space(10.0);
-                            if details.button("Профиль").clicked() { self.edit_profile_open = true; }
-                            details.separator();
-                            details.label(egui::RichText::new("Собеседники").strong());
-                            egui::ScrollArea::vertical().max_height(280.0).show(details, |people| {
-                                for name in self.friends.clone() {
-                                    if people.selectable_label(self.selected_friend.as_deref() == Some(name.as_str()), &name).clicked() {
-                                        self.selected_friend = Some(name.clone());
-                                        self.load_selected_profile();
-                                    }
-                                }
-                            });
-                        });
-                    });
+        let pad = 14.0;
+        ui.put(egui::Rect::from_min_size(chats.min + egui::vec2(pad, 10.0), egui::vec2(130.0, 28.0)),
+            egui::Label::new(egui::RichText::new("Чаты").size(17.0).strong().color(cream)));
+        let plus = egui::Rect::from_min_size(egui::pos2(chats.right() - 40.0, chats.top() + 10.0), egui::vec2(26.0, 26.0));
+        if ui.put(plus, egui::Button::new(egui::RichText::new("+").size(18.0).color(cream)).fill(soft)).clicked() {
+            self.status = "Личные сообщения доступны через список собеседников.".into();
+        }
+        ui.put(egui::Rect::from_min_size(chats.min + egui::vec2(pad, 46.0), egui::vec2(chats.width() - pad * 2.0, 34.0)),
+            egui::TextEdit::singleline(&mut self.command_input).hint_text("Поиск").desired_width(chats.width() - pad * 2.0));
+        let selected = self.selected_friend.is_none();
+        let chat_item = egui::Rect::from_min_size(chats.min + egui::vec2(pad, 88.0), egui::vec2(chats.width() - pad * 2.0, 48.0));
+        if ui.put(chat_item, egui::Button::new(egui::RichText::new("◉   Общий чат").size(14.0).strong().color(if selected { amber } else { cream })).fill(if selected { egui::Color32::from_rgb(76, 61, 41) } else { soft })).clicked() { self.selected_friend = None; }
+        ui.put(egui::Rect::from_min_size(chats.min + egui::vec2(pad, 145.0), egui::vec2(chats.width() - pad * 2.0, 18.0)),
+            egui::Label::new(egui::RichText::new("УЧАСТНИКИ").size(10.0).strong().color(secondary)));
+        let list_rect = egui::Rect::from_min_max(chats.min + egui::vec2(pad, 169.0), chats.right_bottom() - egui::vec2(pad, 16.0));
+        ui.allocate_ui_at_rect(list_rect, |list_ui| {
+            egui::ScrollArea::vertical().auto_shrink([false, false]).show(list_ui, |list_ui| {
+                for name in self.friends.clone() {
+                    let active = self.selected_friend.as_deref() == Some(name.as_str());
+                    let row = list_ui.add_sized([list_ui.available_width(), 38.0], egui::Button::new(egui::RichText::new(format!("◦   {name}")).size(13.0).color(if active { amber } else { cream })).fill(if active { egui::Color32::from_rgb(76, 61, 41) } else { surface }));
+                    if row.clicked() { self.selected_friend = Some(name.clone()); self.load_selected_profile(); }
                 }
             });
         });
+
+        let title_bar = egui::Rect::from_min_size(main.min + egui::vec2(14.0, 10.0), egui::vec2(main.width() - 28.0, 39.0));
+        let room = egui::Rect::from_min_size(title_bar.min, egui::vec2(32.0, 32.0));
+        ui.painter().circle_filled(room.center(), 16.0, soft);
+        paint_sketch_icon(ui.painter(), room.shrink(6.0), "users", cream);
+        ui.put(egui::Rect::from_min_size(title_bar.min + egui::vec2(42.0, 0.0), egui::vec2(170.0, 23.0)),
+            egui::Label::new(egui::RichText::new("Общий чат").size(17.0).strong().color(cream)));
+        ui.put(egui::Rect::from_min_size(title_bar.min + egui::vec2(42.0, 22.0), egui::vec2(170.0, 16.0)),
+            egui::Label::new(egui::RichText::new(format!("{} участника", self.friends.len() + 1)).size(10.0).color(secondary)));
+        let more_rect = egui::Rect::from_min_size(egui::pos2(title_bar.right() - 35.0, title_bar.top() + 1.0), egui::vec2(30.0, 30.0));
+        if ui.put(more_rect, egui::Button::new("…").fill(soft)).clicked() { self.show_clear_chat_confirmation = true; }
+        let search_rect = egui::Rect::from_min_size(egui::pos2(more_rect.left() - 38.0, more_rect.top()), egui::vec2(30.0, 30.0));
+        let search_resp = ui.put(search_rect, egui::Button::new("").fill(soft)).on_hover_text("Поиск по чату");
+        paint_sketch_icon(ui.painter(), search_rect.shrink(6.0), "search", cream);
+        if search_resp.clicked() { self.status = "Поиск по истории скоро появится.".into(); }
+        ui.painter().line_segment([egui::pos2(main.left() + 14.0, main.top() + 56.0), egui::pos2(main.right() - 14.0, main.top() + 56.0)], egui::Stroke::new(1.0, egui::Color32::from_rgb(46, 66, 55)));
+
+        let compose_h = 72.0;
+        let messages = egui::Rect::from_min_max(egui::pos2(main.left() + 14.0, main.top() + 68.0), egui::pos2(main.right() - 14.0, main.bottom() - compose_h - 30.0));
+        ui.painter().rect_filled(messages, 12.0, inset);
+        let smiles = self.smiley_textures.clone();
+        let styles = self.chat_styles.clone();
+        ui.allocate_ui_at_rect(messages.shrink(12.0), |content| {
+            egui::ScrollArea::vertical().stick_to_bottom(true).auto_shrink([false, false]).show(content, |content| {
+                for line in self.chat_text.lines() {
+                    if let Some((author, body)) = line.split_once(": ") {
+                        let is_self = self.current_user.as_ref().map(|user| user.username == author).unwrap_or(false);
+                        content.with_layout(if is_self { egui::Layout::right_to_left(egui::Align::Min) } else { egui::Layout::left_to_right(egui::Align::Min) }, |content| {
+                            egui::Frame::none().fill(if is_self { egui::Color32::from_rgb(88, 68, 44) } else { soft }).rounding(egui::Rounding::same(14.0)).inner_margin(egui::Margin::symmetric(14.0, 9.0)).show(content, |bubble| {
+                                bubble.set_max_width(messages.width() * 0.72);
+                                bubble.vertical(|bubble| {
+                                    bubble.label(egui::RichText::new(author).size(12.0).strong().color(if is_self { amber } else { egui::Color32::from_rgb(190, 198, 184) }));
+                                    show_chat_line(bubble, body, &smiles, &styles, true);
+                                });
+                            });
+                        });
+                    } else {
+                        content.horizontal(|content| {
+                            content.add_space(content.available_width() * 0.3);
+                            egui::Frame::none().fill(surface).rounding(egui::Rounding::same(12.0)).inner_margin(egui::Margin::symmetric(12.0, 6.0)).show(content, |system| {
+                                system.label(egui::RichText::new(line).size(12.0).color(secondary));
+                            });
+                        });
+                    }
+                    content.add_space(9.0);
+                }
+            });
+        });
+
+        let compose = egui::Rect::from_min_max(egui::pos2(main.left() + 14.0, main.bottom() - compose_h - 12.0), egui::pos2(main.right() - 14.0, main.bottom() - 12.0));
+        ui.painter().rect_filled(compose, 13.0, soft);
+        let emoji = egui::Rect::from_min_size(compose.min + egui::vec2(6.0, 12.0), egui::vec2(38.0, 38.0));
+        if ui.put(emoji, egui::Button::new("").fill(egui::Color32::TRANSPARENT)).on_hover_text("Смайлики").clicked() { self.show_smileys = !self.show_smileys; }
+        paint_sketch_icon(ui.painter(), emoji.shrink(8.0), "smile", cream);
+        let attach = egui::Rect::from_min_size(compose.min + egui::vec2(47.0, 12.0), egui::vec2(38.0, 38.0));
+        if ui.put(attach, egui::Button::new("").fill(egui::Color32::TRANSPARENT)).on_hover_text("Прикрепление изображений в оригинальном клиенте отключено").clicked() {
+            self.status = "Прикрепление изображений в оригинальном клиенте отключено.".into();
+        }
+        paint_sketch_icon(ui.painter(), attach.shrink(8.0), "attach", cream);
+        let send = egui::Rect::from_min_size(egui::pos2(compose.right() - 50.0, compose.top() + 9.0), egui::vec2(40.0, 44.0));
+        if ui.put(send, egui::Button::new("").fill(amber)).clicked() { self.send_chat(); }
+        paint_sketch_icon(ui.painter(), send.shrink(7.0), "send", egui::Color32::from_rgb(24, 34, 28));
+        let input = egui::Rect::from_min_max(egui::pos2(emoji.right() + 6.0, compose.top() + 9.0), egui::pos2(send.left() - 10.0, compose.bottom() - 9.0));
+        ui.put(input, egui::TextEdit::multiline(&mut self.draft).desired_rows(2).hint_text("Сообщение…").desired_width(input.width()));
+        if self.show_smileys {
+            let picker = egui::Rect::from_min_size(egui::pos2(compose.left() + 6.0, compose.top() - 44.0), egui::vec2(280.0, 38.0));
+            ui.allocate_ui_at_rect(picker, |picker_ui| {
+                picker_ui.horizontal_wrapped(|picker_ui| {
+                    for (code, texture) in self.smiley_textures.clone() {
+                        if picker_ui.add(egui::Image::new((texture.id(), egui::vec2(26.0, 26.0))).sense(egui::Sense::click())).clicked() {
+                            self.add_smiley(&code);
+                            self.show_smileys = false;
+                        }
+                    }
+                });
+            });
+        }
+        if !self.status.is_empty() {
+            let color = if self.status.starts_with("Ошибка") || self.status.starts_with("Не удалось") { egui::Color32::from_rgb(239, 117, 105) } else { secondary };
+            ui.put(egui::Rect::from_min_size(egui::pos2(main.left() + 18.0, compose.bottom() + 1.0), egui::vec2(main.width() - 36.0, 15.0)),
+                egui::Label::new(egui::RichText::new(self.status.clone()).size(9.0).color(color)));
+        }
+
+        if self.profile_expanded {
+            ui.put(egui::Rect::from_min_size(details.min + egui::vec2(15.0, 13.0), egui::vec2(details.width() - 30.0, 24.0)),
+                egui::Label::new(egui::RichText::new("Участник").size(16.0).strong().color(cream)));
+            if let Some(texture) = &self.avatar_texture {
+                let avatar = egui::Rect::from_min_size(egui::pos2(details.left() + 16.0, details.top() + 55.0), egui::vec2(62.0, 62.0));
+                ui.put(avatar, egui::Image::new((texture.id(), avatar.size())));
+                if let Some(user) = &self.current_user {
+                    ui.put(egui::Rect::from_min_size(egui::pos2(avatar.right() + 12.0, avatar.top() + 5.0), egui::vec2(details.width() - 100.0, 24.0)),
+                        egui::Label::new(egui::RichText::new(&user.username).size(14.0).strong().color(cream)));
+                    ui.painter().circle_filled(egui::pos2(avatar.right() + 17.0, avatar.top() + 43.0), 4.0, green);
+                    ui.put(egui::Rect::from_min_size(egui::pos2(avatar.right() + 26.0, avatar.top() + 34.0), egui::vec2(92.0, 20.0)),
+                        egui::Label::new(egui::RichText::new(if self.connected { "В сети" } else { "Не в сети" }).size(11.0).color(secondary)));
+                }
+            }
+            let profile = egui::Rect::from_min_size(egui::pos2(details.left() + 14.0, details.top() + 139.0), egui::vec2(details.width() - 28.0, 36.0));
+            if ui.put(profile, egui::Button::new(egui::RichText::new("Профиль").size(13.0).color(cream)).fill(soft)).clicked() { self.edit_profile_open = true; }
+            ui.painter().line_segment([egui::pos2(details.left() + 14.0, details.top() + 190.0), egui::pos2(details.right() - 14.0, details.top() + 190.0)], egui::Stroke::new(1.0, egui::Color32::from_rgb(46, 66, 55)));
+            ui.put(egui::Rect::from_min_size(egui::pos2(details.left() + 15.0, details.top() + 202.0), egui::vec2(details.width() - 30.0, 24.0)),
+                egui::Label::new(egui::RichText::new("Собеседники").size(14.0).strong().color(cream)));
+            let people = egui::Rect::from_min_max(egui::pos2(details.left() + 12.0, details.top() + 235.0), details.right_bottom() - egui::vec2(12.0, 12.0));
+            ui.allocate_ui_at_rect(people, |people_ui| {
+                egui::ScrollArea::vertical().auto_shrink([false, false]).show(people_ui, |people_ui| {
+                    for name in self.friends.clone() {
+                        let active = self.selected_friend.as_deref() == Some(name.as_str());
+                        let row = people_ui.add_sized([people_ui.available_width(), 34.0], egui::Button::new(egui::RichText::new(format!("◦  {name}")).size(12.0).color(if active { amber } else { cream })).fill(if active { egui::Color32::from_rgb(76, 61, 41) } else { surface }));
+                        if row.clicked() { self.selected_friend = Some(name.clone()); self.load_selected_profile(); }
+                    }
+                });
+            });
+        }
     }
 
     fn show_legacy_profile_window(&mut self, ctx: &egui::Context) {
