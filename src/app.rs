@@ -624,7 +624,7 @@ impl TsChatApp {
         }
 
         let mut png = Cursor::new(Vec::new());
-        avatar.write_to(&mut png, image::ImageFormat::Png)?;
+        image::DynamicImage::ImageRgba8(avatar).write_to(&mut png, image::ImageFormat::Png)?;
         use base64::Engine;
         Ok(base64::engine::general_purpose::STANDARD.encode(png.into_inner()))
     }
