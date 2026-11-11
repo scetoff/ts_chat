@@ -128,7 +128,21 @@ fn legacy_color_hex(color: egui::Color32) -> String {
     format!("{a:02X}{r:02X}{g:02X}{b:02X}")
 }
 
-fn styled_rich_text<'a>(text: &'a str, style: Option<&ChatStyle>) -> egui::RichText {
+const WELCOME_CHAT: &str = "Добро пожаловать в Таверну Странника";
+
+fn normalize_legacy_welcome(chat: &str) -> String {
+    let placeholder: String = WELCOME_CHAT
+        .chars()
+        .map(|character| if character.is_ascii() { character } else { '?' })
+        .collect();
+    if chat.trim() == placeholder {
+        WELCOME_CHAT.to_owned()
+    } else {
+        chat.to_owned()
+    }
+}
+
+fn styled_rich_text<'a>(text: &'a str, style: Option<&ChatStyle>, dark_theme: bool) -> egui::RichText {
     let Some(style) = style else {
         return egui::RichText::new(text).size(15.0);
     };
@@ -136,7 +150,14 @@ fn styled_rich_text<'a>(text: &'a str, style: Option<&ChatStyle>) -> egui::RichT
     let display_size = (style.font_size + 2).clamp(10, 50);
     let mut rich = egui::RichText::new(text)
         .size(display_size as f32);
-    if let Some(color) = parse_legacy_argb(&style.color) { rich = rich.color(color); }
+    if let Some(color) = parse_legacy_argb(&style.color) {
+        let color = if dark_theme && u16::from(color.r()) + u16::from(color.g()) + u16::from(color.b()) < 180 {
+            egui::Color32::WHITE
+        } else {
+            color
+        };
+        rich = rich.color(color);
+    }
     match style.font_style.to_lowercase().as_str() {
         "bold" => { rich = rich.strong(); }
         "italic" => { rich = rich.italics(); }
@@ -160,6 +181,7 @@ fn show_chat_line(
     line: &str,
     smileys: &[(String, egui::TextureHandle)],
     styles: &std::collections::HashMap<String, ChatStyle>,
+    dark_theme: bool,
 ) {
     ui.horizontal_wrapped(|ui| {
         let author_style = line.split_once(": ")
@@ -178,7 +200,7 @@ fn show_chat_line(
             match next {
                 Some((position, code)) => {
                     if position > 0 {
-                        ui.label(styled_rich_text(&rest[..position], author_style));
+                        ui.label(styled_rich_text(&rest[..position], author_style, dark_theme));
                     }
                     if let Some((_, texture)) = smileys.iter().find(|(candidate, _)| candidate == code) {
                         ui.add(egui::Image::new((texture.id(), egui::vec2(28.0, 28.0))));
@@ -188,7 +210,7 @@ fn show_chat_line(
                     rest = &rest[position + code.len()..];
                 }
                 None => {
-                    if !rest.is_empty() { ui.label(styled_rich_text(rest, author_style)); }
+                    if !rest.is_empty() { ui.label(styled_rich_text(rest, author_style, dark_theme)); }
                     break;
                 }
             }
@@ -557,7 +579,7 @@ impl TsChatApp {
                 self.avatar_cache_key = None;
                 self.avatar_texture = None;
                 self.current_user = Some(user); self.friends = friends;
-                self.chat_text = chat; self.screen = Screen::Chat; self.status.clear();
+                self.chat_text = normalize_legacy_welcome(&chat); self.screen = Screen::Chat; self.status.clear();
             }
             Ok(None) => self.status = "Проверьте никнейм и пароль.".into(),
             Err(e) => self.status = format!("Ошибка авторизации: {e:#}"),
@@ -804,7 +826,12 @@ impl TsChatApp {
             }
             ChatCommand::CloseRadio => {
                 self.radio_open = false;
-                self.command_status = "Окно радио закрыто; воспроизведение не остановлено.".into();
+                self.radio_pending = None;
+                if let Some(player) = self.radio_player.take() {
+                    player.stop();
+                }
+                self.radio_status = "Окно радио закрыто; воспроизведение остановлено.".into();
+                self.command_status = "Окно радио закрыто, воспроизведение остановлено.".into();
             }
             ChatCommand::PlayRadio => {
                 self.open_radio();
@@ -1292,6 +1319,13 @@ impl TsChatApp {
         }
         self.radio_window_pos += drag_delta;
         self.radio_open = open && self.radio_open;
+        if !self.radio_open {
+            self.radio_pending = None;
+            if let Some(player) = self.radio_player.take() {
+                player.stop();
+            }
+            self.radio_status = "Окно радио закрыто; воспроизведение остановлено.".into();
+        }
 
         if edit_url_requested {
             self.radio_url_editor_open = true;
@@ -1404,7 +1438,7 @@ impl TsChatApp {
         let result = self.chat_refresh_pending.as_ref().map(|receiver| receiver.try_recv());
         match result {
             Some(Ok(Ok(chat))) => {
-                self.chat_text = chat;
+                self.chat_text = normalize_legacy_welcome(&chat);
                 self.chat_refresh_pending = None;
             }
             Some(Ok(Err(error))) => {
@@ -1884,13 +1918,14 @@ impl TsChatApp {
         let chat_rect = legacy_rect(origin, 21.0, 83.0, 424.0, 258.0);
         let smileys = self.smiley_textures.clone();
         let chat_styles = self.chat_styles.clone();
+        let dark_theme = self.dark_theme;
         ui.allocate_ui_at_rect(chat_rect, |chat_ui| {
             egui::ScrollArea::vertical()
                 .auto_shrink([false, false])
                 .stick_to_bottom(true)
                 .show(chat_ui, |chat_content| {
                     for line in self.chat_text.lines() {
-                        show_chat_line(chat_content, line, &smileys, &chat_styles);
+                        show_chat_line(chat_content, line, &smileys, &chat_styles, dark_theme);
                     }
                 });
         });
