@@ -1723,6 +1723,7 @@ impl TsChatApp {
                 ui.add_space(24.0);
                 egui::Frame::none().fill(card).inner_margin(20.0).show(ui, |ui| {
                     ui.set_min_width(340.0);
+                    ui.set_max_width(340.0);
                     ui.vertical_centered(|ui| {
                         let (rect, _) = ui.allocate_exact_size(egui::vec2(175.0, 145.0), egui::Sense::hover());
                         legacy_animated_image(ui, self.tavern_animation.as_ref(), rect);
@@ -1809,7 +1810,9 @@ impl TsChatApp {
 
             ui.horizontal(|ui| {
                 egui::Frame::none().fill(card).inner_margin(14.0).show(ui, |ui| {
-                    ui.set_min_width((ui.available_width() - if self.profile_expanded { 260.0 } else { 0.0 }).max(360.0));
+                    let main_width = (ui.available_width() - if self.profile_expanded { 270.0 } else { 0.0 }).max(360.0);
+                    ui.set_min_width(main_width);
+                    ui.set_max_width(main_width);
                     ui.set_min_height(ui.available_height() - 10.0);
                     ui.vertical(|ui| {
                         ui.horizontal(|ui| {
