@@ -12,8 +12,8 @@ mod voice;
 fn main() -> eframe::Result<()> {
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
-            .with_inner_size([590.0, 437.0])
-            .with_min_inner_size([590.0, 437.0])
+            .with_inner_size([460.0, 467.0])
+            .with_min_inner_size([460.0, 467.0])
             .with_title("TSchat")
             .with_decorations(false)
             .with_resizable(false),
@@ -26,3 +26,4 @@ fn main() -> eframe::Result<()> {
         Box::new(|_cc| Ok(Box::new(app::TsChatApp::default()))),
     )
 }
+
