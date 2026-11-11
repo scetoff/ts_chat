@@ -1209,6 +1209,10 @@ impl TsChatApp {
     }
 
     fn open_radio(&mut self) {
+        if !self.radio_open {
+            let [width, height] = self.last_viewport_size;
+            self.radio_window_pos = egui::pos2(((width - 720.0) * 0.5).max(12.0), ((height - 570.0) * 0.5).max(12.0));
+        }
         self.radio_open = true;
         if self.radio_player.is_some() || self.radio_pending.is_some() || self.radio_autoplay_pending.is_some() {
             return;
