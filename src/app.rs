@@ -480,7 +480,7 @@ impl Default for TsChatApp {
             voice_status: "Выберите мультиязычную модель Whisper (.bin).".into(),
             show_smileys: false,
             edit_profile_open: false,
-            profile_expanded: false,
+            profile_expanded: true,
             chat_style_open: false,
             last_viewport_size: [590.0, 437.0],
             ui_textures: std::collections::HashMap::new(),
@@ -1826,105 +1826,176 @@ impl TsChatApp {
     fn draw_legacy_chat_screen(&mut self, ctx: &egui::Context, ui: &mut egui::Ui) {
         let dark = self.dark_theme;
         let bg = if dark { egui::Color32::from_rgb(18, 25, 23) } else { egui::Color32::from_rgb(242, 240, 233) };
-        let card = if dark { egui::Color32::from_rgb(30, 39, 36) } else { egui::Color32::WHITE };
+        let surface = if dark { egui::Color32::from_rgb(30, 39, 36) } else { egui::Color32::WHITE };
+        let inset = if dark { egui::Color32::from_rgb(23, 31, 28) } else { egui::Color32::from_rgb(248, 247, 243) };
         let accent = egui::Color32::from_rgb(204, 157, 99);
         let secondary = if dark { egui::Color32::from_rgb(154, 169, 160) } else { egui::Color32::from_rgb(99, 110, 103) };
         ui.painter().rect_filled(ui.max_rect(), 0.0, bg);
 
         ui.vertical(|ui| {
-            ui.add_space(8.0);
+            ui.add_space(7.0);
             ui.horizontal(|ui| {
-                ui.add_space(14.0);
+                ui.add_space(16.0);
                 ui.label(egui::RichText::new("TSchat").size(18.0).strong().color(accent));
                 ui.label(egui::RichText::new("Таверна странника").size(13.0).color(secondary));
                 ui.separator();
                 ui.label(egui::RichText::new(if self.connected { "● В сети" } else { "● Не подключено" }).size(12.0).color(if self.connected { egui::Color32::from_rgb(115, 190, 137) } else { secondary }));
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                    ui.add_space(12.0);
+                    ui.add_space(14.0);
                     if ui.button("×").on_hover_text("Закрыть").clicked() { ctx.send_viewport_cmd(egui::ViewportCommand::Close); }
                     if ui.button("—").on_hover_text("Свернуть").clicked() { ctx.send_viewport_cmd(egui::ViewportCommand::Minimized(true)); }
                     if ui.button(if dark { "☀" } else { "☾" }).on_hover_text("Сменить тему").clicked() { self.dark_theme = !self.dark_theme; }
-                    if ui.button("◉").on_hover_text("Профиль и собеседники").clicked() { self.profile_expanded = !self.profile_expanded; }
                     if ui.button("♫").on_hover_text("Радио").clicked() { self.open_radio(); }
                     if ui.button("✉").on_hover_text("Личные сообщения").clicked() { self.load_inbox(); }
-                    if ui.button("Aa").on_hover_text("Оформление чата").clicked() { self.chat_style_open = true; }
-                    if ui.button("⌫").on_hover_text("Очистить общий чат").clicked() { self.show_clear_chat_confirmation = true; }
+                    if ui.button("Aa").on_hover_text("Оформление").clicked() { self.chat_style_open = true; }
+                    if ui.button("⌫").on_hover_text("Очистить чат").clicked() { self.show_clear_chat_confirmation = true; }
                 });
                 ui.add_space(8.0);
             });
-            ui.add_space(8.0);
+            ui.add_space(6.0);
             ui.separator();
-            ui.add_space(8.0);
+            ui.add_space(7.0);
 
+            let available_width = ui.available_width();
+            let nav_width = 58.0;
+            let chats_width = 224.0;
+            let details_width = if self.profile_expanded { 226.0 } else { 0.0 };
+            let gaps = 8.0 * if self.profile_expanded { 3.0 } else { 2.0 };
+            let main_width = (available_width - nav_width - chats_width - details_width - gaps).max(420.0);
+            let body_height = (ui.available_height() - 16.0).max(480.0);
             ui.horizontal(|ui| {
-                egui::Frame::none().fill(card).rounding(egui::Rounding::same(12.0)).inner_margin(14.0).show(ui, |ui| {
-                    let main_width = (ui.available_width() - if self.profile_expanded { 270.0 } else { 0.0 }).max(360.0);
-                    ui.set_min_width(main_width);
-                    ui.set_max_width(main_width);
-                    ui.set_min_height(ui.available_height() - 10.0);
-                    ui.vertical(|ui| {
-                        ui.horizontal(|ui| {
-                            ui.label(egui::RichText::new("Общий чат").size(20.0).strong());
-                            ui.label(egui::RichText::new("Сообщения видны участникам Таверны").size(12.0).color(secondary));
+                egui::Frame::none().fill(surface).rounding(egui::Rounding::same(14.0)).inner_margin(8.0).show(ui, |nav| {
+                    nav.set_min_width(nav_width);
+                    nav.set_max_width(nav_width);
+                    nav.set_min_height(body_height);
+                    nav.vertical_centered(|nav| {
+                        nav.add_space(10.0);
+                        if nav.button("▣").on_hover_text("Чаты").clicked() { self.selected_friend = None; }
+                        if nav.button("♙").on_hover_text("Собеседники").clicked() { self.profile_expanded = true; }
+                        if nav.button("♫").on_hover_text("Радио").clicked() { self.open_radio(); }
+                        if nav.button("⚙").on_hover_text("Профиль").clicked() { self.edit_profile_open = true; }
+                        nav.with_layout(egui::Layout::bottom_up(egui::Align::Center), |nav| {
+                            if let Some(texture) = &self.avatar_texture {
+                                if nav.add(egui::Image::new((texture.id(), egui::vec2(36.0, 36.0))).sense(egui::Sense::click())).clicked() {
+                                    self.edit_profile_open = true;
+                                }
+                            }
                         });
-                        ui.add_space(10.0);
-                        egui::Frame::none().fill(if dark { egui::Color32::from_rgb(23, 31, 28) } else { egui::Color32::from_rgb(248, 247, 243) }).rounding(egui::Rounding::same(10.0)).inner_margin(12.0).show(ui, |ui| {
-                            ui.set_min_height((ui.available_height() - 145.0).max(220.0));
-                            let smileys = self.smiley_textures.clone();
-                            let chat_styles = self.chat_styles.clone();
-                            egui::ScrollArea::vertical().stick_to_bottom(true).auto_shrink([false, false]).show(ui, |chat_ui| {
-                                for line in self.chat_text.lines() {
-                                    show_chat_line(chat_ui, line, &smileys, &chat_styles, dark);
-                                    chat_ui.add_space(4.0);
+                    });
+                });
+
+                ui.add_space(8.0);
+                egui::Frame::none().fill(surface).rounding(egui::Rounding::same(14.0)).inner_margin(12.0).show(ui, |list| {
+                    list.set_min_width(chats_width);
+                    list.set_max_width(chats_width);
+                    list.set_min_height(body_height);
+                    list.vertical(|list| {
+                        list.horizontal(|list| {
+                            list.label(egui::RichText::new("Чаты").size(18.0).strong());
+                            list.with_layout(egui::Layout::right_to_left(egui::Align::Center), |list| {
+                                if list.small_button("+").on_hover_text("Новый чат").clicked() {
+                                    self.status = "Личные сообщения доступны через значок конверта.".into();
                                 }
                             });
                         });
-                        ui.add_space(10.0);
-                        ui.horizontal(|ui| {
-                            if ui.button("☺").on_hover_text("Смайлики").clicked() { self.show_smileys = !self.show_smileys; }
-                            ui.add(egui::TextEdit::multiline(&mut self.draft).desired_rows(3).desired_width(ui.available_width() - 94.0).hint_text("Напишите сообщение…"));
-                            if ui.add_sized([78.0, 54.0], egui::Button::new(egui::RichText::new("Отправить").strong().color(egui::Color32::from_rgb(28, 32, 29))).fill(accent)).clicked() {
+                        list.add_space(8.0);
+                        list.add(egui::TextEdit::singleline(&mut self.command_input).desired_width(f32::INFINITY).hint_text("Поиск"));
+                        let selected = self.selected_friend.is_none();
+                        let chat_item = egui::Button::new(egui::RichText::new("◉  Общий чат").strong().color(if selected { accent } else { secondary }))
+                            .fill(if selected { inset } else { surface });
+                        if list.add_sized([list.available_width(), 42.0], chat_item).clicked() {
+                            self.selected_friend = None;
+                        }
+                        list.label(egui::RichText::new("УЧАСТНИКИ").size(10.0).color(secondary).strong());
+                        egui::ScrollArea::vertical().auto_shrink([false, false]).show(list, |people| {
+                            for name in self.friends.clone() {
+                                let is_selected = self.selected_friend.as_deref() == Some(name.as_str());
+                                let response = people.selectable_label(is_selected, format!("◦  {name}"));
+                                if response.clicked() {
+                                    self.selected_friend = Some(name.clone());
+                                    self.load_selected_profile();
+                                }
+                            }
+                        });
+                    });
+                });
+
+                ui.add_space(8.0);
+                egui::Frame::none().fill(surface).rounding(egui::Rounding::same(14.0)).inner_margin(14.0).show(ui, |chat| {
+                    chat.set_min_width(main_width);
+                    chat.set_max_width(main_width);
+                    chat.set_min_height(body_height);
+                    chat.vertical(|chat| {
+                        chat.horizontal(|chat| {
+                            let title = if let Some(name) = &self.selected_friend { name.as_str() } else { "Общий чат" };
+                            chat.label(egui::RichText::new(title).size(19.0).strong());
+                            chat.label(egui::RichText::new(format!("{} участника", self.friends.len() + 1)).size(11.0).color(secondary));
+                            chat.with_layout(egui::Layout::right_to_left(egui::Align::Center), |chat| {
+                                if chat.button("•••").on_hover_text("Действия").clicked() { self.show_clear_chat_confirmation = true; }
+                                if chat.button("⌕").on_hover_text("Найти в чате").clicked() { self.status = "Поиск по истории скоро появится.".into(); }
+                            });
+                        });
+                        chat.separator();
+                        let smileys = self.smiley_textures.clone();
+                        let styles = self.chat_styles.clone();
+                        egui::Frame::none().fill(inset).rounding(egui::Rounding::same(12.0)).inner_margin(12.0).show(chat, |content| {
+                            content.set_min_height((content.available_height() - 100.0).max(260.0));
+                            egui::ScrollArea::vertical().stick_to_bottom(true).auto_shrink([false, false]).show(content, |content| {
+                                for line in self.chat_text.lines() {
+                                    show_chat_line(content, line, &smileys, &styles, dark);
+                                    content.add_space(7.0);
+                                }
+                            });
+                        });
+                        chat.add_space(10.0);
+                        chat.horizontal(|chat| {
+                            if chat.button("☺").on_hover_text("Смайлики").clicked() { self.show_smileys = !self.show_smileys; }
+                            let input_width = (chat.available_width() - 100.0).max(180.0);
+                            chat.add(egui::TextEdit::multiline(&mut self.draft).desired_rows(2).desired_width(input_width).hint_text("Сообщение…"));
+                            if chat.add_sized([78.0, 48.0], egui::Button::new(egui::RichText::new("➤").size(20.0).strong().color(egui::Color32::from_rgb(28, 32, 29))).fill(accent)).clicked() {
                                 self.send_chat();
                             }
                         });
                         if self.show_smileys {
-                            ui.add_space(5.0);
-                            ui.horizontal_wrapped(|ui| {
+                            chat.horizontal_wrapped(|chat| {
                                 for (code, texture) in self.smiley_textures.clone() {
-                                    let response = ui.add(egui::Image::new((texture.id(), egui::vec2(30.0, 30.0))).sense(egui::Sense::click()));
-                                    if response.clicked() { self.add_smiley(&code); self.show_smileys = false; }
+                                    if chat.add(egui::Image::new((texture.id(), egui::vec2(28.0, 28.0))).sense(egui::Sense::click())).clicked() {
+                                        self.add_smiley(&code);
+                                        self.show_smileys = false;
+                                    }
                                 }
                             });
                         }
                         if !self.status.is_empty() {
                             let color = if self.status.starts_with("Ошибка") || self.status.starts_with("Не удалось") { egui::Color32::from_rgb(225, 115, 105) } else { secondary };
-                            ui.add_space(5.0);
-                            ui.label(egui::RichText::new(self.status.clone()).size(11.0).color(color));
+                            chat.label(egui::RichText::new(self.status.clone()).size(10.0).color(color));
                         }
                     });
                 });
+
                 if self.profile_expanded {
-                    ui.add_space(10.0);
-                    egui::Frame::none().fill(card).rounding(egui::Rounding::same(12.0)).inner_margin(14.0).show(ui, |ui| {
-                        ui.set_min_width(220.0);
-                        ui.set_max_width(250.0);
-                        ui.vertical(|ui| {
-                            ui.label(egui::RichText::new("Профиль").size(18.0).strong());
-                            ui.add_space(8.0);
+                    ui.add_space(8.0);
+                    egui::Frame::none().fill(surface).rounding(egui::Rounding::same(14.0)).inner_margin(14.0).show(ui, |details| {
+                        details.set_min_width(details_width);
+                        details.set_max_width(details_width);
+                        details.set_min_height(body_height);
+                        details.vertical(|details| {
+                            details.label(egui::RichText::new("Участник").size(17.0).strong());
+                            details.add_space(12.0);
                             if let Some(texture) = &self.avatar_texture {
-                                ui.add(egui::Image::new((texture.id(), egui::vec2(76.0, 76.0))));
+                                details.add(egui::Image::new((texture.id(), egui::vec2(72.0, 72.0))));
                             }
                             if let Some(user) = &self.current_user {
-                                ui.label(egui::RichText::new(&user.username).strong());
-                                if !user.display_name.is_empty() { ui.label(egui::RichText::new(&user.display_name).color(secondary)); }
+                                details.label(egui::RichText::new(&user.username).size(15.0).strong());
+                                details.label(egui::RichText::new(if self.connected { "● В сети" } else { "● Не в сети" }).size(11.0).color(egui::Color32::from_rgb(115, 190, 137)));
                             }
-                            if ui.button("Редактировать профиль").clicked() { self.edit_profile_open = true; }
-                            ui.separator();
-                            ui.label(egui::RichText::new("Собеседники").strong());
-                            egui::ScrollArea::vertical().max_height(260.0).show(ui, |list| {
+                            details.add_space(10.0);
+                            if details.button("Профиль").clicked() { self.edit_profile_open = true; }
+                            details.separator();
+                            details.label(egui::RichText::new("Собеседники").strong());
+                            egui::ScrollArea::vertical().max_height(280.0).show(details, |people| {
                                 for name in self.friends.clone() {
-                                    let selected = self.selected_friend.as_deref() == Some(name.as_str());
-                                    if list.selectable_label(selected, &name).clicked() {
+                                    if people.selectable_label(self.selected_friend.as_deref() == Some(name.as_str()), &name).clicked() {
                                         self.selected_friend = Some(name.clone());
                                         self.load_selected_profile();
                                     }
@@ -2373,8 +2444,8 @@ impl eframe::App for TsChatApp {
 
         let target_size = match self.screen {
             Screen::Login | Screen::Register => [920.0, 620.0],
-            Screen::Chat if self.profile_expanded => [1280.0, 780.0],
-            Screen::Chat => [1040.0, 760.0],
+            Screen::Chat if self.profile_expanded => [1440.0, 900.0],
+            Screen::Chat => [1180.0, 820.0],
         };
         if self.last_viewport_size != target_size {
             ctx.send_viewport_cmd(egui::ViewportCommand::InnerSize(egui::vec2(target_size[0], target_size[1])));
