@@ -1,6 +1,2892 @@
-YªçŠx-®éÜj×¢ëiºÚ+Š§j[h‘éÜ¢éíç~4å:-jZ.¶›­–)Ş³WW6RVg&ÖS£¦VwV“°Ğ§W6R7FC£§¶–ó£¤7W'6÷"ÂF–ÖS£§´GW&F–öâÂ–ç7FçG×Ó°Ğ§W6R&vöã#£§°Ğ¢&vöã"ÀĞ¢77v÷&Eö†6ƒ£§µ77v÷&D†6‚Â77v÷&D†6†W"Â77v÷&EfW&–f–W"Â6ÇE7G&–ærÂ&æEö6÷&S£¤÷5&æwÒÀĞ§Ó°Ğ§W6R7&FS£§¶6öÖÖæG3£§·'6Uö6öÖÖæBÂ6†D6öÖÖæGÒÂ6öæf–s£§´6öæf–rÂ&F–õ7FF–öçÒÂF#£¤FF&6RÂÖöFVÇ3£§´6†E7G–ÆRÂW6W'ÒÂ&F–ó£¥&F–õÆ–&6·Ó°Ğ¢5¶6fr†fVGW&RÒ'fö–6R"•ĞĞ§W6R7&FS£§fö–6S£§·6VÆbÂÖ–7&÷†öæU&V6÷&FW"Âv†—7W$ÖöFVÇÓ°Ğ Ğ¢5¶FW&—fR„FV'VrÂ'F–ÄWÂWÂ6ÆöæRÂ6÷’•ĞĞ¦VçVÒ67&VVâ²Æöv–âÂ&Vv—7FW"Â6†BĞĞ Ğ§V"7G'V7BG46†D°Ğ¢6öæf–s¢6öæf–rÀĞ¢'VçF–ÖS¢Fö¶–ó£§'VçF–ÖS£¥'VçF–ÖRÀĞ¢F#¢÷F–öãÄFF&6SâÀĞ¢67&VVã¢67&VVâÀĞ¢W6W&æÖS¢7G&–ærÀĞ¢77v÷&C¢7G&–ærÀĞ¢VÖ–Ã¢7G&–ærÀĞ¢7W'&VçE÷W6W#¢÷F–öãÅW6W#âÀĞ¢g&–VæG3¢fV3Å7G&–æsâÀĞ¢6†E÷FW‡C¢7G&–ærÀĞ¢6†E÷&Vg&W6…÷VæF–æs¢÷F–öãÇ7FC£§7–æ3£¦×63£¥&V6V—fW#Å&W7VÇCÅ7G&–ærÂ7G&–æsããâÀĞ¢G&gC¢7G&–ærÀĞ¢6VÆV7FVEög&–VæC¢÷F–öãÅ7G&–æsâÀĞ¢&—fFU÷7V&¦V7C¢7G&–ærÀĞ¢&—fFU÷FW‡C¢7G&–ærÀĞ¢–æ&÷ƒ¢fV3Æ7&FS£¦ÖöFVÇ3£¥&—fFTÖW76vSâÀĞ¢–æ&÷…÷VæF–æs¢÷F–öãÇ7FC£§7–æ3£¦×63£¥&V6V—fW#Å&W7VÇCÅfV3Æ7&FS£¦ÖöFVÇ3£¥&—fFTÖW76vSâÂ7G&–æsããâÀĞ¢–æ&÷…öÆöF–æs¢&ööÂÀĞ¢7FGW3¢7G&–ærÀĞ¢F&µ÷F†VÖS¢&ööÂÀĞ¢6öææV7FVC¢&ööÂÀĞ¢6†÷uö–æ&÷ƒ¢&ööÂÀĞ¢&—fFUöÖW76vUö÷Vã¢&ööÂÀĞ¢6öæf—&ÕöFVÆWFUöÖW76vS¢÷F–öãÆ“cCâÀĞ¢Æ7E÷&Vg&W6ƒ¢–ç7FçBÀĞ¢&öf–ÆU÷W6W&æÖS¢7G&–ærÀĞ¢&öf–ÆUöæÖS¢7G&–ærÀĞ¢&öf–ÆUöVÖ–Ã¢7G&–ærÀĞ¢&öf–ÆUöÖö&–ÆS¢7G&–ærÀĞ¢fF%÷FW‡GW&S¢÷F–öãÆVwV“£¥FW‡GW&T†æFÆSâÀĞ¢fF%ö66†Uö¶W“¢÷F–öãÅ7G&–æsâÀĞ¢g&–VæEöfF%÷FW‡GW&S¢÷F–öãÆVwV“£¥FW‡GW&T†æFÆSâÀĞ¢g&–VæEöfF%ö66†Uö¶W“¢÷F–öãÅ7G&–æsâÀĞ¢æWu÷77v÷&C¢7G&–ærÀĞ¢&WVE÷77v÷&C¢7G&–ærÀĞ¢g&–VæE÷&öf–ÆS¢÷F–öãÅW6W#âÀĞ¢6†÷uög&–VæE÷&öf–ÆS¢&ööÂÀĞ¢&F–õö÷Vã¢&ööÂÀĞ¢&F–õ÷7FF–öç3¢fV3Å&F–õ7FF–öãâÀĞ¢6VÆV7FVE÷&F–õ÷7FF–öã¢W6—¦RÀĞ¢&F–õ÷föÇVÖS¢c3"ÀĞ¢&F–õö×WFVC¢&ööÂÀĞ¢&F–õ÷W&ÅöVF—F÷%ö÷Vã¢&ööÂÀĞ¢&F–õ÷7FGW3¢7G&–ærÀĞ¢&F–õ÷Æ–W#¢÷F–öãÅ&F–õÆ–&6³âÀĞ¢&F–õ÷VæF–æs¢÷F–öãÂ‡7FC£§7–æ3£¦×63£¥&V6V—fW#Å&W7VÇCÅ&F–õÆ–&6²Â7G&–æsãâÂ7G&–ær“âÀĞ¢&F–õöæ–ÖF–öã¢÷F–öãÄæ–ÖFVDv–câÀĞ¢&F–õ÷v–æF÷u÷÷3¢VwV“£¥÷3"ÀĞ¢6Ö–ÆW•÷FW‡GW&W3¢fV3Â…7G&–ærÂVwV“£¥FW‡GW&T†æFÆR“âÀĞ¢6öÖÖæE÷7FGW3¢7G&–ærÀĞ¢6†÷uö6ÆV%ö6†Eö6öæf—&ÖF–öã¢&ööÂÀĞ¢&F–õöWF÷Æ•÷VæF–æs¢÷F–öãÇW6—¦SâÀĞ¢6†E÷7G–ÆW3¢7FC£¦6öÆÆV7F–öç3£¤†6„ÖÅ7G&–ærÂ6†E7G–ÆSâÀĞ¢6†E÷7G–ÆUö6öÆ÷#¢VwV“£¤6öÆ÷#3"ÀĞ¢6†E÷7G–ÆUöföçC¢7G&–ærÀĞ¢6†E÷7G–ÆU÷6—¦S¢“3"ÀĞ¢6†E÷7G–ÆUöVffV7C¢7G&–ærÀĞ¢5¶6fr†fVGW&RÒ'fö–6R"•ĞĞ¢fö–6Uö÷Vã¢&ööÂÀĞ¢5¶6fr†fVGW&RÒ'fö–6R"•ĞĞ¢fö–6UöÖöFVÅ÷Fƒ¢7G&–ærÀĞ¢5¶6fr†fVGW&RÒ'fö–6R"•ĞĞ¢fö–6UöÖöFVÃ¢÷F–öãÅv†—7W$ÖöFVÃâÀĞ¢5¶6fr†fVGW&RÒ'fö–6R"•ĞĞ¢fö–6UöÖöFVÅ÷VæF–æs¢÷F–öãÇ7FC£§7–æ3£¦×63£¥&V6V—fW#Å&W7VÇCÅv†—7W$ÖöFVÂÂ7G&–æsããâÀĞ¢5¶6fr†fVGW&RÒ'fö–6R"•ĞĞ¢fö–6U÷&V6÷&FW#¢÷F–öãÄÖ–7&÷†öæU&V6÷&FW#âÀĞ¢5¶6fr†fVGW&RÒ'fö–6R"•ĞĞ¢fö–6U÷&V6÷&F–æu÷7F'FVC¢÷F–öãÄ–ç7FçCâÀĞ¢5¶6fr†fVGW&RÒ'fö–6R"•ĞĞ¢fö–6U÷G&ç67&—F–öå÷VæF–æs¢÷F–öãÇ7FC£§7–æ3£¦×63£¥&V6V—fW#Å&W7VÇCÅ7G&–ærÂ7G&–æsããâÀĞ¢5¶6fr†fVGW&RÒ'fö–6R"•ĞĞ¢fö–6U÷7FGW3¢7G&–ærÀĞ¢6†÷u÷6Ö–ÆW—3¢&ööÂÀĞ¢VF—E÷&öf–ÆUö÷Vã¢&ööÂÀĞ¢&öf–ÆUöW‡æFVC¢&ööÂÀĞ¢6†E÷7G–ÆUö÷Vã¢&ööÂÀĞ¢V–6µ÷6WGF–æw5ö÷Vã¢&ööÂÀĞ¢Æ7E÷f–Ww÷'E÷6—¦S¢¶c3#²%ÒÀĞ¢V•÷FW‡GW&W3¢7FC£¦6öÆÆV7F–öç3£¤†6„ÖÅ7G&–ærÂVwV“£¥FW‡GW&T†æFÆSâÀĞ¢FfW&åöæ–ÖF–öã¢÷F–öãÄæ–ÖFVDv–câÀĞ§ĞĞ Ğ¢5¶FW&—fR„6ÆöæR•ĞĞ§7G'V7Bæ–ÖFVDv–b°Ğ¢g&ÖW3¢fV3ÆVwV“£¥FW‡GW&T†æFÆSâÀĞ¢g&ÖUöGW&F–öç3¢fV3ÄGW&F–öãâÀĞ¢7W'&VçEög&ÖS¢W6—¦RÀĞ¢æW‡Eög&ÖUöC¢–ç7FçBÀĞ§ĞĞ Ğ Ğ¦fâ'6UöÆVv7•ö&v"‡fÇVS¢g7G"’Óâ÷F–öãÆVwV“£¤6öÆ÷#3#â°Ğ¢ÆWB†W‚ÒfÇVRçG&–Ò‚’çG&–Õ÷7F'EöÖF6†W2‚r2r“°Ğ¢ÆWB'6VBÒS3#£¦g&öÕ÷7G%÷&F—‚††W‚Âb’æö²‚“ó°Ğ¢ÖF6‚†W‚æÆVâ‚’°Ğ¢‚Óâ6öÖR†VwV“£¤6öÆ÷#3#£¦g&öÕ÷&v&÷Væ×VÇF—Æ–VB€Ğ¢‚‡'6VBãâb’b†fb’2S‚ÀĞ¢‚‡'6VBãâ‚’b†fb’2S‚ÀĞ¢‡'6VBb†fb’2S‚ÀĞ¢‚‡'6VBãâ#B’b†fb’2S‚ÀĞ¢’’ÀĞ¢bÓâ6öÖR†VwV“£¤6öÆ÷#3#£¦g&öÕ÷&v"€Ğ¢‚‡'6VBãâb’b†fb’2S‚ÀĞ¢‚‡'6VBãâ‚’b†fb’2S‚ÀĞ¢‡'6VBb†fb’2S‚ÀĞ¢’’ÀĞ¢òÓâæöæRÀĞ¢ĞĞ§ĞĞ Ğ¦fâÆVv7•ö6öÆ÷%ö†W‚†6öÆ÷#¢VwV“£¤6öÆ÷#3"’Óâ7G&–ær°Ğ¢ÆWB·"ÂrÂ"ÂÒÒ6öÆ÷"çFõö'&’‚“°Ğ¢f÷&ÖB‚'¶£%‡×·#£%‡×¶s£%‡×¶#£%‡Ò"Ğ§ĞĞ Ğ¦6öç7BtTÄ4ôÔUô4„C¢g7G"Ò-	Míâıím½í--Â"
---]İ2
--İİ­#°Ğ Ğ¦fâæ÷&ÖÆ—¦UöÆVv7•÷vVÆ6öÖR†6†C¢g7G"’Óâ7G&–ær°Ğ¢ÆWBÆ6V†öÆFW#¢7G&–ærÒtTÄ4ôÔUô4„@Ğ¢æ6†'2‚Ğ¢æÖ‡Æ6†&7FW'Â–b6†&7FW"æ—5ö66–’‚’²6†&7FW"ÒVÇ6R²sòrÒĞ¢æ6öÆÆV7B‚“°Ğ¢ÆWBG&–ÖÖVBÒ6†BçG&–Ò‚“°Ğ¢–bÆWB6öÖR‡&W7B’ÒG&–ÖÖVBç7G&—÷&Vf—‚‚gÆ6V†öÆFW"’°Ğ¢–b&W7Bæ—5öV×G’‚’ÇÂ&W7Bç7F'G5÷v—F‚‚uÆâr’°Ğ¢&WGW&âf÷&ÖB‚'µtTÄ4ôÔUô4„G×·&W7GÒ"“°Ğ¢ĞĞ¢ĞĞ¢6†BçFõö÷væVB‚Ğ§ĞĞ Ğ¦fâ7G–ÆVE÷&–6…÷FW‡CÂvâ‡FW‡C¢bv7G"Â7G–ÆS¢÷F–öãÂd6†E7G–ÆSâÂF&µ÷F†VÖS¢&ööÂ’ÓâVwV“£¥&–6…FW‡B°Ğ¢ÆWB6öÖR‡7G–ÆR’Ò7G–ÆRVÇ6R°Ğ¢&WGW&âVwV“£¥&–6…FW‡C£¦æWr‡FW‡B’ç6—¦RƒRã“°Ğ¢Ó°Ğ¢òò¶VWW6W"×6VÆV7FVB6—¦W2Â'WBÖ¶RF†RÆVv7’g‚FVfVÇBÖ÷&R&VF&ÆRàĞ¢ÆWBF—7Æ•÷6—¦RÒ‡7G–ÆRæföçE÷6—¦R²"’æ6Æ×ƒÂS“°Ğ¢ÆWB×WB&–6‚ÒVwV“£¥&–6…FW‡C£¦æWr‡FW‡BĞ¢ç6—¦R†F—7Æ•÷6—¦R2c3"“°Ğ¢–bÆWB6öÖR†6öÆ÷"’Ò'6UöÆVv7•ö&v"‚g7G–ÆRæ6öÆ÷"’°Ğ¢ÆWB6öÆ÷"Ò–bF&µ÷F†VÖRbbSc£¦g&öÒ†6öÆ÷"ç"‚’’²Sc£¦g&öÒ†6öÆ÷"ær‚’’²Sc£¦g&öÒ†6öÆ÷"æ"‚’’Âƒ°Ğ¢VwV“£¤6öÆ÷#3#£¥t„•DPĞ¢ÒVÇ6R°Ğ¢6öÆ÷ Ğ¢Ó°Ğ¢&–6‚Ò&–6‚æ6öÆ÷"†6öÆ÷"“°Ğ¢ĞĞ¢ÖF6‚7G–ÆRæföçE÷7G–ÆRçFõöÆ÷vW&66R‚’æ5÷7G"‚’°Ğ¢&&öÆB"Óâ²&–6‚Ò&–6‚ç7G&öær‚“²ĞĞ¢&—FÆ–2"Óâ²&–6‚Ò&–6‚æ—FÆ–72‚“²ĞĞ¢'VæFW&Æ–æR"Óâ²&–6‚Ò&–6‚çVæFW&Æ–æR‚“²ĞĞ¢'7G&–¶V÷WB"Óâ²&–6‚Ò&–6‚ç7G&–¶WF‡&÷Vv‚‚“²ĞĞ¢òÓâ·ĞĞ¢ĞĞ¢–bÖF6†W2‡7G–ÆRæföçBçFõöÆ÷vW&66R‚’æ5÷7G"‚’Â&6öç6öÆ2"Â&6÷W&–W"æWr"Â&Ööæ÷76R"’°Ğ¢&–6‚Ò&–6‚æfÖ–Ç’†VwV“£¤föçDfÖ–Ç“£¤Ööæ÷76R“°Ğ¢ĞĞ¢&–6€Ğ§ĞĞ Ğ¦6öç7B4Ô”ÄU•ô4ôDU3¢²g7G#²eÒÒ°Ğ¢#¦gWS¢"Â#¦&VW#¢"Â#§6÷''“¢"Â#§&VC¢"Â#¦v—&Ã¢"Â#¦Æ–6ƒ¢"Â#§6–æs¢"Â#¦††¢"ÀĞ¢#¦ÆÆ&V#¢"Â#§6“¢"Â#¦ÖöæW“¢"Â#¦æó¢"Â#¦¶–æs¢"Â#¦vó¢"Â#¦vööC¢"Â#¦æ–6S¢"ÀĞ¥Ó°Ğ Ğ¦fâ6†÷uö6†EöÆ–æR€Ğ¢V“¢f×WBVwV“£¥V’ÀĞ¢Æ–æS¢g7G"ÀĞ¢6Ö–ÆW—3¢e²…7G&–ærÂVwV“£¥FW‡GW&T†æFÆR•ÒÀĞ¢7G–ÆW3¢g7FC£¦6öÆÆV7F–öç3£¤†6„ÖÅ7G&–ærÂ6†E7G–ÆSâÀĞ¢F&µ÷F†VÖS¢&ööÂÀĞ¢’°Ğ¢V’æ†÷&—¦öçFÅ÷w&VB‡ÇV—Â°Ğ¢ÆWBWF†÷%÷7G–ÆRÒÆ–æRç7Æ—Eööæ6R‚#¢"Ğ¢ææE÷F†Vâ‡Â†WF†÷"Âò—Â7G–ÆW2ævWB†WF†÷"’“°Ğ¢ÆWB×WB&W7BÒÆ–æS°Ğ¢Æö÷°Ğ¢ÆWB×WBæW‡C¢÷F–öãÂ‡W6—¦RÂg7G"“âÒæöæS°Ğ¢f÷"6öFR–â4Ô”ÄU•ô4ôDU2°Ğ¢–bÆWB6öÖR‡÷6—F–öâ’Ò&W7Bæf–æB†6öFR’°Ğ¢–bæW‡BæÖ‡Â†7W'&VçBÂò—Â÷6—F–öâÂ7W'&VçB’çVçw&ö÷"‡G'VR’°Ğ¢æW‡BÒ6öÖR‚‡÷6—F–öâÂ6öFR’“°Ğ¢ĞĞ¢ĞĞ¢ĞĞ Ğ¢ÖF6‚æW‡B°Ğ¢6öÖR‚‡÷6—F–öâÂ6öFR’’Óâ°Ğ¢–b÷6—F–öââ°Ğ¢V’æÆ&VÂ‡7G–ÆVE÷&–6…÷FW‡B‚g&W7E²âç÷6—F–öåÒÂWF†÷%÷7G–ÆRÂF&µ÷F†VÖR’“°Ğ¢ĞĞ¢–bÆWB6öÖR‚…òÂFW‡GW&R’’Ò6Ö–ÆW—2æ—FW"‚’æf–æB‡Â†6æF–FFRÂò—Â6æF–FFRÓÒ6öFR’°Ğ¢V’æFB†VwV“£¤–ÖvS£¦æWr‚‡FW‡GW&Ræ–B‚’ÂVwV“£§fV3"ƒ#‚ãÂ#‚ã’’’“°Ğ¢ÒVÇ6R°Ğ¢V’æÆ&VÂ†6öFR“°Ğ¢ĞĞ¢&W7BÒg&W7E·÷6—F–öâ²6öFRæÆVâ‚’âåÓ°Ğ¢ĞĞ¢æöæRÓâ°Ğ¢–b&W7Bæ—5öV×G’‚’²V’æÆ&VÂ‡7G–ÆVE÷&–6…÷FW‡B‡&W7BÂWF†÷%÷7G–ÆRÂF&µ÷F†VÖR’“²ĞĞ¢'&V³°Ğ¢ĞĞ¢ĞĞ¢ĞĞ¢Ò“°Ğ§ĞĞ Ğ Ğ Ğ¦fâ–çE÷6¶WF6…ö–6öâ‡–çFW#¢fVwV“£¥–çFW"Â&V7C¢VwV“£¥&V7BÂ–6öã¢g7G"Â6öÆ÷#¢VwV“£¤6öÆ÷#3"’°Ğ¢ÆWB2Ò&V7Bæ6VçFW"‚“°Ğ¢ÆWB7G&ö¶RÒVwV“£¥7G&ö¶S£¦æWrƒã‚Â6öÆ÷"“°Ğ¢ÆWBÆ–æRÒÆÂ'Â–çFW"æÆ–æU÷6VvÖVçB…¶Â%ÒÂ7G&ö¶R“°Ğ¢ÖF6‚–6öâ°Ğ¢&6†B"Óâ°Ğ¢ÆWB"ÒVwV“£¥&V7C£¦g&öÕö6VçFW%÷6—¦R†2²VwV“£§fV3"ƒãÂÓã’ÂVwV“£§fV3"‡&V7Bçv–GF‚‚’¢ãcbÂ&V7Bæ†V–v‡B‚’¢ãS"’“°Ğ¢–çFW"ç&V7E÷7G&ö¶R‡"ÂRãÂ7G&ö¶R“°Ğ¢Æ–æR†VwV“£§÷3"‡"æÆVgB‚’²RãÂ"æ&÷GFöÒ‚’Òã’ÂVwV“£§÷3"‡"æÆVgB‚’²ãÂ"æ&÷GFöÒ‚’²Rã’“°Ğ¢Æ–æR†VwV“£§÷3"‡"æÆVgB‚’²ãÂ"æ&÷GFöÒ‚’²Rã’ÂVwV“£§÷3"‡"æÆVgB‚’²ãÂ"æ&÷GFöÒ‚’Òã’“°Ğ¢ĞĞ¢'W6W'2"Óâ°Ğ¢–çFW"æ6—&6ÆU÷7G&ö¶R†2²VwV“£§fV3"ƒãÂÓRã’ÂBãÂ7G&ö¶R“°Ğ¢–çFW"æ6—&6ÆU÷7G&ö¶R†2²VwV“£§fV3"‚Ó’ãÂÓ2ã’Â2ãÂ7G&ö¶R“°Ğ¢–çFW"æ6—&6ÆU÷7G&ö¶R†2²VwV“£§fV3"ƒ’ãÂÓ2ã’Â2ãÂ7G&ö¶R“°Ğ¢Æ–æR†2²VwV“£§fV3"‚ÓrãÂ‚ã’Â2²VwV“£§fV3"‚ÓrãÂRã’“°Ğ¢–çFW"æFB†VwV“£¥6†S£¦Æ–æR‡fV2¶2²VwV“£§fV3"‚ÓrãÂRã’Â2²VwV“£§fV3"‚ÓBãÂã’Â2²VwV“£§fV3"ƒBãÂã’Â2²VwV“£§fV3"ƒrãÂRã’Â2²VwV“£§fV3"ƒrãÂ‚ã•ÒÂ7G&ö¶R’“°Ğ¢–çFW"æFB†VwV“£¥6†S£¦Æ–æR‡fV2¶2²VwV“£§fV3"‚ÓBãÂrã’Â2²VwV“£§fV3"‚Ó2ãÂ2ã’Â2²VwV“£§fV3"‚ÓãÂã•ÒÂ7G&ö¶R’“°Ğ¢–çFW"æFB†VwV“£¥6†S£¦Æ–æR‡fV2¶2²VwV“£§fV3"ƒãÂã’Â2²VwV“£§fV3"ƒ2ãÂ2ã’Â2²VwV“£§fV3"ƒBãÂrã•ÒÂ7G&ö¶R’“°Ğ¢ĞĞ¢&×W6–2"Óâ°Ğ¢Æ–æR†2²VwV“£§fV3"ƒãÂÓã’Â2²VwV“£§fV3"ƒãÂRã’“°Ğ¢Æ–æR†2²VwV“£§fV3"ƒãÂÓã’Â2²VwV“£§fV3"ƒ’ãÂÓ"ã’“°Ğ¢Æ–æR†2²VwV“£§fV3"ƒ’ãÂÓ"ã’Â2²VwV“£§fV3"ƒ’ãÂ2ã’“°Ğ¢–çFW"æ6—&6ÆUöf–ÆÆVB†2²VwV“£§fV3"‚Ó2ãÂbã’Â2ãRÂ6öÆ÷"“°Ğ¢–çFW"æ6—&6ÆUöf–ÆÆVB†2²VwV“£§fV3"ƒRãÂBã’Â2ãRÂ6öÆ÷"“°Ğ¢ĞĞ¢'6WGF–æw2"Óâ°Ğ¢–çFW"æ6—&6ÆU÷7G&ö¶R†2ÂbãÂ7G&ö¶R“°Ğ¢–çFW"æ6—&6ÆU÷7G&ö¶R†2Â"ãÂ7G&ö¶R“°Ğ¢f÷"’–ââã‚°Ğ¢ÆWBÒ’2c3"¢7FC£¦c3#£¦6öç7G3£¥DRò‚ã°Ğ¢Æ–æR†2²VwV“£§fV3"†æ6÷2‚’¢‚ãÂç6–â‚’¢‚ã’Â2²VwV“£§fV3"†æ6÷2‚’¢"ãÂç6–â‚’¢"ã’“°Ğ¢ĞĞ¢ĞĞ¢&&VÆÂ"Óâ°Ğ¢–çFW"æFB†VwV“£¥6†S£¦Æ–æR‡fV2¶2²VwV“£§fV3"‚Ó’ãÂbã’Â2²VwV“£§fV3"‚ÓbãÂ"ã’Â2²VwV“£§fV3"‚ÓRãÂÓRã’Â2Â2²VwV“£§fV3"ƒRãÂÓRã’Â2²VwV“£§fV3"ƒbãÂ"ã’Â2²VwV“£§fV3"ƒ’ãÂbã•ÒÂ7G&ö¶R’“°Ğ¢Æ–æR†2²VwV“£§fV3"‚Ó’ãÂbã’Â2²VwV“£§fV3"ƒ’ãÂbã’“°Ğ¢–çFW"æ6—&6ÆUöf–ÆÆVB†2²VwV“£§fV3"ƒãÂ’ã’ÂãrÂ6öÆ÷"“°Ğ¢ĞĞ¢'&öf–ÆR"Óâ°Ğ¢–çFW"æ6—&6ÆU÷7G&ö¶R†2Â‚ãRÂ7G&ö¶R“°Ğ¢–çFW"æ6—&6ÆUöf–ÆÆVB†2²VwV“£§fV3"ƒãÂÓ2ã’Âã"Â6öÆ÷"“°Ğ¢Æ–æR†2²VwV“£§fV3"ƒãÂã’Â2²VwV“£§fV3"ƒãÂRã’“°Ğ¢ĞĞ¢&f–ÆR"Óâ°Ğ¢ÆWB"ÒVwV“£¥&V7C£¦g&öÕö6VçFW%÷6—¦R†2ÂVwV“£§fV3"ƒBãÂrã’“°Ğ¢–çFW"ç&V7E÷7G&ö¶R‡"Â"ãÂ7G&ö¶R“°Ğ¢Æ–æR†VwV“£§÷3"‡"æÆVgB‚’²2ãÂ2ç’Ò"ã’ÂVwV“£§÷3"‡"ç&–v‡B‚’Ò2ãÂ2ç’Ò"ã’“°Ğ¢Æ–æR†VwV“£§÷3"‡"æÆVgB‚’²2ãÂ2ç’²2ã’ÂVwV“£§÷3"‡"ç&–v‡B‚’Ò2ãÂ2ç’²2ã’“°Ğ¢ĞĞ¢&Æ–æ²"Óâ°Ğ¢–çFW"æFB†VwV“£¥6†S£¦Æ–æR‡fV2¶2²VwV“£§fV3"‚ÓãÂRã’Â2²VwV“£§fV3"‚ÓBãÂ‚ã’Â2²VwV“£§fV3"‚Ó‚ãÂ‚ã’Â2²VwV“£§fV3"‚ÓãÂbã’Â2²VwV“£§fV3"‚ÓãÂ2ã’Â2²VwV“£§fV3"‚ÓRãÂÓ"ã•ÒÂ7G&ö¶R’“°Ğ¢–çFW"æFB†VwV“£¥6†S£¦Æ–æR‡fV2¶2²VwV“£§fV3"ƒãÂÓRã’Â2²VwV“£§fV3"ƒBãÂÓ‚ã’Â2²VwV“£§fV3"ƒ‚ãÂÓ‚ã’Â2²VwV“£§fV3"ƒãÂÓbã’Â2²VwV“£§fV3"ƒãÂÓ2ã’Â2²VwV“£§fV3"ƒRãÂ"ã•ÒÂ7G&ö¶R’“°Ğ¢Æ–æR†2²VwV“£§fV3"‚ÓRãÂRã’Â2²VwV“£§fV3"ƒRãÂÓRã’“°Ğ¢ĞĞ¢'†öæR"Óâ°Ğ¢–çFW"æFB†VwV“£¥6†S£¦Æ–æR‡fV2°Ğ¢2²VwV“£§fV3"‚Ó‚ãÂÓ’ã’Â2²VwV“£§fV3"‚ÓãÂÓn9ãNm¢G§²ÚîÆ­yĞself.poll_chat_refresh(ctx);
+use eframe::egui;
+use std::{io::Cursor, time::{Duration, Instant}};
+use argon2::{
+    Argon2,
+    password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString, rand_core::OsRng},
+};
+use crate::{commands::{parse_command, ChatCommand}, config::{Config, RadioStation}, db::Database, models::{ChatStyle, User}, radio::RadioPlayback};
+#[cfg(feature = "voice")]
+use crate::voice::{self, MicrophoneRecorder, WhisperModel};
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+enum Screen { Login, Register, Chat }
+
+pub struct TsChatApp {
+    config: Config,
+    runtime: tokio::runtime::Runtime,
+    db: Option<Database>,
+    screen: Screen,
+    username: String,
+    password: String,
+    email: String,
+    current_user: Option<User>,
+    friends: Vec<String>,
+    chat_text: String,
+    chat_refresh_pending: Option<std::sync::mpsc::Receiver<Result<String, String>>>,
+    draft: String,
+    selected_friend: Option<String>,
+    private_subject: String,
+    private_text: String,
+    inbox: Vec<crate::models::PrivateMessage>,
+    inbox_pending: Option<std::sync::mpsc::Receiver<Result<Vec<crate::models::PrivateMessage>, String>>>,
+    inbox_loading: bool,
+    status: String,
+    dark_theme: bool,
+    connected: bool,
+    show_inbox: bool,
+    private_message_open: bool,
+    confirm_delete_message: Option<i64>,
+    last_refresh: Instant,
+    profile_username: String,
+    profile_name: String,
+    profile_email: String,
+    profile_mobile: String,
+    avatar_texture: Option<egui::TextureHandle>,
+    avatar_cache_key: Option<String>,
+    friend_avatar_texture: Option<egui::TextureHandle>,
+    friend_avatar_cache_key: Option<String>,
+    new_password: String,
+    repeat_password: String,
+    friend_profile: Option<User>,
+    show_friend_profile: bool,
+    radio_open: bool,
+    radio_stations: Vec<RadioStation>,
+    selected_radio_station: usize,
+    radio_volume: f32,
+    radio_muted: bool,
+    radio_url_editor_open: bool,
+    radio_status: String,
+    radio_player: Option<RadioPlayback>,
+    radio_pending: Option<(std::sync::mpsc::Receiver<Result<RadioPlayback, String>>, String)>,
+    radio_animation: Option<AnimatedGif>,
+    radio_window_pos: egui::Pos2,
+    smiley_textures: Vec<(String, egui::TextureHandle)>,
+    command_status: String,
+    show_clear_chat_confirmation: bool,
+    radio_autoplay_pending: Option<usize>,
+    chat_styles: std::collections::HashMap<String, ChatStyle>,
+    chat_style_color: egui::Color32,
+    chat_style_font: String,
+    chat_style_size: i32,
+    chat_style_effect: String,
+    #[cfg(feature = "voice")]
+    voice_open: bool,
+    #[cfg(feature = "voice")]
+    voice_model_path: String,
+    #[cfg(feature = "voice")]
+    voice_model: Option<WhisperModel>,
+    #[cfg(feature = "voice")]
+    voice_model_pending: Option<std::sync::mpsc::Receiver<Result<WhisperModel, String>>>,
+    #[cfg(feature = "voice")]
+    voice_recorder: Option<MicrophoneRecorder>,
+    #[cfg(feature = "voice")]
+    voice_recording_started: Option<Instant>,
+    #[cfg(feature = "voice")]
+    voice_transcription_pending: Option<std::sync::mpsc::Receiver<Result<String, String>>>,
+    #[cfg(feature = "voice")]
+    voice_status: String,
+    #[cfg(feature = "voice")]
+    voice_passive_enabled: bool,
+    #[cfg(feature = "voice")]
+    voice_last_command: Option<(String, Instant)>,
+    show_smileys: bool,
+    edit_profile_open: bool,
+    profile_expanded: bool,
+    chat_style_open: bool,
+    quick_settings_open: bool,
+    last_viewport_size: [f32; 2],
+    ui_textures: std::collections::HashMap<String, egui::TextureHandle>,
+    tavern_animation: Option<AnimatedGif>,
+}
+
+#[derive(Clone)]
+struct AnimatedGif {
+    frames: Vec<egui::TextureHandle>,
+    frame_durations: Vec<Duration>,
+    current_frame: usize,
+    next_frame_at: Instant,
+}
+
+
+fn parse_legacy_argb(value: &str) -> Option<egui::Color32> {
+    let hex = value.trim().trim_start_matches('#');
+    let parsed = u32::from_str_radix(hex, 16).ok()?;
+    match hex.len() {
+        8 => Some(egui::Color32::from_rgba_unmultiplied(
+            ((parsed >> 16) & 0xff) as u8,
+            ((parsed >> 8) & 0xff) as u8,
+            (parsed & 0xff) as u8,
+            ((parsed >> 24) & 0xff) as u8,
+        )),
+        6 => Some(egui::Color32::from_rgb(
+            ((parsed >> 16) & 0xff) as u8,
+            ((parsed >> 8) & 0xff) as u8,
+            (parsed & 0xff) as u8,
+        )),
+        _ => None,
+    }
+}
+
+fn legacy_color_hex(color: egui::Color32) -> String {
+    let [r, g, b, a] = color.to_array();
+    format!("{a:02X}{r:02X}{g:02X}{b:02X}")
+}
+
+const WELCOME_CHAT: &str = "Ğ”Ğ¾Ğ±Ñ€Ğ¾ Ğ¿Ğ¾Ğ¶Ğ°Ğ»Ğ¾Ğ²Ğ°Ñ‚ÑŒ Ğ² Ğ¢Ğ°Ğ²ĞµÑ€Ğ½Ñƒ Ğ¡Ñ‚Ñ€Ğ°Ğ½Ğ½Ğ¸ĞºĞ°";
+
+fn normalize_legacy_welcome(chat: &str) -> String {
+    let placeholder: String = WELCOME_CHAT
+        .chars()
+        .map(|character| if character.is_ascii() { character } else { '?' })
+        .collect();
+    let trimmed = chat.trim();
+    if let Some(rest) = trimmed.strip_prefix(&placeholder) {
+        if rest.is_empty() || rest.starts_with('\n') {
+            return format!("{WELCOME_CHAT}{rest}");
+        }
+    }
+    chat.to_owned()
+}
+
+fn styled_rich_text<'a>(text: &'a str, style: Option<&ChatStyle>, dark_theme: bool) -> egui::RichText {
+    let Some(style) = style else {
+        return egui::RichText::new(text).size(15.0);
+    };
+    // Keep user-selected sizes, but make the legacy 16px default more readable.
+    let display_size = (style.font_size + 2).clamp(10, 50);
+    let mut rich = egui::RichText::new(text)
+        .size(display_size as f32);
+    if let Some(color) = parse_legacy_argb(&style.color) {
+        let color = if dark_theme && u16::from(color.r()) + u16::from(color.g()) + u16::from(color.b()) < 180 {
+            egui::Color32::WHITE
+        } else {
+            color
+        };
+        rich = rich.color(color);
+    }
+    match style.font_style.to_lowercase().as_str() {
+        "bold" => { rich = rich.strong(); }
+        "italic" => { rich = rich.italics(); }
+        "underline" => { rich = rich.underline(); }
+        "strikeout" => { rich = rich.strikethrough(); }
+        _ => {}
+    }
+    if matches!(style.font.to_lowercase().as_str(), "consolas" | "courier new" | "monospace") {
+        rich = rich.family(egui::FontFamily::Monospace);
+    }
+    rich
+}
+
+const SMILEY_CODES: [&str; 16] = [
+    ":fuu:", ":beer:", ":sorry:", ":read:", ":girl:", ":lich:", ":sing:", ":haha:",
+    ":allbear:", ":say:", ":money:", ":no:", ":king:", ":go:", ":good:", ":nice:",
+];
+
+fn show_chat_line(
+    ui: &mut egui::Ui,
+    line: &str,
+    smileys: &[(String, egui::TextureHandle)],
+    styles: &std::collections::HashMap<String, ChatStyle>,
+    dark_theme: bool,
+) {
+    ui.horizontal_wrapped(|ui| {
+        let author_style = line.split_once(": ")
+            .and_then(|(author, _)| styles.get(author));
+        let mut rest = line;
+        loop {
+            let mut next: Option<(usize, &str)> = None;
+            for code in SMILEY_CODES {
+                if let Some(position) = rest.find(code) {
+                    if next.map(|(current, _)| position < current).unwrap_or(true) {
+                        next = Some((position, code));
+                    }
+                }
+            }
+
+            match next {
+                Some((position, code)) => {
+                    if position > 0 {
+                        ui.label(styled_rich_text(&rest[..position], author_style, dark_theme));
+                    }
+                    if let Some((_, texture)) = smileys.iter().find(|(candidate, _)| candidate == code) {
+                        ui.add(egui::Image::new((texture.id(), egui::vec2(28.0, 28.0))));
+                    } else {
+                        ui.label(code);
+                    }
+                    rest = &rest[position + code.len()..];
+                }
+                None => {
+                    if !rest.is_empty() { ui.label(styled_rich_text(rest, author_style, dark_theme)); }
+                    break;
+                }
+            }
+        }
+    });
+}
+
+
+
+fn paint_sketch_icon(painter: &egui::Painter, rect: egui::Rect, icon: &str, color: egui::Color32) {
+    let c = rect.center();
+    let stroke = egui::Stroke::new(1.8, color);
+    let line = |a, b| painter.line_segment([a, b], stroke);
+    match icon {
+        "chat" => {
+            let r = egui::Rect::from_center_size(c + egui::vec2(0.0, -1.0), egui::vec2(rect.width() * 0.66, rect.height() * 0.52));
+            painter.rect_stroke(r, 5.0, stroke);
+            line(egui::pos2(r.left() + 5.0, r.bottom() - 1.0), egui::pos2(r.left() + 1.0, r.bottom() + 5.0));
+            line(egui::pos2(r.left() + 1.0, r.bottom() + 5.0), egui::pos2(r.left() + 10.0, r.bottom() - 1.0));
+        }
+        "users" => {
+            painter.circle_stroke(c + egui::vec2(0.0, -5.0), 4.0, stroke);
+            painter.circle_stroke(c + egui::vec2(-9.0, -3.0), 3.0, stroke);
+            painter.circle_stroke(c + egui::vec2(9.0, -3.0), 3.0, stroke);
+            line(c + egui::vec2(-7.0, 8.0), c + egui::vec2(-7.0, 5.0));
+            painter.add(egui::Shape::line(vec![c + egui::vec2(-7.0, 5.0), c + egui::vec2(-4.0, 1.0), c + egui::vec2(4.0, 1.0), c + egui::vec2(7.0, 5.0), c + egui::vec2(7.0, 8.0)], stroke));
+            painter.add(egui::Shape::line(vec![c + egui::vec2(-14.0, 7.0), c + egui::vec2(-13.0, 3.0), c + egui::vec2(-10.0, 1.0)], stroke));
+            painter.add(egui::Shape::line(vec![c + egui::vec2(10.0, 1.0), c + egui::vec2(13.0, 3.0), c + egui::vec2(14.0, 7.0)], stroke));
+        }
+        "music" => {
+            line(c + egui::vec2(1.0, -10.0), c + egui::vec2(1.0, 5.0));
+            line(c + egui::vec2(1.0, -10.0), c + egui::vec2(9.0, -12.0));
+            line(c + egui::vec2(9.0, -12.0), c + egui::vec2(9.0, 3.0));
+            painter.circle_filled(c + egui::vec2(-3.0, 6.0), 3.5, color);
+            painter.circle_filled(c + egui::vec2(5.0, 4.0), 3.5, color);
+        }
+        "settings" => {
+            painter.circle_stroke(c, 6.0, stroke);
+            painter.circle_stroke(c, 2.0, stroke);
+            for i in 0..8 {
+                let a = i as f32 * std::f32::consts::TAU / 8.0;
+                line(c + egui::vec2(a.cos() * 8.0, a.sin() * 8.0), c + egui::vec2(a.cos() * 12.0, a.sin() * 12.0));
+            }
+        }
+        "bell" => {
+            painter.add(egui::Shape::line(vec![c + egui::vec2(-9.0, 6.0), c + egui::vec2(-6.0, 2.0), c + egui::vec2(-5.0, -5.0), c, c + egui::vec2(5.0, -5.0), c + egui::vec2(6.0, 2.0), c + egui::vec2(9.0, 6.0)], stroke));
+            line(c + egui::vec2(-9.0, 6.0), c + egui::vec2(9.0, 6.0));
+            painter.circle_filled(c + egui::vec2(0.0, 9.0), 1.7, color);
+        }
+        "profile" => {
+            painter.circle_stroke(c, 8.5, stroke);
+            painter.circle_filled(c + egui::vec2(0.0, -3.0), 1.2, color);
+            line(c + egui::vec2(0.0, 0.0), c + egui::vec2(0.0, 5.0));
+        }
+        "file" => {
+            let r = egui::Rect::from_center_size(c, egui::vec2(14.0, 17.0));
+            painter.rect_stroke(r, 2.0, stroke);
+            line(egui::pos2(r.left() + 3.0, c.y - 2.0), egui::pos2(r.right() - 3.0, c.y - 2.0));
+            line(egui::pos2(r.left() + 3.0, c.y + 3.0), egui::pos2(r.right() - 3.0, c.y + 3.0));
+        }
+        "link" => {
+            painter.add(egui::Shape::line(vec![c + egui::vec2(-1.0, 5.0), c + egui::vec2(-4.0, 8.0), c + egui::vec2(-8.0, 8.0), c + egui::vec2(-10.0, 6.0), c + egui::vec2(-10.0, 3.0), c + egui::vec2(-5.0, -2.0)], stroke));
+            painter.add(egui::Shape::line(vec![c + egui::vec2(1.0, -5.0), c + egui::vec2(4.0, -8.0), c + egui::vec2(8.0, -8.0), c + egui::vec2(10.0, -6.0), c + egui::vec2(10.0, -3.0), c + egui::vec2(5.0, 2.0)], stroke));
+            line(c + egui::vec2(-5.0, 5.0), c + egui::vec2(5.0, -5.0));
+        }
+        "phone" => {
+            painter.add(egui::Shape::line(vec![
+                c + egui::vec2(-8.0, -9.0), c + egui::vec2(-10.0, -6.0),
+                c + egui::vec2(-8.0, 0.0), c + egui::vec2(-3.0, 6.0),
+                c + egui::vec2(3.0, 9.0), c + egui::vec2(7.0, 8.0),
+                c + egui::vec2(9.0, 5.0), c + egui::vec2(5.0, 1.0),
+                c + egui::vec2(2.0, 3.0), c + egui::vec2(-2.0, 0.0),
+                c + egui::vec2(-4.0, -4.0), c + egui::vec2(-2.0, -7.0),
+                c + egui::vec2(-6.0, -10.0), c + egui::vec2(-8.0, -9.0),
+            ], stroke));
+        }
+        "search" => {
+            painter.circle_stroke(c + egui::vec2(-2.0, -2.0), 6.0, stroke);
+            line(c + egui::vec2(2.0, 2.0), c + egui::vec2(9.0, 9.0));
+        }
+        "more" => for x in [-7.0, 0.0, 7.0] { painter.circle_filled(c + egui::vec2(x, 0.0), 1.8, color); },
+        "close" => {
+            line(c + egui::vec2(-5.0, -5.0), c + egui::vec2(5.0, 5.0));
+            line(c + egui::vec2(5.0, -5.0), c + egui::vec2(-5.0, 5.0));
+        }
+        "send" => {
+            painter.add(egui::Shape::closed_line(vec![c + egui::vec2(-9.0, -7.0), c + egui::vec2(10.0, 0.0), c + egui::vec2(-9.0, 7.0), c + egui::vec2(-5.0, 0.0)], stroke));
+            line(c + egui::vec2(-5.0, 0.0), c + egui::vec2(10.0, 0.0));
+        }
+        "smile" => {
+            painter.circle_stroke(c, 10.0, stroke);
+            painter.circle_filled(c + egui::vec2(-3.5, -3.0), 1.2, color);
+            painter.circle_filled(c + egui::vec2(3.5, -3.0), 1.2, color);
+            painter.add(egui::Shape::line(vec![c + egui::vec2(-4.0, 2.0), c + egui::vec2(-2.0, 4.0), c, c + egui::vec2(2.0, 4.0), c + egui::vec2(4.0, 2.0)], stroke));
+        }
+        "attach" => {
+            painter.add(egui::Shape::line(vec![c + egui::vec2(3.0, -9.0), c + egui::vec2(-5.0, -1.0), c + egui::vec2(-5.0, 5.0), c + egui::vec2(-2.0, 8.0), c + egui::vec2(1.0, 8.0), c + egui::vec2(8.0, 1.0), c + egui::vec2(8.0, -2.0), c + egui::vec2(5.0, -5.0), c + egui::vec2(2.0, -5.0), c + egui::vec2(-3.0, 0.0)], stroke));
+        }
+        "minimize" => { line(c + egui::vec2(-6.0, 0.0), c + egui::vec2(6.0, 0.0)); }
+        "maximize" => { painter.rect_stroke(egui::Rect::from_center_size(c, egui::vec2(11.0, 11.0)), 1.0, stroke); }
+        _ => { painter.circle_stroke(c, 7.0, stroke); }
+    }
+}
+
+fn legacy_rect(origin: egui::Pos2, x: f32, y: f32, width: f32, height: f32) -> egui::Rect {
+    egui::Rect::from_min_size(origin + egui::vec2(x, y), egui::vec2(width, height))
+}
+
+fn legacy_text(
+    ui: &mut egui::Ui,
+    rect: egui::Rect,
+    text: impl Into<String>,
+    color: egui::Color32,
+    size: f32,
+) -> egui::Response {
+    ui.put(
+        rect,
+        egui::Label::new(egui::RichText::new(text).color(color).size(size)),
+    )
+}
+
+fn legacy_button(
+    ui: &mut egui::Ui,
+    rect: egui::Rect,
+    text: &str,
+    fill: egui::Color32,
+    foreground: egui::Color32,
+    size: f32,
+) -> egui::Response {
+    ui.put(
+        rect,
+        egui::Button::new(egui::RichText::new(text).color(foreground).size(size))
+            .fill(fill)
+            .stroke(egui::Stroke::new(1.0, foreground)),
+    )
+}
+
+fn legacy_text_edit(
+    ui: &mut egui::Ui,
+    rect: egui::Rect,
+    value: &mut String,
+    hint: &str,
+    password: bool,
+    foreground: egui::Color32,
+) -> egui::Response {
+    let mut edit = egui::TextEdit::singleline(value)
+        .desired_width(rect.width())
+        .hint_text(hint)
+        .text_color(foreground)
+        .margin(egui::vec2(6.0, 3.0));
+    if password {
+        edit = edit.password(true);
+    }
+    ui.put(rect, edit)
+}
+
+fn legacy_group(
+    ui: &egui::Ui,
+    rect: egui::Rect,
+    fill: egui::Color32,
+    border: egui::Color32,
+) {
+    let painter = ui.painter();
+    painter.rect_filled(rect, 10.0, fill);
+    painter.rect_stroke(rect, 10.0, egui::Stroke::new(1.0, border));
+}
+
+fn legacy_static_image(
+    ui: &egui::Ui,
+    textures: &std::collections::HashMap<String, egui::TextureHandle>,
+    name: &str,
+    rect: egui::Rect,
+) {
+    if let Some(texture) = textures.get(name) {
+        ui.painter().image(
+            texture.id(),
+            rect,
+            egui::Rect::from_min_max(egui::Pos2::ZERO, egui::pos2(1.0, 1.0)),
+            egui::Color32::WHITE,
+        );
+    }
+}
+
+fn legacy_animated_image(
+    ui: &egui::Ui,
+    animation: Option<&AnimatedGif>,
+    rect: egui::Rect,
+) {
+    if let Some(animation) = animation {
+        if let Some(texture) = animation.frames.get(animation.current_frame) {
+            ui.painter().image(
+                texture.id(),
+                rect,
+                egui::Rect::from_min_max(egui::Pos2::ZERO, egui::pos2(1.0, 1.0)),
+                egui::Color32::WHITE,
+            );
+        }
+    }
+}
+
+fn decode_gif_animation(ctx: &egui::Context, prefix: &str, bytes: &[u8]) -> Option<AnimatedGif> {
+    use image::AnimationDecoder;
+    let decoder = image::codecs::gif::GifDecoder::new(Cursor::new(bytes)).ok()?;
+    let decoded = decoder.into_frames().collect_frames().ok()?;
+    if decoded.is_empty() { return None; }
+
+    let mut frames = Vec::with_capacity(decoded.len());
+    let mut frame_durations = Vec::with_capacity(decoded.len());
+    for (index, frame) in decoded.into_iter().enumerate() {
+        let (numerator_ms, denominator_ms) = frame.delay().numer_denom_ms();
+        let delay_ms = if numerator_ms == 0 || denominator_ms == 0 {
+            100
+        } else {
+            (numerator_ms / denominator_ms).clamp(20, 1000)
+        };
+        let rgba = frame.into_buffer();
+        let size = [rgba.width() as usize, rgba.height() as usize];
+        let image = egui::ColorImage::from_rgba_unmultiplied(size, rgba.as_raw());
+        frames.push(ctx.load_texture(
+            format!("{prefix}-{index}"),
+            image,
+            egui::TextureOptions::LINEAR,
+        ));
+        frame_durations.push(Duration::from_millis(delay_ms as u64));
+    }
+    let first_delay = frame_durations.first().copied().unwrap_or(Duration::from_millis(100));
+    Some(AnimatedGif {
+        frames,
+        frame_durations,
+        current_frame: 0,
+        next_frame_at: Instant::now() + first_delay,
+    })
+}
+
+fn legacy_image_button(
+    ui: &mut egui::Ui,
+    textures: &std::collections::HashMap<String, egui::TextureHandle>,
+    name: &str,
+    rect: egui::Rect,
+) -> Option<egui::Response> {
+    let texture = textures.get(name)?;
+    Some(ui.put(
+        rect,
+        egui::Image::new((texture.id(), rect.size())).sense(egui::Sense::click()),
+    ))
+}
+
+fn legacy_title_bar(
+    ui: &mut egui::Ui,
+    ctx: &egui::Context,
+    textures: &std::collections::HashMap<String, egui::TextureHandle>,
+    origin: egui::Pos2,
+    width: f32,
+    icon_x: f32,
+    minimize_x: f32,
+    close_x: f32,
+) {
+    let bar = legacy_rect(origin, 0.0, 0.0, width, 35.0);
+    ui.painter().rect_filled(bar, 0.0, egui::Color32::from_rgb(0, 0, 128));
+
+    legacy_static_image(
+        ui,
+        textures,
+        "chat_icon",
+        legacy_rect(origin, icon_x, 0.0, 35.0, 35.0),
+    );
+
+    if let Some(response) = legacy_image_button(
+        ui,
+        textures,
+        "minimize",
+        legacy_rect(origin, minimize_x, 0.0, 35.0, 35.0),
+    ) {
+        if response.clicked() {
+            ctx.send_viewport_cmd(egui::ViewportCommand::Minimized(true));
+        }
+    }
+
+    if let Some(response) = legacy_image_button(
+        ui,
+        textures,
+        "close",
+        legacy_rect(origin, close_x, 0.0, 35.0, 35.0),
+    ) {
+        if response.clicked() {
+            ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+        }
+    }
+
+    let drag_rect = legacy_rect(origin, 35.0, 0.0, (width - 110.0).max(40.0), 35.0);
+    let drag = ui.interact(drag_rect, egui::Id::new("tschat-legacy-title-drag"), egui::Sense::click_and_drag());
+    if drag.drag_started() {
+        ctx.send_viewport_cmd(egui::ViewportCommand::StartDrag);
+    }
+}
+
+impl Default for TsChatApp {
+    fn default() -> Self {
+        let config = Config::load();
+        let radio_stations = config.radio.stations.clone();
+        Self {
+            config,
+            runtime: tokio::runtime::Builder::new_multi_thread().enable_all().build().expect("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ ÑĞ¾Ğ·Ğ´Ğ°Ñ‚ÑŒ async runtime"),
+            db: None, screen: Screen::Login,
+            username: String::new(), password: String::new(), email: String::new(),
+            current_user: None, friends: Vec::new(), chat_text: String::new(),
+            chat_refresh_pending: None,
+            draft: String::new(), selected_friend: None, private_subject: String::new(),
+            private_text: String::new(), inbox: Vec::new(),
+            inbox_pending: None, inbox_loading: false,
+            status: "Ğ¡Ğ¾ĞµĞ´Ğ¸Ğ½ĞµĞ½Ğ¸Ğµ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ÑĞµÑ‚ÑÑ Ğ¿Ñ€Ğ¸ Ğ²Ñ…Ğ¾Ğ´Ğµ Ğ¸Ğ»Ğ¸ Ñ€ĞµĞ³Ğ¸ÑÑ‚Ñ€Ğ°Ñ†Ğ¸Ğ¸.".into(),
+            dark_theme: true, connected: false, show_inbox: false, private_message_open: false,
+            confirm_delete_message: None,
+            last_refresh: Instant::now(),
+            profile_username: String::new(), profile_name: String::new(), profile_email: String::new(), profile_mobile: String::new(),
+            avatar_texture: None, avatar_cache_key: None,
+            friend_avatar_texture: None, friend_avatar_cache_key: None,
+            new_password: String::new(), repeat_password: String::new(),
+            friend_profile: None, show_friend_profile: false,
+            radio_open: false,
+            radio_window_pos: egui::pos2(100.0, 70.0),
+            radio_stations,
+            selected_radio_station: 0,
+            radio_volume: 0.75,
+            radio_muted: false,
+            radio_url_editor_open: false,
+            radio_status: "Ğ’Ñ‹Ğ±ĞµÑ€Ğ¸Ñ‚Ğµ ÑÑ‚Ğ°Ğ½Ñ†Ğ¸Ñ Ğ¸ ÑƒĞºĞ°Ğ¶Ğ¸Ñ‚Ğµ ĞµÑ‘ URL Ğ² Ğ½Ğ°ÑÑ‚Ñ€Ğ¾Ğ¹ĞºĞ°Ñ….".into(),
+            radio_player: None,
+            radio_pending: None,
+            radio_animation: None,
+            smiley_textures: Vec::new(),
+            command_status: String::new(),
+            show_clear_chat_confirmation: false,
+            radio_autoplay_pending: None,
+            chat_styles: std::collections::HashMap::new(),
+            chat_style_color: egui::Color32::BLACK,
+            chat_style_font: "Candara".into(),
+            chat_style_size: 16,
+            chat_style_effect: "Regular".into(),
+            #[cfg(feature = "voice")]
+            voice_open: false,
+            #[cfg(feature = "voice")]
+            voice_model_path: String::new(),
+            #[cfg(feature = "voice")]
+            voice_model: None,
+            #[cfg(feature = "voice")]
+            voice_model_pending: None,
+            #[cfg(feature = "voice")]
+            voice_recorder: None,
+            #[cfg(feature = "voice")]
+            voice_recording_started: None,
+            #[cfg(feature = "voice")]
+            voice_transcription_pending: None,
+            #[cfg(feature = "voice")]
+            voice_status: "Ğ’Ñ‹Ğ±ĞµÑ€Ğ¸Ñ‚Ğµ Ğ¼ÑƒĞ»ÑŒÑ‚Ğ¸ÑĞ·Ñ‹Ñ‡Ğ½ÑƒÑ Ğ¼Ğ¾Ğ´ĞµĞ»ÑŒ Whisper (.bin).".into(),
+            #[cfg(feature = "voice")]
+            voice_passive_enabled: false,
+            #[cfg(feature = "voice")]
+            voice_last_command: None,
+            show_smileys: false,
+            edit_profile_open: false,
+            profile_expanded: true,
+            chat_style_open: false,
+            quick_settings_open: false,
+            last_viewport_size: [460.0, 467.0],
+            ui_textures: std::collections::HashMap::new(),
+            tavern_animation: None,
+        }
+    }
+}
+
+impl TsChatApp {
+    fn connect(&mut self) {
+        let cfg = self.config.clone();
+        match self.runtime.block_on(Database::connect(&cfg)) {
+            Ok(db) => match self.runtime.block_on(db.verify_schema()) {
+                Ok(()) => {
+                    self.db = Some(db);
+                    self.connected = true;
+                    self.status = "ĞŸĞ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¾ Ğº ÑÑƒÑ‰ĞµÑÑ‚Ğ²ÑƒÑÑ‰ĞµĞ¹ Ğ‘Ğ” TSchat. Ğ¡Ñ‚Ñ€ÑƒĞºÑ‚ÑƒÑ€Ğ° Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞµĞ½Ğ°; Ğ´Ğ°Ğ½Ğ½Ñ‹Ğµ Ğ½Ğµ Ğ¸Ğ·Ğ¼ĞµĞ½ÑĞ»Ğ¸ÑÑŒ.".into();
+                }
+                Err(e) => self.status = format!("Ğ¡Ñ‚Ñ€ÑƒĞºÑ‚ÑƒÑ€Ğ° Ñ‚ĞµÑÑ‚Ğ¾Ğ²Ğ¾Ğ¹ Ğ‘Ğ” Ğ½Ğµ Ğ¿Ñ€Ğ¾ÑˆĞ»Ğ° Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºÑƒ: {e:#}"),
+            },
+            Err(e) => self.status = format!("{e:#}"),
+        }
+    }
+
+    fn legacy_password_digest(password: &str) -> String {
+        // Compatibility with old VB.NET accounts only: MD5(password + ASCII "ZUBI") + "ZUBI", then Base64.
+        let mut input = password.as_bytes().to_vec();
+        input.extend_from_slice(b"ZUBI");
+        let mut digest = md5::compute(input).0.to_vec();
+        digest.extend_from_slice(b"ZUBI");
+        use base64::Engine;
+        base64::engine::general_purpose::STANDARD.encode(digest)
+    }
+
+    fn hash_password(password: &str) -> anyhow::Result<String> {
+        let salt = SaltString::generate(&mut OsRng);
+        Argon2::default()
+            .hash_password(password.as_bytes(), &salt)
+            .map(|hash| hash.to_string())
+            .map_err(|error| anyhow::anyhow!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ ÑĞ¾Ğ·Ğ´Ğ°Ñ‚ÑŒ Argon2id-Ñ…ĞµÑˆ: {error}"))
+    }
+
+    fn verify_password(password: &str, stored_hash: &str) -> bool {
+        if stored_hash.starts_with("$argon2") {
+            let Ok(parsed) = PasswordHash::new(stored_hash) else { return false; };
+            Argon2::default().verify_password(password.as_bytes(), &parsed).is_ok()
+        } else {
+            stored_hash == Self::legacy_password_digest(password)
+        }
+    }
+
+    fn run_db<T>(&mut self, f: impl FnOnce(&tokio::runtime::Runtime, &Database) -> anyhow::Result<T>) -> anyhow::Result<T> {
+        let db = self.db.clone().ok_or_else(|| anyhow::anyhow!("Ğ¡Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ° Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡Ğ¸Ñ‚ĞµÑÑŒ Ğº Ğ±Ğ°Ğ·Ğµ Ğ´Ğ°Ğ½Ğ½Ñ‹Ñ…"))?;
+        f(&self.runtime, &db)
+    }
+
+    fn login(&mut self) {
+        if self.username.trim().is_empty() || self.password.is_empty() {
+            self.status = "Ğ£ĞºĞ°Ğ¶Ğ¸Ñ‚Ğµ Ğ½Ğ¸ĞºĞ½ĞµĞ¹Ğ¼ Ğ¸ Ğ¿Ğ°Ñ€Ğ¾Ğ»ÑŒ.".into(); return;
+        }
+        if self.db.is_none() {
+            self.connect();
+            if self.db.is_none() {
+                return;
+            }
+        }
+        let username = self.username.clone();
+        let password = self.password.clone();
+        match self.run_db(|rt, db| rt.block_on(db.user_with_password(&username))) {
+            Ok(Some((mut user, stored_hash))) => {
+                if !Self::verify_password(&password, &stored_hash) {
+                    self.status = "ĞŸÑ€Ğ¾Ğ²ĞµÑ€ÑŒÑ‚Ğµ Ğ½Ğ¸ĞºĞ½ĞµĞ¹Ğ¼ Ğ¸ Ğ¿Ğ°Ñ€Ğ¾Ğ»ÑŒ.".into();
+                    return;
+                }
+
+                // Backfill legacy accounts once. New registrations already get
+                // a random bundled portrait, and users can replace it below.
+                let missing_avatars = self.run_db(|rt, db| rt.block_on(db.users_missing_avatar()))
+                    .unwrap_or_default();
+                if !missing_avatars.is_empty() {
+                    if let Ok(avatar_pool) = Self::tavern_avatar_pool_base64() {
+                        for name in missing_avatars {
+                            let avatar = avatar_pool[Self::avatar_index(&name)].clone();
+                            if self.run_db(|rt, db| rt.block_on(db.update_avatar(&name, &avatar))).is_ok()
+                                && name == user.username
+                            {
+                                user.avatar_base64 = avatar;
+                            }
+                        }
+                    }
+                }
+                if !stored_hash.starts_with("$argon2") {
+                    match Self::hash_password(&password) {
+                        Ok(new_hash) => {
+                            let account_name = user.username.clone();
+                            if let Err(error) = self.run_db(|rt, db| rt.block_on(db.update_password(&account_name, &new_hash))) {
+                                self.status = format!("Ğ’Ñ…Ğ¾Ğ´ Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½, Ğ½Ğ¾ Ğ½Ğµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ¾Ğ±Ğ½Ğ¾Ğ²Ğ¸Ñ‚ÑŒ Ğ·Ğ°Ñ‰Ğ¸Ñ‚Ñƒ Ğ¿Ğ°Ñ€Ğ¾Ğ»Ñ: {error:#}");
+                            }
+                        }
+                        Err(error) => self.status = format!("Ğ’Ñ…Ğ¾Ğ´ Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½, Ğ½Ğ¾ Ğ¾Ğ±Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ñ…ĞµÑˆĞ° Ğ½Ğµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ: {error:#}"),
+                    }
+                }
+                let name = user.username.clone();
+                let friends = self.run_db(|rt, db| rt.block_on(db.users_except(&name))).unwrap_or_default();
+                let chat = self.run_db(|rt, db| rt.block_on(db.read_chat())).unwrap_or_default();
+                self.chat_styles = self.run_db(|rt, db| rt.block_on(db.chat_styles())).unwrap_or_default();
+                self.chat_style_color = parse_legacy_argb(&user.chat_color).unwrap_or(egui::Color32::BLACK);
+                self.chat_style_font = if user.chat_font.is_empty() { "Candara".into() } else { user.chat_font.clone() };
+                self.chat_style_size = user.chat_font_size.clamp(8, 48);
+                self.chat_style_effect = if user.chat_font_style.is_empty() { "Regular".into() } else { user.chat_font_style.clone() };
+                self.profile_username = user.username.clone();
+                self.profile_name = user.display_name.clone();
+                self.profile_email = user.email.clone();
+                self.profile_mobile = user.mobile.clone();
+                self.avatar_cache_key = None;
+                self.avatar_texture = None;
+                self.current_user = Some(user); self.friends = friends;
+                self.chat_text = normalize_legacy_welcome(&chat); self.screen = Screen::Chat; self.status.clear();
+            }
+            Ok(None) => self.status = "ĞŸÑ€Ğ¾Ğ²ĞµÑ€ÑŒÑ‚Ğµ Ğ½Ğ¸ĞºĞ½ĞµĞ¹Ğ¼ Ğ¸ Ğ¿Ğ°Ñ€Ğ¾Ğ»ÑŒ.".into(),
+            Err(e) => self.status = format!("ĞÑˆĞ¸Ğ±ĞºĞ° Ğ°Ğ²Ñ‚Ğ¾Ñ€Ğ¸Ğ·Ğ°Ñ†Ğ¸Ğ¸: {e:#}"),
+        }
+    }
+
+    fn tavern_avatar_pool_base64() -> anyhow::Result<Vec<String>> {
+        let sheet = image::load_from_memory(include_bytes!("../assets/tavern_avatar_sheet.png"))?.to_rgba8();
+        let cell_width = sheet.width() / 5;
+        let cell_height = sheet.height() / 2;
+        anyhow::ensure!(cell_width > 0 && cell_height > 0, "Ğ¡Ğ¿Ñ€Ğ°Ğ¹Ñ‚-Ğ»Ğ¸ÑÑ‚ Ğ°Ğ²Ğ°Ñ‚Ğ°Ñ€Ğ¾Ğ² Ğ¸Ğ¼ĞµĞµÑ‚ Ğ½ĞµĞ²ĞµÑ€Ğ½Ñ‹Ğ¹ Ñ€Ğ°Ğ·Ğ¼ĞµÑ€");
+
+        let cell_size = cell_width.min(cell_height);
+        let inset = (cell_size / 40).max(2);
+        let crop_size = cell_size.saturating_sub(inset * 2);
+        let mut avatars = Vec::with_capacity(10);
+        for index in 0..10_u32 {
+            let column = index % 5;
+            let row = index / 5;
+            let x = column * cell_width + (cell_width - crop_size) / 2;
+            let y = row * cell_height + (cell_height - crop_size) / 2;
+            let cropped = image::imageops::crop_imm(&sheet, x, y, crop_size, crop_size).to_image();
+            let mut avatar = image::imageops::resize(&cropped, 256, 256, image::imageops::FilterType::Lanczos3);
+
+            let center = 127.5_f32;
+            let radius_squared = 127.0_f32 * 127.0_f32;
+            for y in 0..256 {
+                for x in 0..256 {
+                    let dx = x as f32 - center;
+                    let dy = y as f32 - center;
+                    if dx * dx + dy * dy > radius_squared {
+                        avatar.get_pixel_mut(x, y).0[3] = 0;
+                    }
+                }
+            }
+
+            let mut png = Cursor::new(Vec::new());
+            image::DynamicImage::ImageRgba8(avatar).write_to(&mut png, image::ImageFormat::Png)?;
+            use base64::Engine;
+            avatars.push(base64::engine::general_purpose::STANDARD.encode(png.into_inner()));
+        }
+        Ok(avatars)
+    }
+
+    fn avatar_index(seed: &str) -> usize {
+        use std::hash::{BuildHasher, Hash, Hasher};
+        let mut random = std::collections::hash_map::RandomState::new().build_hasher();
+        seed.hash(&mut random);
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|duration| duration.as_nanos())
+            .unwrap_or_default()
+            .hash(&mut random);
+        (random.finish() % 10) as usize
+    }
+
+    fn random_tavern_avatar_base64() -> anyhow::Result<String> {
+        let avatars = Self::tavern_avatar_pool_base64()?;
+        Ok(avatars[Self::avatar_index("")].clone())
+    }
+
+    fn register(&mut self) {
+        if self.username.trim().is_empty() || self.password.is_empty() || self.email.trim().is_empty() {
+            self.status = "Ğ—Ğ°Ğ¿Ğ¾Ğ»Ğ½Ğ¸Ñ‚Ğµ Ğ½Ğ¸ĞºĞ½ĞµĞ¹Ğ¼, Ğ¿Ğ°Ñ€Ğ¾Ğ»ÑŒ Ğ¸ Ğ¿Ğ¾Ñ‡Ñ‚Ñƒ.".into(); return;
+        }
+        if self.db.is_none() {
+            self.connect();
+            if self.db.is_none() {
+                return;
+            }
+        }
+        let username = self.username.clone(); let email = self.email.clone();
+        let hash = match Self::hash_password(&self.password) {
+            Ok(hash) => hash,
+            Err(error) => { self.status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ·Ğ°Ñ‰Ğ¸Ñ‚Ğ¸Ñ‚ÑŒ Ğ¿Ğ°Ñ€Ğ¾Ğ»ÑŒ: {error:#}"); return; }
+        };
+        let avatar = match Self::random_tavern_avatar_base64() {
+            Ok(avatar) => avatar,
+            Err(error) => { self.status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ¿Ğ¾Ğ´Ğ³Ğ¾Ñ‚Ğ¾Ğ²Ğ¸Ñ‚ÑŒ Ğ°Ğ²Ğ°Ñ‚Ğ°Ñ€ĞºÑƒ: {error:#}"); return; }
+        };
+        match self.run_db(|rt, db| rt.block_on(db.register(&username, &hash, &email, &avatar))) {
+            Ok(()) => { self.status = "ĞĞºĞºĞ°ÑƒĞ½Ñ‚ ÑĞ¾Ğ·Ğ´Ğ°Ğ½. Ğ¢ĞµĞ¿ĞµÑ€ÑŒ Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½Ğ¸Ñ‚Ğµ Ğ²Ñ…Ğ¾Ğ´.".into(); self.screen = Screen::Login; }
+            Err(e) => self.status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ ÑĞ¾Ğ·Ğ´Ğ°Ñ‚ÑŒ Ğ°ĞºĞºĞ°ÑƒĞ½Ñ‚: {e:#}"),
+        }
+    }
+
+
+
+    fn save_chat_style(&mut self) {
+        let Some(username) = self.current_user.as_ref().map(|u| u.username.clone()) else { return; };
+        let color = legacy_color_hex(self.chat_style_color);
+        let font = self.chat_style_font.clone();
+        let size = self.chat_style_size.clamp(8, 48);
+        let effect = self.chat_style_effect.clone();
+        match self.run_db(|rt, db| rt.block_on(db.update_chat_style(&username, &color, &font, size, &effect))) {
+            Ok(()) => {
+                let style = ChatStyle {
+                    color: color.clone(), font: font.clone(), font_size: size, font_style: effect.clone(),
+                };
+                self.chat_styles.insert(username.clone(), style);
+                if let Some(user) = self.current_user.as_mut() {
+                    user.chat_color = color;
+                    user.chat_font = font;
+                    user.chat_font_size = size;
+                    user.chat_font_style = effect;
+                }
+                self.status = "ĞÑ„Ğ¾Ñ€Ğ¼Ğ»ĞµĞ½Ğ¸Ğµ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğ¹ ÑĞ¾Ñ…Ñ€Ğ°Ğ½ĞµĞ½Ğ¾.".into();
+            }
+            Err(error) => self.status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ ÑĞ¾Ñ…Ñ€Ğ°Ğ½Ğ¸Ñ‚ÑŒ Ğ¾Ñ„Ğ¾Ñ€Ğ¼Ğ»ĞµĞ½Ğ¸Ğµ: {error:#}"),
+        }
+    }
+
+    fn save_profile(&mut self) {
+        let Some(user) = self.current_user.as_ref() else { return; };
+        let old_username = user.username.clone();
+        let new_username = self.profile_username.trim().to_string();
+        let email = self.profile_email.trim().to_string();
+        let name = self.profile_name.trim().to_string();
+        let mobile = self.profile_mobile.trim().to_string();
+
+        if new_username.is_empty() || email.is_empty() || name.is_empty() {
+            self.status = "Ğ˜Ğ¼Ñ, Ğ½Ğ¸ĞºĞ½ĞµĞ¹Ğ¼ Ğ¸ Ğ¿Ğ¾Ñ‡Ñ‚Ğ° Ğ½Ğµ Ğ´Ğ¾Ğ»Ğ¶Ğ½Ñ‹ Ğ±Ñ‹Ñ‚ÑŒ Ğ¿ÑƒÑÑ‚Ñ‹Ğ¼Ğ¸.".into();
+            return;
+        }
+
+        let password = self.new_password.clone();
+        if !password.is_empty() && password != self.repeat_password {
+            self.status = "ĞĞ¾Ğ²Ñ‹Ğµ Ğ¿Ğ°Ñ€Ğ¾Ğ»Ğ¸ Ğ½Ğµ ÑĞ¾Ğ²Ğ¿Ğ°Ğ´Ğ°ÑÑ‚.".into();
+            return;
+        }
+
+        let password_hash = if password.is_empty() {
+            None
+        } else {
+            match Self::hash_password(&password) {
+                Ok(hash) => Some(hash),
+                Err(error) => {
+                    self.status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ·Ğ°Ñ‰Ğ¸Ñ‚Ğ¸Ñ‚ÑŒ Ğ½Ğ¾Ğ²Ñ‹Ğ¹ Ğ¿Ğ°Ñ€Ğ¾Ğ»ÑŒ: {error:#}");
+                    return;
+                }
+            }
+        };
+
+        match self.run_db(|rt, db| {
+            rt.block_on(db.update_profile_with_messages(
+                &old_username,
+                &new_username,
+                &email,
+                &name,
+                &mobile,
+                password_hash.as_deref(),
+            ))
+        }) {
+            Ok(()) => {
+                if let Some(user) = self.current_user.as_mut() {
+                    user.username = new_username.clone();
+                    user.email = email.clone();
+                    user.display_name = name.clone();
+                    user.mobile = mobile.clone();
+                }
+                // Preserve the old username's style for historical chat lines and copy it to the new name.
+                if let Some(style) = self.chat_styles.get(&old_username).cloned() {
+                    self.chat_styles.insert(new_username.clone(), style);
+                }
+                self.status = if password_hash.is_some() {
+                    "ĞŸÑ€Ğ¾Ñ„Ğ¸Ğ»ÑŒ, Ğ½Ğ¸ĞºĞ½ĞµĞ¹Ğ¼, Ğ»Ğ¸Ñ‡Ğ½Ñ‹Ğµ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ñ Ğ¸ Ğ¿Ğ°Ñ€Ğ¾Ğ»ÑŒ ÑĞ¾Ñ…Ñ€Ğ°Ğ½ĞµĞ½Ñ‹.".into()
+                } else if old_username != new_username {
+                    "ĞŸÑ€Ğ¾Ñ„Ğ¸Ğ»ÑŒ Ğ¾Ğ±Ğ½Ğ¾Ğ²Ğ»Ñ‘Ğ½; ÑÑ‚Ğ°Ñ€Ñ‹Ğµ Ğ»Ğ¸Ñ‡Ğ½Ñ‹Ğµ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ñ Ğ¿ĞµÑ€ĞµĞ½ĞµÑĞµĞ½Ñ‹ Ğ½Ğ° Ğ½Ğ¾Ğ²Ñ‹Ğ¹ Ğ½Ğ¸ĞºĞ½ĞµĞ¹Ğ¼.".into()
+                } else {
+                    "ĞŸÑ€Ğ¾Ñ„Ğ¸Ğ»ÑŒ ÑĞ¾Ñ…Ñ€Ğ°Ğ½Ñ‘Ğ½.".into()
+                };
+
+                self.new_password.clear();
+                self.repeat_password.clear();
+                if let Ok(friends) = self.run_db(|rt, db| rt.block_on(db.users_except(&new_username))) {
+                    self.friends = friends;
+                }
+            }
+            Err(error) => {
+                self.status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ ÑĞ¾Ñ…Ñ€Ğ°Ğ½Ğ¸Ñ‚ÑŒ Ğ¿Ñ€Ğ¾Ñ„Ğ¸Ğ»ÑŒ: {error:#}");
+            }
+        }
+    }
+
+    fn choose_avatar(&mut self) {
+        let Some(path) = rfd::FileDialog::new()
+            .add_filter("Ğ˜Ğ·Ğ¾Ğ±Ñ€Ğ°Ğ¶ĞµĞ½Ğ¸Ñ", &["png", "jpg", "jpeg", "gif"])
+            .pick_file() else { return; };
+        let result = (|| -> anyhow::Result<String> {
+            let bytes = std::fs::read(&path)?;
+            let source = image::load_from_memory(&bytes)?.to_rgba8();
+            let side = source.width().min(source.height());
+            anyhow::ensure!(side > 0, "Ğ˜Ğ·Ğ¾Ğ±Ñ€Ğ°Ğ¶ĞµĞ½Ğ¸Ğµ Ğ¿ÑƒÑÑ‚Ğ¾Ğµ");
+            let x = (source.width() - side) / 2;
+            let y = (source.height() - side) / 2;
+            let cropped = image::imageops::crop_imm(&source, x, y, side, side).to_image();
+            let mut resized = image::imageops::resize(&cropped, 256, 256, image::imageops::FilterType::Lanczos3);
+            for y in 0..256 {
+                for x in 0..256 {
+                    let dx = x as f32 - 127.5;
+                    let dy = y as f32 - 127.5;
+                    if dx * dx + dy * dy > 127.0 * 127.0 {
+                        resized.get_pixel_mut(x, y).0[3] = 0;
+                    }
+                }
+            }
+            let mut png = Cursor::new(Vec::new());
+            image::DynamicImage::ImageRgba8(resized).write_to(&mut png, image::ImageFormat::Png)?;
+            use base64::Engine;
+            Ok(base64::engine::general_purpose::STANDARD.encode(png.into_inner()))
+        })();
+        match result {
+            Ok(encoded) => {
+                let Some(username) = self.current_user.as_ref().map(|u| u.username.clone()) else { return; };
+                match self.run_db(|rt, db| rt.block_on(db.update_avatar(&username, &encoded))) {
+                    Ok(()) => {
+                        if let Some(user) = self.current_user.as_mut() {
+                            user.avatar_base64 = encoded;
+                        }
+                        self.avatar_cache_key = None;
+                        self.status = "ĞĞ²Ğ°Ñ‚Ğ°Ñ€ Ğ¾Ğ±Ğ½Ğ¾Ğ²Ğ»Ñ‘Ğ½.".into();
+                    }
+                    Err(e) => self.status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ ÑĞ¾Ñ…Ñ€Ğ°Ğ½Ğ¸Ñ‚ÑŒ Ğ°Ğ²Ğ°Ñ‚Ğ°Ñ€: {e:#}"),
+                }
+            }
+            Err(e) => self.status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ¿Ñ€Ğ¾Ñ‡Ğ¸Ñ‚Ğ°Ñ‚ÑŒ Ğ¸Ğ·Ğ¾Ğ±Ñ€Ğ°Ğ¶ĞµĞ½Ğ¸Ğµ: {e:#}"),
+        }
+    }
+
+    fn ensure_avatar_texture(&mut self, ctx: &egui::Context) {
+        let encoded = self.current_user.as_ref().map(|u| u.avatar_base64.clone()).unwrap_or_default();
+        if encoded.is_empty() || self.avatar_cache_key.as_deref() == Some(encoded.as_str()) {
+            return;
+        }
+        use base64::Engine;
+        let texture = base64::engine::general_purpose::STANDARD.decode(&encoded)
+            .ok()
+            .and_then(|bytes| image::load_from_memory(&bytes).ok())
+            .map(|img| {
+                let rgba = img.to_rgba8();
+                let size = [rgba.width() as usize, rgba.height() as usize];
+                let color = egui::ColorImage::from_rgba_unmultiplied(size, rgba.as_raw());
+                ctx.load_texture("tschat-avatar", color, egui::TextureOptions::LINEAR)
+            });
+        self.avatar_texture = texture;
+        self.avatar_cache_key = Some(encoded);
+    }
+
+
+    fn ensure_friend_avatar_texture(&mut self, ctx: &egui::Context) {
+        let encoded = self.friend_profile.as_ref()
+            .map(|u| u.avatar_base64.clone()).unwrap_or_default();
+        if encoded.is_empty() || self.friend_avatar_cache_key.as_deref() == Some(encoded.as_str()) {
+            return;
+        }
+        use base64::Engine;
+        let texture = base64::engine::general_purpose::STANDARD.decode(&encoded)
+            .ok()
+            .and_then(|bytes| image::load_from_memory(&bytes).ok())
+            .map(|img| {
+                let rgba = img.to_rgba8();
+                let size = [rgba.width() as usize, rgba.height() as usize];
+                let color = egui::ColorImage::from_rgba_unmultiplied(size, rgba.as_raw());
+                ctx.load_texture("tschat-friend-avatar", color, egui::TextureOptions::LINEAR)
+            });
+        self.friend_avatar_texture = texture;
+        self.friend_avatar_cache_key = Some(encoded);
+    }
+
+
+    fn ensure_smiley_textures(&mut self, ctx: &egui::Context) {
+        if self.smiley_textures.len() == SMILEY_CODES.len() { return; }
+        let assets: [(&str, &[u8]); 16] = [
+            (":fuu:", include_bytes!("../assets/smileys/1.png")),
+            (":beer:", include_bytes!("../assets/smileys/2.png")),
+            (":sorry:", include_bytes!("../assets/smileys/3.png")),
+            (":read:", include_bytes!("../assets/smileys/4.png")),
+            (":girl:", include_bytes!("../assets/smileys/5.png")),
+            (":lich:", include_bytes!("../assets/smileys/6.png")),
+            (":sing:", include_bytes!("../assets/smileys/7.png")),
+            (":haha:", include_bytes!("../assets/smileys/8.png")),
+            (":allbear:", include_bytes!("../assets/smileys/9.png")),
+            (":say:", include_bytes!("../assets/smileys/10.png")),
+            (":money:", include_bytes!("../assets/smileys/11.png")),
+            (":no:", include_bytes!("../assets/smileys/12.png")),
+            (":king:", include_bytes!("../assets/smileys/13.png")),
+            (":go:", include_bytes!("../assets/smileys/14.png")),
+            (":good:", include_bytes!("../assets/smileys/15.png")),
+            (":nice:", include_bytes!("../assets/smileys/16.png")),
+        ];
+
+        let mut textures = Vec::with_capacity(assets.len());
+        for (code, bytes) in assets {
+            let Ok(decoded) = image::load_from_memory(bytes) else { continue; };
+            let rgba = decoded.to_rgba8();
+            let size = [rgba.width() as usize, rgba.height() as usize];
+            let color = egui::ColorImage::from_rgba_unmultiplied(size, rgba.as_raw());
+            let name = format!("tschat-smiley-{code}");
+            let texture = ctx.load_texture(name, color, egui::TextureOptions::LINEAR);
+            textures.push((code.to_string(), texture));
+        }
+        self.smiley_textures = textures;
+    }
+
+    fn add_smiley(&mut self, code: &str) {
+        if !self.draft.is_empty() { self.draft.push(' '); }
+        self.draft.push_str(code);
+    }
+
+
+    fn execute_command(&mut self, input: &str) {
+        match parse_command(input) {
+            ChatCommand::OpenRadio => {
+                self.open_radio();
+                self.command_status = "ĞÑ‚ĞºÑ€Ñ‹Ñ‚Ğ¾ Ñ€Ğ°Ğ´Ğ¸Ğ¾.".into();
+            }
+            ChatCommand::CloseRadio => {
+                self.radio_open = false;
+                self.radio_pending = None;
+                if let Some(player) = self.radio_player.take() {
+                    player.stop();
+                }
+                self.radio_status = "ĞĞºĞ½Ğ¾ Ñ€Ğ°Ğ´Ğ¸Ğ¾ Ğ·Ğ°ĞºÑ€Ñ‹Ñ‚Ğ¾; Ğ²Ğ¾ÑĞ¿Ñ€Ğ¾Ğ¸Ğ·Ğ²ĞµĞ´ĞµĞ½Ğ¸Ğµ Ğ¾ÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¾.".into();
+                self.command_status = "ĞĞºĞ½Ğ¾ Ñ€Ğ°Ğ´Ğ¸Ğ¾ Ğ·Ğ°ĞºÑ€Ñ‹Ñ‚Ğ¾, Ğ²Ğ¾ÑĞ¿Ñ€Ğ¾Ğ¸Ğ·Ğ²ĞµĞ´ĞµĞ½Ğ¸Ğµ Ğ¾ÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¾.".into();
+            }
+            ChatCommand::PlayRadio => {
+                self.open_radio();
+                if let Some(player) = self.radio_player.as_ref() {
+                    if player.is_paused() {
+                        player.toggle_pause();
+                        self.radio_status = "Ğ’Ğ¾ÑĞ¿Ñ€Ğ¾Ğ¸Ğ·Ğ²ĞµĞ´ĞµĞ½Ğ¸Ğµ Ğ¿Ñ€Ğ¾Ğ´Ğ¾Ğ»Ğ¶ĞµĞ½Ğ¾.".into();
+                    }
+                    self.command_status = "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ²Ğ¾ÑĞ¿Ñ€Ğ¾Ğ¸Ğ·Ğ²ĞµĞ´ĞµĞ½Ğ¸Ñ Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ°.".into();
+                } else if self.radio_pending.is_some() || self.radio_autoplay_pending.is_some() {
+                    self.command_status = "ĞŸĞ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ğµ Ğº Ğ½Ğ°ÑÑ‚Ñ€Ğ¾ĞµĞ½Ğ½Ğ¾Ğ¹ Ñ€Ğ°Ğ´Ğ¸Ğ¾ÑÑ‚Ğ°Ğ½Ñ†Ğ¸Ğ¸â€¦".into();
+                } else {
+                    self.command_status = "Ğ’ config.toml Ğ½Ğµ Ğ·Ğ°Ğ´Ğ°Ğ½ URL Ñ€Ğ°Ğ´Ğ¸Ğ¾ÑÑ‚Ğ°Ğ½Ñ†Ğ¸Ğ¸.".into();
+                }
+            }
+            ChatCommand::PauseRadio => {
+                if let Some(player) = self.radio_player.as_ref() {
+                    if !player.is_paused() { player.toggle_pause(); }
+                    self.command_status = "Ğ Ğ°Ğ´Ğ¸Ğ¾ Ğ¿Ğ¾ÑÑ‚Ğ°Ğ²Ğ»ĞµĞ½Ğ¾ Ğ½Ğ° Ğ¿Ğ°ÑƒĞ·Ñƒ.".into();
+                } else {
+                    self.command_status = "Ğ Ğ°Ğ´Ğ¸Ğ¾ ÑĞµĞ¹Ñ‡Ğ°Ñ Ğ½Ğµ Ğ²Ğ¾ÑĞ¿Ñ€Ğ¾Ğ¸Ğ·Ğ²Ğ¾Ğ´Ğ¸Ñ‚ÑÑ.".into();
+                }
+            }
+            ChatCommand::StopRadio => {
+                self.radio_pending = None;
+                self.radio_autoplay_pending = None;
+                if let Some(player) = self.radio_player.take() { player.stop(); }
+                self.radio_status = "Ğ Ğ°Ğ´Ğ¸Ğ¾ Ğ¾ÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¾.".into();
+                self.command_status = "Ğ Ğ°Ğ´Ğ¸Ğ¾ Ğ¾ÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¾.".into();
+            }
+            ChatCommand::RequestClearChat => {
+                self.show_clear_chat_confirmation = true;
+                self.command_status = "ĞŸĞ¾Ğ´Ñ‚Ğ²ĞµÑ€Ğ´Ğ¸Ñ‚Ğµ Ğ¾Ñ‡Ğ¸ÑÑ‚ĞºÑƒ Ğ¾Ğ±Ñ‰ĞµĞ³Ğ¾ Ñ‡Ğ°Ñ‚Ğ°.".into();
+            }
+            ChatCommand::SelectStation(index) => {
+                self.selected_radio_station = index;
+                self.radio_open = true;
+                self.radio_autoplay_pending = Some(index);
+                self.command_status = format!("Ğ’Ñ‹Ğ±Ñ€Ğ°Ğ½Ğ° ÑÑ‚Ğ°Ğ½Ñ†Ğ¸Ñ: {}.", self.radio_stations.get(index).map(|s| s.name.as_str()).unwrap_or("Ğ½ĞµĞ¸Ğ·Ğ²ĞµÑÑ‚Ğ½Ğ¾"));
+            }
+            ChatCommand::Unknown => {
+                self.command_status = "ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ğ½Ğµ Ñ€Ğ°ÑĞ¿Ğ¾Ğ·Ğ½Ğ°Ğ½Ğ° Ğ¸Ğ»Ğ¸ Ğ½Ğµ Ğ¿Ğ¾Ğ´Ğ´ĞµÑ€Ğ¶Ğ¸Ğ²Ğ°ĞµÑ‚ÑÑ.".into();
+            }
+        }
+    }
+
+
+
+    #[cfg(feature = "voice")]
+    fn finish_voice_recording(&mut self) {
+        self.voice_recording_started = None;
+        let Some(recorder) = self.voice_recorder.take() else { return; };
+        let Some(model) = self.voice_model.clone() else {
+            self.voice_status = "Ğ¡Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ° Ğ·Ğ°Ğ³Ñ€ÑƒĞ·Ğ¸Ñ‚Ğµ Ğ¼Ğ¾Ğ´ĞµĞ»ÑŒ Whisper.".into();
+            return;
+        };
+
+        match recorder.finish() {
+            Ok(audio) => {
+                let (sender, receiver) = std::sync::mpsc::channel();
+                self.runtime.spawn_blocking(move || {
+                    let result = voice::transcribe(model, &audio)
+                        .map_err(|error| format!("{error:#}"));
+                    let _ = sender.send(result);
+                });
+                self.voice_transcription_pending = Some(receiver);
+                self.voice_status = "Ğ Ğ°ÑĞ¿Ğ¾Ğ·Ğ½Ğ°Ñ Ñ€ÑƒÑÑĞºÑƒÑ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ñƒâ€¦".into();
+            }
+            Err(error) => self.voice_status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ¸Ñ‚ÑŒ Ğ·Ğ°Ğ¿Ğ¸ÑÑŒ: {error:#}"),
+        }
+    }
+
+    #[cfg(feature = "voice")]
+    fn show_voice_window(&mut self, ctx: &egui::Context) {
+        // Passive mode processes short chunks to keep Whisper responsive.
+        let max_recording_secs = if self.voice_passive_enabled { 6 } else { 12 };
+        if self.voice_recording_started
+            .map(|started| started.elapsed() >= Duration::from_secs(max_recording_secs))
+            .unwrap_or(false)
+        {
+            self.finish_voice_recording();
+        }
+
+        let model_result = self.voice_model_pending.as_ref().map(|receiver| receiver.try_recv());
+        if let Some(result) = model_result {
+            match result {
+                Ok(Ok(model)) => {
+                    self.voice_model = Some(model);
+                    self.voice_model_pending = None;
+                    self.voice_status = "Whisper-Ğ¼Ğ¾Ğ´ĞµĞ»ÑŒ Ğ·Ğ°Ğ³Ñ€ÑƒĞ¶ĞµĞ½Ğ°. ĞœĞ¸ĞºÑ€Ğ¾Ñ„Ğ¾Ğ½ Ğ²ĞºĞ»ÑÑ‡Ğ°ĞµÑ‚ÑÑ Ñ‚Ğ¾Ğ»ÑŒĞºĞ¾ Ğ¿Ğ¾ Ğ²Ğ°ÑˆĞµĞ¼Ñƒ Ğ·Ğ°Ğ¿Ñ€Ğ¾ÑÑƒ.".into();
+                }
+                Ok(Err(error)) => {
+                    self.voice_model_pending = None;
+                    self.voice_model = None;
+                    self.voice_status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ·Ğ°Ğ³Ñ€ÑƒĞ·Ğ¸Ñ‚ÑŒ Ğ¼Ğ¾Ğ´ĞµĞ»ÑŒ: {error}");
+                }
+                Err(std::sync::mpsc::TryRecvError::Empty) => {
+                    ctx.request_repaint_after(Duration::from_millis(250));
+                }
+                Err(std::sync::mpsc::TryRecvError::Disconnected) => {
+                    self.voice_model_pending = None;
+                    self.voice_status = "Ğ—Ğ°Ğ³Ñ€ÑƒĞ·ĞºĞ° Ğ¼Ğ¾Ğ´ĞµĞ»Ğ¸ Ğ¿Ñ€ĞµÑ€Ğ²Ğ°Ğ½Ğ°.".into();
+                }
+            }
+        }
+
+        let transcription_result = self.voice_transcription_pending.as_ref().map(|receiver| receiver.try_recv());
+        if let Some(result) = transcription_result {
+            match result {
+                Ok(Ok(text)) => {
+                    self.voice_transcription_pending = None;
+                    let command = parse_command(&text);
+                    if command != ChatCommand::Unknown {
+                        let duplicate = self.voice_passive_enabled && self.voice_last_command.as_ref().is_some_and(|(previous, at)| {
+                            previous == &text && at.elapsed() < Duration::from_secs(8)
+                        });
+                        if !duplicate {
+                            self.execute_command(&text);
+                            self.voice_last_command = Some((text.clone(), Instant::now()));
+                        }
+                        self.voice_status = format!("ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´Ğ° Ñ€Ğ°ÑĞ¿Ğ¾Ğ·Ğ½Ğ°Ğ½Ğ°: {text}");
+                    } else {
+                        self.voice_status = format!("Ğ Ğ°ÑĞ¿Ğ¾Ğ·Ğ½Ğ°Ğ½Ğ¾, Ğ½Ğ¾ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ñ‹ Ğ½ĞµÑ‚: {text}");
+                    }
+                }
+                Ok(Err(error)) => {
+                    self.voice_transcription_pending = None;
+                    self.voice_status = format!("ĞÑˆĞ¸Ğ±ĞºĞ° Ñ€Ğ°ÑĞ¿Ğ¾Ğ·Ğ½Ğ°Ğ²Ğ°Ğ½Ğ¸Ñ: {error}");
+                }
+                Err(std::sync::mpsc::TryRecvError::Empty) => {
+                    ctx.request_repaint_after(Duration::from_millis(250));
+                }
+                Err(std::sync::mpsc::TryRecvError::Disconnected) => {
+                    self.voice_transcription_pending = None;
+                    self.voice_status = "Ğ Ğ°ÑĞ¿Ğ¾Ğ·Ğ½Ğ°Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ¿Ñ€ĞµÑ€Ğ²Ğ°Ğ½Ğ¾.".into();
+                }
+            }
+        }
+
+        if !self.voice_open {
+            if self.voice_passive_enabled || self.voice_recorder.is_some() {
+                self.voice_passive_enabled = false;
+                self.voice_recorder = None;
+                self.voice_recording_started = None;
+                self.voice_status = "Ğ“Ğ¾Ğ»Ğ¾ÑĞ¾Ğ²Ğ¾Ğµ ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ²Ñ‹ĞºĞ»ÑÑ‡ĞµĞ½Ğ¾; Ğ¼Ğ¸ĞºÑ€Ğ¾Ñ„Ğ¾Ğ½ Ğ¾ÑĞ²Ğ¾Ğ±Ğ¾Ğ¶Ğ´Ñ‘Ğ½.".into();
+            }
+            return;
+        }
+
+        let model_loaded = self.voice_model.is_some();
+        let loading = self.voice_model_pending.is_some();
+        let transcribing = self.voice_transcription_pending.is_some();
+        let recording = self.voice_recorder.is_some();
+        let passive_enabled = self.voice_passive_enabled;
+        let model_path = self.voice_model_path.clone();
+        let status = self.voice_status.clone();
+        let mut choose_model = false;
+        let mut start_recording = false;
+        let mut stop_recording = false;
+        let mut set_passive: Option<bool> = None;
+
+        if loading || transcribing || recording {
+            ctx.request_repaint_after(Duration::from_millis(200));
+        }
+
+        egui::Window::new("Ğ“Ğ¾Ğ»Ğ¾ÑĞ¾Ğ²Ğ¾Ğµ ÑƒĞ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¸Ğµ")
+            .open(&mut self.voice_open)
+            .default_size([500.0, 270.0])
+            .resizable(false)
+            .show(ctx, |ui| {
+                ui.label("Ğ›Ğ¾ĞºĞ°Ğ»ÑŒĞ½Ğ¾Ğµ Ñ€Ğ°ÑĞ¿Ğ¾Ğ·Ğ½Ğ°Ğ²Ğ°Ğ½Ğ¸Ğµ Ñ€ĞµÑ‡Ğ¸ Ğ½Ğ° Ñ€ÑƒÑÑĞºĞ¾Ğ¼ ÑĞ·Ñ‹ĞºĞµ (Whisper).");
+                ui.label("ĞœĞ¸ĞºÑ€Ğ¾Ñ„Ğ¾Ğ½ Ğ¸ÑĞ¿Ğ¾Ğ»ÑŒĞ·ÑƒĞµÑ‚ÑÑ Ñ‚Ğ¾Ğ»ÑŒĞºĞ¾ Ğ¿Ğ¾ĞºĞ° Ğ²ĞºĞ»ÑÑ‡Ñ‘Ğ½ Ğ¾Ğ´Ğ¸Ğ½ Ğ¸Ğ· Ñ€ĞµĞ¶Ğ¸Ğ¼Ğ¾Ğ² Ğ½Ğ¸Ğ¶Ğµ.");
+                ui.separator();
+                if model_path.is_empty() {
+                    ui.label("ĞœĞ¾Ğ´ĞµĞ»ÑŒ Ğ½Ğµ Ğ²Ñ‹Ğ±Ñ€Ğ°Ğ½Ğ°.");
+                } else {
+                    ui.label(format!("ĞœĞ¾Ğ´ĞµĞ»ÑŒ: {model_path}"));
+                }
+                if ui.add_enabled(!loading && !recording && !transcribing,
+                    egui::Button::new("Ğ’Ñ‹Ğ±Ñ€Ğ°Ñ‚ÑŒ Ğ¼Ğ¾Ğ´ĞµĞ»ÑŒ Whisper (.bin)")).clicked() {
+                    choose_model = true;
+                }
+                let mut enabled = passive_enabled;
+                if ui.add_enabled(model_loaded && !loading && !transcribing,
+                    egui::Checkbox::new(&mut enabled, "ĞŸĞ°ÑÑĞ¸Ğ²Ğ½Ñ‹Ğ¹ Ğ¿Ğ¾Ğ¼Ğ¾Ñ‰Ğ½Ğ¸Ğº (Ğ±ĞµĞ· Ğ·Ğ°Ğ¿Ğ¸ÑĞ¸ ĞºĞ°Ğ¶Ğ´Ğ¾Ğ¹ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ñ‹)")).changed() {
+                    set_passive = Some(enabled);
+                }
+                if passive_enabled {
+                    ui.label("ĞŸĞ¾Ğ¼Ğ¾Ñ‰Ğ½Ğ¸Ğº ÑĞ»ÑƒÑˆĞ°ĞµÑ‚ ĞºĞ¾Ñ€Ğ¾Ñ‚ĞºĞ¸Ğ¼Ğ¸ Ğ¾Ñ‚Ñ€ĞµĞ·ĞºĞ°Ğ¼Ğ¸, Ñ€Ğ°ÑĞ¿Ğ¾Ğ·Ğ½Ğ°Ñ‘Ñ‚ Ñ„Ñ€Ğ°Ğ·Ñ‹ Ğ»Ğ¾ĞºĞ°Ğ»ÑŒĞ½Ğ¾ Ğ¸ Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ÑĞµÑ‚ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ñ‹ Ğ¸Ğ· ÑĞ¿Ğ¸ÑĞºĞ°.");
+                }
+                ui.horizontal(|ui| {
+                    if ui.add_enabled(model_loaded && !recording && !transcribing && !passive_enabled,
+                        egui::Button::new("â— ĞĞ°Ñ‡Ğ°Ñ‚ÑŒ Ğ·Ğ°Ğ¿Ğ¸ÑÑŒ")).clicked() {
+                        start_recording = true;
+                    }
+                    if ui.add_enabled(recording,
+                        egui::Button::new("â–  ĞÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ¸Ñ‚ÑŒ Ğ¸ Ñ€Ğ°ÑĞ¿Ğ¾Ğ·Ğ½Ğ°Ñ‚ÑŒ")).clicked() {
+                        stop_recording = true;
+                    }
+                });
+                if loading { ui.label("Ğ—Ğ°Ğ³Ñ€ÑƒĞ·ĞºĞ° Ğ¼Ğ¾Ğ´ĞµĞ»Ğ¸â€¦"); }
+                if transcribing { ui.label("Ğ Ğ°ÑĞ¿Ğ¾Ğ·Ğ½Ğ°Ğ²Ğ°Ğ½Ğ¸Ğµ Ñ€ĞµÑ‡Ğ¸â€¦"); }
+                if recording { ui.label(if passive_enabled { "ĞŸĞ°ÑÑĞ¸Ğ²Ğ½Ñ‹Ğ¹ Ñ€ĞµĞ¶Ğ¸Ğ¼: Ğ·Ğ°Ğ¿Ğ¸ÑÑ‹Ğ²Ğ°Ñ ĞºĞ¾Ñ€Ğ¾Ñ‚ĞºĞ¸Ğ¹ Ğ¾Ñ‚Ñ€ĞµĞ·Ğ¾Ğºâ€¦" } else { "Ğ˜Ğ´Ñ‘Ñ‚ Ğ·Ğ°Ğ¿Ğ¸ÑÑŒ (Ğ¼Ğ°ĞºÑĞ¸Ğ¼ÑƒĞ¼ 12 ÑĞµĞºÑƒĞ½Ğ´)â€¦" }); }
+                ui.separator();
+                ui.label(&status);
+                ui.label("ĞŸĞ¾Ğ´Ğ¾Ğ¹Ğ´Ñ‘Ñ‚ Ğ¼ÑƒĞ»ÑŒÑ‚Ğ¸ÑĞ·Ñ‹Ñ‡Ğ½Ğ°Ñ ggml-Ğ¼Ğ¾Ğ´ĞµĞ»ÑŒ, Ğ½Ğ°Ğ¿Ñ€Ğ¸Ğ¼ĞµÑ€ ggml-base.bin.");
+            });
+
+        if choose_model {
+            if let Some(path) = rfd::FileDialog::new()
+                .add_filter("Whisper model", &["bin"])
+                .pick_file()
+            {
+                let path_string = path.display().to_string();
+                self.voice_model_path = path_string.clone();
+                self.voice_model = None;
+                let (sender, receiver) = std::sync::mpsc::channel();
+                self.runtime.spawn_blocking(move || {
+                    let result = voice::load_model(&path_string)
+                        .map_err(|error| format!("{error:#}"));
+                    let _ = sender.send(result);
+                });
+                self.voice_model_pending = Some(receiver);
+                self.voice_status = "Ğ—Ğ°Ğ³Ñ€ÑƒĞ¶Ğ°Ñ Ğ¼Ğ¾Ğ´ĞµĞ»ÑŒ Whisperâ€¦".into();
+            }
+        }
+
+        if let Some(enabled) = set_passive {
+            self.voice_passive_enabled = enabled;
+            if !enabled {
+                self.voice_recorder = None;
+                self.voice_recording_started = None;
+                self.voice_status = "ĞŸĞ°ÑÑĞ¸Ğ²Ğ½Ñ‹Ğ¹ Ğ¿Ğ¾Ğ¼Ğ¾Ñ‰Ğ½Ğ¸Ğº Ğ²Ñ‹ĞºĞ»ÑÑ‡ĞµĞ½; Ğ¼Ğ¸ĞºÑ€Ğ¾Ñ„Ğ¾Ğ½ Ğ¾ÑĞ²Ğ¾Ğ±Ğ¾Ğ¶Ğ´Ñ‘Ğ½.".into();
+            } else {
+                self.voice_status = "ĞŸĞ°ÑÑĞ¸Ğ²Ğ½Ñ‹Ğ¹ Ğ¿Ğ¾Ğ¼Ğ¾Ñ‰Ğ½Ğ¸Ğº Ğ²ĞºĞ»ÑÑ‡Ñ‘Ğ½.".into();
+            }
+        }
+
+        if self.voice_passive_enabled && self.voice_recorder.is_none() && self.voice_transcription_pending.is_none() {
+            match MicrophoneRecorder::start() {
+                Ok(recorder) => {
+                    self.voice_recorder = Some(recorder);
+                    self.voice_recording_started = Some(Instant::now());
+                    self.voice_status = "ĞŸĞ°ÑÑĞ¸Ğ²Ğ½Ñ‹Ğ¹ Ğ¿Ğ¾Ğ¼Ğ¾Ñ‰Ğ½Ğ¸Ğº ÑĞ»ÑƒÑˆĞ°ĞµÑ‚â€¦".into();
+                }
+                Err(error) => {
+                    self.voice_passive_enabled = false;
+                    self.voice_status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ²ĞºĞ»ÑÑ‡Ğ¸Ñ‚ÑŒ Ğ¿Ğ°ÑÑĞ¸Ğ²Ğ½Ñ‹Ğ¹ Ñ€ĞµĞ¶Ğ¸Ğ¼: {error:#}");
+                }
+            }
+        }
+
+        if start_recording {
+            match MicrophoneRecorder::start() {
+                Ok(recorder) => {
+                    self.voice_recorder = Some(recorder);
+                    self.voice_recording_started = Some(Instant::now());
+                    self.voice_status = "Ğ—Ğ°Ğ¿Ğ¸ÑÑŒ Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ°ÑÑŒ. Ğ¡ĞºĞ°Ğ¶Ğ¸Ñ‚Ğµ Ğ¾Ğ´Ğ½Ñƒ ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ñƒ; Ñ‡ĞµÑ€ĞµĞ· 12 ÑĞµĞºÑƒĞ½Ğ´ Ğ¾Ğ½Ğ° Ğ¾ÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ¸Ñ‚ÑÑ Ğ°Ğ²Ñ‚Ğ¾Ğ¼Ğ°Ñ‚Ğ¸Ñ‡ĞµÑĞºĞ¸.".into();
+                }
+                Err(error) => self.voice_status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ²ĞºĞ»ÑÑ‡Ğ¸Ñ‚ÑŒ Ğ¼Ğ¸ĞºÑ€Ğ¾Ñ„Ğ¾Ğ½: {error:#}"),
+            }
+        }
+
+        if stop_recording {
+            self.finish_voice_recording();
+        }
+
+    }
+
+
+    fn clear_shared_chat(&mut self) {
+        const WELCOME: &str = "Ğ”Ğ¾Ğ±Ñ€Ğ¾ Ğ¿Ğ¾Ğ¶Ğ°Ğ»Ğ¾Ğ²Ğ°Ñ‚ÑŒ Ğ² Ğ¢Ğ°Ğ²ĞµÑ€Ğ½Ñƒ Ğ¡Ñ‚Ñ€Ğ°Ğ½Ğ½Ğ¸ĞºĞ°";
+        match self.run_db(|rt, db| rt.block_on(db.write_chat(WELCOME))) {
+            Ok(()) => {
+                self.chat_text = WELCOME.into();
+                self.status = "ĞĞ±Ñ‰Ğ¸Ğ¹ Ñ‡Ğ°Ñ‚ Ğ¾Ñ‡Ğ¸Ñ‰ĞµĞ½.".into();
+                self.command_status = "ĞĞ±Ñ‰Ğ¸Ğ¹ Ñ‡Ğ°Ñ‚ Ğ¾Ñ‡Ğ¸Ñ‰ĞµĞ½.".into();
+            }
+            Err(error) => {
+                self.status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ¾Ñ‡Ğ¸ÑÑ‚Ğ¸Ñ‚ÑŒ Ğ¾Ğ±Ñ‰Ğ¸Ğ¹ Ñ‡Ğ°Ñ‚: {error:#}");
+                self.command_status = self.status.clone();
+            }
+        }
+    }
+
+    fn show_clear_chat_confirmation(&mut self, ctx: &egui::Context) {
+        if !self.show_clear_chat_confirmation { return; }
+        let mut confirm = false;
+        let mut cancel = false;
+        egui::Window::new("ĞÑ‡Ğ¸ÑÑ‚Ğ¸Ñ‚ÑŒ Ğ¾Ğ±Ñ‰Ğ¸Ğ¹ Ñ‡Ğ°Ñ‚?")
+            .open(&mut self.show_clear_chat_confirmation)
+            .collapsible(false)
+            .resizable(false)
+            .show(ctx, |ui| {
+                ui.label("Ğ˜ÑÑ‚Ğ¾Ñ€Ğ¸Ñ Ğ¾Ğ±Ñ‰ĞµĞ³Ğ¾ Ñ‡Ğ°Ñ‚Ğ° Ğ±ÑƒĞ´ĞµÑ‚ Ğ·Ğ°Ğ¼ĞµĞ½ĞµĞ½Ğ° Ğ¿Ñ€Ğ¸Ğ²ĞµÑ‚ÑÑ‚Ğ²ĞµĞ½Ğ½Ñ‹Ğ¼ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸ĞµĞ¼.");
+                ui.label("Ğ­Ñ‚Ğ¾ Ğ´ĞµĞ¹ÑÑ‚Ğ²Ğ¸Ğµ Ğ½ĞµĞ¾Ğ±Ñ€Ğ°Ñ‚Ğ¸Ğ¼Ğ¾ Ğ´Ğ»Ñ Ñ‚ĞµĞºÑƒÑ‰ĞµĞ¹ Ğ¸ÑÑ‚Ğ¾Ñ€Ğ¸Ğ¸.");
+                ui.horizontal(|ui| {
+                    if ui.button("ĞÑ‡Ğ¸ÑÑ‚Ğ¸Ñ‚ÑŒ Ñ‡Ğ°Ñ‚").clicked() { confirm = true; }
+                    if ui.button("ĞÑ‚Ğ¼ĞµĞ½Ğ°").clicked() { cancel = true; }
+                });
+            });
+        if confirm {
+            self.show_clear_chat_confirmation = false;
+            self.clear_shared_chat();
+        } else if cancel {
+            self.show_clear_chat_confirmation = false;
+            self.command_status = "ĞÑ‡Ğ¸ÑÑ‚ĞºĞ° Ñ‡Ğ°Ñ‚Ğ° Ğ¾Ñ‚Ğ¼ĞµĞ½ĞµĞ½Ğ°.".into();
+        }
+    }
+
+    fn open_radio(&mut self) {
+        if !self.radio_open {
+            let [width, height] = self.last_viewport_size;
+            self.radio_window_pos = egui::pos2(((width - 720.0) * 0.5).max(12.0), ((height - 570.0) * 0.5).max(12.0));
+        }
+        self.radio_open = true;
+        if self.radio_player.is_some() || self.radio_pending.is_some() || self.radio_autoplay_pending.is_some() {
+            return;
+        }
+
+        let first_configured = self.radio_stations.iter().position(|station| {
+            let Ok(url) = url::Url::parse(station.url.trim()) else { return false; };
+            matches!(url.scheme(), "http" | "https") && url.host_str().is_some()
+        });
+
+        if let Some(index) = first_configured {
+            self.selected_radio_station = index;
+            self.radio_autoplay_pending = Some(index);
+            self.radio_status = format!(
+                "ĞŸĞ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ğµ Ğº Ğ½Ğ°ÑÑ‚Ñ€Ğ¾ĞµĞ½Ğ½Ğ¾Ğ¹ ÑÑ‚Ğ°Ğ½Ñ†Ğ¸Ğ¸ Â«{}Â»â€¦",
+                self.radio_stations[index].name
+            );
+        } else {
+            self.radio_status = "Ğ’ config.toml Ğ½Ğµ Ğ½Ğ°Ğ¹Ğ´ĞµĞ½Ğ° Ñ€Ğ°Ğ´Ğ¸Ğ¾ÑÑ‚Ğ°Ğ½Ñ†Ğ¸Ñ Ñ ĞºĞ¾Ñ€Ñ€ĞµĞºÑ‚Ğ½Ñ‹Ğ¼ HTTP(S) URL.".into();
+        }
+    }
+
+    fn save_radio_settings(&mut self) {
+        self.config.radio.stations = self.radio_stations.clone();
+        match self.config.save() {
+            Ok(()) => self.radio_status = "Ğ¡Ğ¿Ğ¸ÑĞ¾Ğº ÑÑ‚Ğ°Ğ½Ñ†Ğ¸Ğ¹ ÑĞ¾Ñ…Ñ€Ğ°Ğ½Ñ‘Ğ½ Ğ² config.toml.".into(),
+            Err(error) => self.radio_status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ ÑĞ¾Ñ…Ñ€Ğ°Ğ½Ğ¸Ñ‚ÑŒ config.toml: {error:#}"),
+        }
+    }
+
+    fn show_radio_window(&mut self, ctx: &egui::Context) {
+        let pending_result = self.radio_pending.as_ref()
+            .map(|(receiver, station_name)| (receiver.try_recv(), station_name.clone()));
+        if let Some((result, station_name)) = pending_result {
+            match result {
+                Ok(Ok(player)) => {
+                    self.radio_player = Some(player);
+                    self.radio_pending = None;
+                    self.radio_status = format!("Ğ¡ĞµĞ¹Ñ‡Ğ°Ñ Ğ¸Ğ³Ñ€Ğ°ĞµÑ‚: {station_name}");
+                }
+                Ok(Err(error)) => {
+                    self.radio_pending = None;
+                    self.radio_status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ·Ğ°Ğ¿ÑƒÑÑ‚Ğ¸Ñ‚ÑŒ Ñ€Ğ°Ğ´Ğ¸Ğ¾ÑÑ‚Ğ°Ğ½Ñ†Ğ¸Ñ: {error}");
+                }
+                Err(std::sync::mpsc::TryRecvError::Empty) => {
+                    ctx.request_repaint_after(Duration::from_millis(250));
+                }
+                Err(std::sync::mpsc::TryRecvError::Disconnected) => {
+                    self.radio_pending = None;
+                    self.radio_status = "ĞŸĞ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ğµ Ğº Ñ€Ğ°Ğ´Ğ¸Ğ¾ÑÑ‚Ğ°Ğ½Ñ†Ğ¸Ğ¸ Ğ¿Ñ€ĞµÑ€Ğ²Ğ°Ğ½Ğ¾.".into();
+                }
+            }
+        }
+
+        if !self.radio_open { return; }
+        self.ensure_radio_animation(ctx);
+        self.advance_radio_animation(ctx);
+
+        let mut open = self.radio_open;
+        let mut drag_delta = egui::Vec2::ZERO;
+        let mut close_requested = false;
+        let mut start_request: Option<(String, String)> = self.radio_autoplay_pending
+            .take()
+            .and_then(|index| self.radio_stations.get(index).map(|station| (station.url.trim().to_string(), station.name.clone())));
+        let mut stop_requested = false;
+        let mut pause_requested = false;
+        let mut edit_url_requested = false;
+        let mut toggle_mute_requested = false;
+        let paused = self.radio_player.as_ref().map(RadioPlayback::is_paused).unwrap_or(true);
+        let player_present = self.radio_player.is_some();
+        let playing = self.radio_player.is_some() && !paused;
+        let connecting = self.radio_pending.is_some();
+        let displayed_radio_status = self.radio_status.clone();
+        let stations = &mut self.radio_stations;
+        let selected = &mut self.selected_radio_station;
+        let volume = &mut self.radio_volume;
+        let muted = self.radio_muted;
+
+        // The dial is intentionally animated while the radio window is open.
+        // This keeps the tuner feeling alive even before playback starts.
+        ctx.request_repaint_after(Duration::from_millis(33));
+        let time = ctx.input(|input| input.time);
+        let phase = (time * if playing { 0.72 } else { 0.16 }) as f32;
+        let pulse = ((time * if playing { 2.4 } else { 0.8 }).sin() as f32 + 1.0) * 0.5;
+
+        egui::Window::new("Ğ Ğ°Ğ´Ğ¸Ğ¾ Ñ‚Ğ°Ğ²ĞµÑ€Ğ½Ñ‹")
+            .id(egui::Id::new("legacy-radio-window"))
+            .title_bar(false)
+            .collapsible(false)
+            .resizable(false)
+            .fixed_size([720.0, 570.0])
+            .current_pos(self.radio_window_pos)
+            .movable(false)
+            .frame(egui::Frame::none())
+            .open(&mut open)
+            .show(ctx, |ui| {
+                let bg = egui::Color32::from_rgb(16, 27, 23);
+                let panel = egui::Color32::from_rgb(25, 40, 34);
+                let panel_soft = egui::Color32::from_rgb(30, 48, 40);
+                let amber = egui::Color32::from_rgb(232, 170, 91);
+                let cream = egui::Color32::from_rgb(235, 231, 219);
+                let muted_text = egui::Color32::from_rgb(160, 174, 163);
+                let green = egui::Color32::from_rgb(129, 205, 145);
+                let rect = ui.max_rect();
+                ui.painter().rect_filled(rect, 18.0, bg);
+
+                let header = ui.allocate_rect(
+                    egui::Rect::from_min_size(rect.min + egui::vec2(14.0, 8.0), egui::vec2(rect.width() - 28.0, 38.0)),
+                    egui::Sense::drag(),
+                );
+                if header.dragged() { drag_delta = ctx.input(|input| input.pointer.delta()); }
+                ui.painter().text(
+                    header.rect.left_center() + egui::vec2(2.0, 0.0),
+                    egui::Align2::LEFT_CENTER,
+                    "â™«",
+                    egui::FontId::proportional(23.0),
+                    amber,
+                );
+                ui.painter().text(
+                    header.rect.left_center() + egui::vec2(32.0, 0.0),
+                    egui::Align2::LEFT_CENTER,
+                    "Ğ Ğ°Ğ´Ğ¸Ğ¾ Ñ‚Ğ°Ğ²ĞµÑ€Ğ½Ñ‹",
+                    egui::FontId::proportional(19.0),
+                    cream,
+                );
+                let close_rect = egui::Rect::from_min_size(
+                    egui::pos2(header.rect.right() - 34.0, header.rect.top() + 1.0),
+                    egui::vec2(32.0, 30.0),
+                );
+                if ui.put(close_rect, egui::Button::new(egui::RichText::new("Ã—").size(21.0)).fill(panel_soft)).clicked() {
+                    close_requested = true;
+                }
+                ui.painter().line_segment(
+                    [egui::pos2(rect.left() + 16.0, rect.top() + 51.0), egui::pos2(rect.right() - 16.0, rect.top() + 51.0)],
+                    egui::Stroke::new(1.0, egui::Color32::from_rgb(47, 67, 57)),
+                );
+
+                let body_top = rect.top() + 64.0;
+                let dial_rect = egui::Rect::from_min_max(
+                    egui::pos2(rect.left() + 18.0, body_top),
+                    egui::pos2(rect.left() + 428.0, rect.bottom() - 18.0),
+                );
+                let station_rect = egui::Rect::from_min_max(
+                    egui::pos2(rect.left() + 442.0, body_top),
+                    egui::pos2(rect.right() - 18.0, rect.bottom() - 18.0),
+                );
+                ui.painter().rect_filled(dial_rect, 16.0, panel);
+                ui.painter().rect_filled(station_rect, 16.0, panel);
+
+                let station_name = stations.get(*selected).map(|station| station.name.as_str()).unwrap_or("Ğ’Ñ‹Ğ±ĞµÑ€Ğ¸Ñ‚Ğµ ÑÑ‚Ğ°Ğ½Ñ†Ğ¸Ñ");
+                ui.painter().text(
+                    egui::pos2(dial_rect.center().x, dial_rect.top() + 27.0),
+                    egui::Align2::CENTER_CENTER,
+                    station_name,
+                    egui::FontId::proportional(18.0),
+                    cream,
+                );
+                ui.painter().text(
+                    egui::pos2(dial_rect.center().x, dial_rect.top() + 51.0),
+                    egui::Align2::CENTER_CENTER,
+                    if playing { "Ğ’ Ğ­Ğ¤Ğ˜Ğ Ğ•" } else if connecting { "ĞĞĞ¡Ğ¢Ğ ĞĞ™ĞšĞ Ğ’ĞĞ›ĞĞ«â€¦" } else { "Ğ“ĞĞ¢ĞĞ’Ğ Ğš ĞŸĞ Ğ˜ĞĞœĞ£" },
+                    egui::FontId::proportional(10.0),
+                    if playing { green } else { muted_text },
+                );
+
+                let center = egui::pos2(dial_rect.center().x, dial_rect.top() + 214.0);
+                let painter = ui.painter().clone();
+                let base_radius = 112.0;
+                for (index, extra) in [16.0_f32, 9.0, 2.0].iter().enumerate() {
+                    let alpha = (18.0 + pulse * 20.0) as u8;
+                    painter.circle_stroke(
+                        center,
+                        base_radius + *extra + if playing { pulse * 3.0 } else { 0.0 },
+                        egui::Stroke::new(if index == 0 { 7.0 } else { 2.0 }, egui::Color32::from_rgba_unmultiplied(232, 170, 91, alpha)),
+                    );
+                }
+                painter.circle_filled(center, base_radius - 5.0, egui::Color32::from_rgb(18, 31, 26));
+                painter.circle_stroke(center, base_radius - 5.0, egui::Stroke::new(1.0, egui::Color32::from_rgb(79, 101, 83)));
+                for index in 0..48 {
+                    let angle = phase + index as f32 * std::f32::consts::TAU / 48.0;
+                    let major = index % 4 == 0;
+                    let outer = base_radius - 15.0;
+                    let inner = outer - if major { 12.0 } else { 6.0 };
+                    let from = egui::pos2(center.x + angle.cos() * inner, center.y + angle.sin() * inner);
+                    let to = egui::pos2(center.x + angle.cos() * outer, center.y + angle.sin() * outer);
+                    painter.line_segment(
+                        [from, to],
+                        egui::Stroke::new(if major { 2.0 } else { 1.0 }, if major { amber } else { egui::Color32::from_rgb(107, 130, 111) }),
+                    );
+                }
+                let sweep_angle = phase * 1.7 - std::f32::consts::FRAC_PI_2;
+                let needle_end = egui::pos2(center.x + sweep_angle.cos() * 73.0, center.y + sweep_angle.sin() * 73.0);
+                painter.line_segment([center, needle_end], egui::Stroke::new(2.5, amber));
+                painter.circle_filled(center, 7.0, amber);
+                painter.circle_stroke(center, 11.0, egui::Stroke::new(1.0, egui::Color32::from_rgb(255, 216, 156)));
+                painter.text(
+                    egui::pos2(center.x, center.y + 43.0),
+                    egui::Align2::CENTER_CENTER,
+                    if playing { "â—  LIVE" } else if connecting { "â—Œ  â€¦" } else { "â—¦  OFFLINE" },
+                    egui::FontId::proportional(11.0),
+                    if playing { green } else { muted_text },
+                );
+
+                let control_top = dial_rect.top() + 358.0;
+                ui.allocate_ui_at_rect(
+                    egui::Rect::from_min_size(egui::pos2(dial_rect.left() + 24.0, control_top), egui::vec2(dial_rect.width() - 48.0, 48.0)),
+                    |controls| {
+                        controls.horizontal(|controls| {
+                            let selected_station = stations.get(*selected);
+                            let can_start = selected_station.is_some();
+                            if controls.add_enabled(can_start, egui::Button::new(if playing { "ĞŸĞµÑ€ĞµĞ·Ğ°Ğ¿ÑƒÑÑ‚Ğ¸Ñ‚ÑŒ" } else { "â–¶  Ğ¡Ğ»ÑƒÑˆĞ°Ñ‚ÑŒ" }).fill(amber).min_size(egui::vec2(116.0, 38.0))).clicked() {
+                                if let Some(station) = stations.get(*selected) {
+                                    start_request = Some((station.url.trim().to_string(), station.name.clone()));
+                                }
+                            }
+                            if controls.add_enabled(player_present, egui::Button::new(if paused { "â–¶" } else { "â…¡" }).min_size(egui::vec2(46.0, 38.0))).clicked() {
+                                pause_requested = true;
+                            }
+                            if controls.add_enabled(self.radio_player.is_some() || connecting, egui::Button::new("â– ").min_size(egui::vec2(46.0, 38.0))).clicked() {
+                                stop_requested = true;
+                            }
+                            if controls.add_enabled(can_start, egui::Button::new("âš™").min_size(egui::vec2(46.0, 38.0))).clicked() {
+                                edit_url_requested = true;
+                            }
+                        });
+                    },
+                );
+
+                ui.painter().text(
+                    egui::pos2(station_rect.left() + 18.0, station_rect.top() + 24.0),
+                    egui::Align2::LEFT_CENTER,
+                    "Ğ¡Ğ¢ĞĞĞ¦Ğ˜Ğ˜",
+                    egui::FontId::proportional(11.0),
+                    muted_text,
+                );
+                ui.painter().text(
+                    egui::pos2(station_rect.right() - 18.0, station_rect.top() + 24.0),
+                    egui::Align2::RIGHT_CENTER,
+                    format!("{} Ğ² ÑÑ„Ğ¸Ñ€Ğµ", stations.len()),
+                    egui::FontId::proportional(10.0),
+                    muted_text,
+                );
+                let list_rect = egui::Rect::from_min_max(
+                    egui::pos2(station_rect.left() + 10.0, station_rect.top() + 45.0),
+                    egui::pos2(station_rect.right() - 10.0, station_rect.bottom() - 114.0),
+                );
+                ui.allocate_ui_at_rect(list_rect, |list_ui| {
+                    egui::ScrollArea::vertical().auto_shrink([false, false]).show(list_ui, |list_ui| {
+                        for (index, station) in stations.iter().enumerate() {
+                            let response = list_ui.add_sized(
+                                [list_ui.available_width(), 42.0],
+                                egui::Button::new(
+                                    egui::RichText::new(format!("â™«   {}", station.name))
+                                        .size(13.0)
+                                        .color(if *selected == index { egui::Color32::from_rgb(255, 205, 129) } else { cream }),
+                                )
+                                .fill(if *selected == index { egui::Color32::from_rgb(84, 69, 45) } else { panel_soft })
+                                .stroke(egui::Stroke::new(1.0, egui::Color32::from_rgb(48, 68, 56))),
+                            );
+                            if response.clicked() {
+                                *selected = index;
+                                start_request = Some((station.url.trim().to_string(), station.name.clone()));
+                            }
+                        }
+                    });
+                });
+
+                let status_color = if displayed_radio_status.starts_with("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ")
+                    || displayed_radio_status.starts_with("Ğ’ config.toml")
+                {
+                    egui::Color32::from_rgb(255, 125, 115)
+                } else if playing {
+                    green
+                } else {
+                    muted_text
+                };
+                let status_rect = egui::Rect::from_min_size(
+                    egui::pos2(station_rect.left() + 16.0, station_rect.bottom() - 103.0),
+                    egui::vec2(station_rect.width() - 32.0, 42.0),
+                );
+                ui.put(
+                    status_rect,
+                    egui::Label::new(egui::RichText::new(displayed_radio_status.clone()).size(11.0).color(status_color)).wrap(),
+                );
+
+                let sound_label = if muted { "Ğ—Ğ²ÑƒĞº Ğ²Ñ‹ĞºĞ»ÑÑ‡ĞµĞ½" } else { "Ğ“Ñ€Ğ¾Ğ¼ĞºĞ¾ÑÑ‚ÑŒ" };
+                ui.allocate_ui_at_rect(
+                    egui::Rect::from_min_size(
+                        egui::pos2(station_rect.left() + 14.0, station_rect.bottom() - 54.0),
+                        egui::vec2(station_rect.width() - 28.0, 36.0),
+                    ),
+                    |volume_ui| {
+                        volume_ui.horizontal(|volume_ui| {
+                            if volume_ui.button(if muted { "â—Œ" } else { "â—–" }).clicked() {
+                                toggle_mute_requested = true;
+                            }
+                            volume_ui.label(egui::RichText::new(sound_label).size(11.0).color(muted_text));
+                            volume_ui.add_sized(
+                                [105.0, 22.0],
+                                egui::Slider::new(volume, 0.0..=1.0).show_value(false),
+                            );
+                            volume_ui.label(egui::RichText::new(format!("{:.0}%", *volume * 100.0)).size(10.0).color(cream));
+                        });
+                    },
+                );
+            });
+
+        if close_requested { open = false; }
+        self.radio_window_pos += drag_delta;
+        self.radio_open = open && self.radio_open;
+        if !self.radio_open {
+            self.radio_pending = None;
+            if let Some(player) = self.radio_player.take() {
+                player.stop();
+            }
+            self.radio_status = "ĞĞºĞ½Ğ¾ Ñ€Ğ°Ğ´Ğ¸Ğ¾ Ğ·Ğ°ĞºÑ€Ñ‹Ñ‚Ğ¾; Ğ²Ğ¾ÑĞ¿Ñ€Ğ¾Ğ¸Ğ·Ğ²ĞµĞ´ĞµĞ½Ğ¸Ğµ Ğ¾ÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¾.".into();
+        }
+
+        if edit_url_requested {
+            self.radio_url_editor_open = true;
+        }
+        if toggle_mute_requested {
+            self.radio_muted = !self.radio_muted;
+        }
+        if let Some(player) = self.radio_player.as_ref() {
+            player.set_volume(if self.radio_muted { 0.0 } else { self.radio_volume });
+        }
+        if pause_requested {
+            if let Some(player) = self.radio_player.as_ref() {
+                player.toggle_pause();
+                self.radio_status = if player.is_paused() {
+                    "Ğ’Ğ¾ÑĞ¿Ñ€Ğ¾Ğ¸Ğ·Ğ²ĞµĞ´ĞµĞ½Ğ¸Ğµ Ğ¿Ñ€Ğ¸Ğ¾ÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¾.".into()
+                } else {
+                    "Ğ’Ğ¾ÑĞ¿Ñ€Ğ¾Ğ¸Ğ·Ğ²ĞµĞ´ĞµĞ½Ğ¸Ğµ Ğ¿Ñ€Ğ¾Ğ´Ğ¾Ğ»Ğ¶ĞµĞ½Ğ¾.".into()
+                };
+            }
+        }
+        if stop_requested {
+            self.radio_pending = None;
+            if let Some(player) = self.radio_player.take() {
+                player.stop();
+            }
+            self.radio_status = "Ğ Ğ°Ğ´Ğ¸Ğ¾ Ğ¾ÑÑ‚Ğ°Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¾.".into();
+        }
+        if let Some((url, station_name)) = start_request {
+            if url.is_empty() {
+                self.radio_status = "Ğ£ ÑÑ‚Ğ¾Ğ¹ ÑÑ‚Ğ°Ğ½Ñ†Ğ¸Ğ¸ Ğ½Ğµ Ğ·Ğ°Ğ´Ğ°Ğ½ URL Ğ¿Ğ¾Ñ‚Ğ¾ĞºĞ°. ĞĞ°Ğ¶Ğ¼Ğ¸Ñ‚Ğµ Ğ·Ğ½Ğ°Ñ‡Ğ¾Ğº Ğ½Ğ°ÑÑ‚Ñ€Ğ¾Ğ¹ĞºĞ¸ Ğ°Ğ´Ñ€ĞµÑĞ°.".into();
+                self.radio_url_editor_open = true;
+            } else {
+                self.radio_player = None;
+                self.radio_pending = None;
+                self.radio_status = format!("ĞŸĞ¾Ğ´ĞºĞ»ÑÑ‡ĞµĞ½Ğ¸Ğµ Ğº ÑÑ‚Ğ°Ğ½Ñ†Ğ¸Ğ¸ Â«{station_name}Â»...");
+                let (sender, receiver) = std::sync::mpsc::channel();
+                let volume = if self.radio_muted { 0.0 } else { self.radio_volume };
+                let url_for_task = url.clone();
+                self.runtime.spawn(async move {
+                    let result = RadioPlayback::connect_and_play(&url_for_task, volume)
+                        .await
+                        .map_err(|error| format!("{error:#}"));
+                    let _ = sender.send(result);
+                });
+                self.radio_pending = Some((receiver, station_name));
+                ctx.request_repaint_after(Duration::from_millis(250));
+            }
+        }
+
+        self.show_radio_url_editor_window(ctx);
+    }
+
+    fn show_radio_url_editor_window(&mut self, ctx: &egui::Context) {
+        if !self.radio_url_editor_open {
+            return;
+        }
+        let selected_index = self.selected_radio_station;
+        let Some(station) = self.radio_stations.get(selected_index) else {
+            self.radio_url_editor_open = false;
+            return;
+        };
+        let station_name = station.name.clone();
+        let mut url = station.url.clone();
+        let mut open = self.radio_url_editor_open;
+        let mut save_requested = false;
+        egui::Window::new(format!("ĞĞ´Ñ€ĞµÑ Ğ¿Ğ¾Ñ‚Ğ¾ĞºĞ°: {station_name}"))
+            .default_size([420.0, 130.0])
+            .resizable(false)
+            .open(&mut open)
+            .show(ctx, |ui| {
+                ui.label("URL Ğ¿Ğ¾Ñ‚Ğ¾ĞºĞ° (HTTP Ğ¸Ğ»Ğ¸ HTTPS)");
+                ui.text_edit_singleline(&mut url);
+                if ui.button("Ğ¡Ğ¾Ñ…Ñ€Ğ°Ğ½Ğ¸Ñ‚ÑŒ Ğ°Ğ´Ñ€ĞµÑ").clicked() {
+                    save_requested = true;
+                }
+            });
+        if save_requested {
+            if let Some(station) = self.radio_stations.get_mut(selected_index) {
+                station.url = url;
+            }
+            self.save_radio_settings();
+            self.radio_autoplay_pending = Some(selected_index);
+            self.radio_open = true;
+            open = false;
+        }
+        self.radio_url_editor_open = open;
+    }
+
+
+    fn refresh_chat(&mut self) {
+        // Never block egui's UI thread while waiting for the shared, single-
+        // connection MySQL pool. Inbox reads and the 10-second chat poll can
+        // otherwise wait on each other and make the whole window appear frozen.
+        if self.chat_refresh_pending.is_some() {
+            return;
+        }
+        let Some(db) = self.db.clone() else {
+            return;
+        };
+
+        let (sender, receiver) = std::sync::mpsc::channel();
+        self.chat_refresh_pending = Some(receiver);
+        self.runtime.spawn(async move {
+            let result = db.read_chat().await.map_err(|error| format!("{error:#}"));
+            let _ = sender.send(result);
+        });
+    }
+
+    fn poll_chat_refresh(&mut self, ctx: &egui::Context) {
+        let result = self.chat_refresh_pending.as_ref().map(|receiver| receiver.try_recv());
+        match result {
+            Some(Ok(Ok(chat))) => {
+                self.chat_text = normalize_legacy_welcome(&chat);
+                self.chat_refresh_pending = None;
+            }
+            Some(Ok(Err(error))) => {
+                self.chat_refresh_pending = None;
+                if self.status.is_empty() {
+                    self.status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ¾Ğ±Ğ½Ğ¾Ğ²Ğ¸Ñ‚ÑŒ Ğ¾Ğ±Ñ‰Ğ¸Ğ¹ Ñ‡Ğ°Ñ‚: {error}");
+                }
+            }
+            Some(Err(std::sync::mpsc::TryRecvError::Disconnected)) => {
+                self.chat_refresh_pending = None;
+                if self.status.is_empty() {
+                    self.status = "ĞĞ±Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ğ¸Ğµ Ğ¾Ğ±Ñ‰ĞµĞ³Ğ¾ Ñ‡Ğ°Ñ‚Ğ° Ğ¿Ñ€ĞµÑ€Ğ²Ğ°Ğ½Ğ¾.".into();
+                }
+            }
+            Some(Err(std::sync::mpsc::TryRecvError::Empty)) => {
+                ctx.request_repaint_after(Duration::from_millis(150));
+            }
+            None => {}
+        }
+    }
+
+    fn send_chat(&mut self) {
+        let Some(user) = self.current_user.as_ref() else { return; };
+        let message = self.draft.trim().to_string();
+        if message.is_empty() { return; }
+        let line = format!("{}: {}", user.username, message);
+        let next = if self.chat_text.trim().is_empty() {
+            line
+        } else {
+            format!("{}\n\n{}", self.chat_text.trim_end(), line)
+        };
+        match self.run_db(|rt, db| rt.block_on(db.write_chat(&next))) {
+            Ok(()) => {
+                self.chat_text = next;
+                self.draft.clear();
+                self.status = "Ğ¡Ğ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğµ Ğ¾Ñ‚Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¾.".into();
+            }
+            Err(error) => self.status = format!("ĞÑˆĞ¸Ğ±ĞºĞ° Ğ¾Ñ‚Ğ¿Ñ€Ğ°Ğ²ĞºĞ¸ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ñ: {error:#}"),
+        }
+    }
+
+    fn send_private(&mut self) {
+        let Some(user) = self.current_user.as_ref() else { return; };
+        let Some(to) = self.selected_friend.clone() else { self.status = "Ğ’Ñ‹Ğ±ĞµÑ€Ğ¸Ñ‚Ğµ ÑĞ¾Ğ±ĞµÑĞµĞ´Ğ½Ğ¸ĞºĞ°.".into(); return; };
+        let from = user.username.clone(); let subject = self.private_subject.clone(); let body = self.private_text.clone();
+        if subject.trim().is_empty() || body.trim().is_empty() { self.status = "Ğ¢ĞµĞ¼Ğ° Ğ¸ Ñ‚ĞµĞºÑÑ‚ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ñ Ğ¾Ğ±ÑĞ·Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ñ‹.".into(); return; }
+        match self.run_db(|rt, db| rt.block_on(db.send_private_message(&to, &from, &subject, &body))) {
+            Ok(()) => { self.private_subject.clear(); self.private_text.clear(); self.status = format!("Ğ¡Ğ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğµ Ğ¾Ñ‚Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¾ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»Ñ {to}."); }
+            Err(e) => self.status = format!("ĞÑˆĞ¸Ğ±ĞºĞ° Ğ¾Ñ‚Ğ¿Ñ€Ğ°Ğ²ĞºĞ¸ Ğ»Ğ¸Ñ‡Ğ½Ğ¾Ğ³Ğ¾ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ñ: {e:#}"),
+        }
+    }
+
+    fn load_selected_profile(&mut self) {
+        let Some(name) = self.selected_friend.clone() else {
+            self.status = "Ğ¡Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ° Ğ²Ñ‹Ğ±ĞµÑ€Ğ¸Ñ‚Ğµ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»Ñ.".into();
+            return;
+        };
+        match self.run_db(|rt, db| rt.block_on(db.user_by_name(&name))) {
+            Ok(Some(user)) => {
+                self.friend_profile = Some(user);
+                self.friend_avatar_texture = None;
+                self.friend_avatar_cache_key = None;
+                self.show_friend_profile = true;
+            }
+            Ok(None) => self.status = "ĞŸĞ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ÑŒ Ğ½Ğµ Ğ½Ğ°Ğ¹Ğ´ĞµĞ½.".into(),
+            Err(e) => self.status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ·Ğ°Ğ³Ñ€ÑƒĞ·Ğ¸Ñ‚ÑŒ Ğ¿Ñ€Ğ¾Ñ„Ğ¸Ğ»ÑŒ: {e:#}"),
+        }
+    }
+
+    fn mark_message_read(&mut self, message_id: i64) {
+        let Some(username) = self.current_user.as_ref().map(|u| u.username.clone()) else { return; };
+        match self.run_db(|rt, db| rt.block_on(db.mark_message_read(message_id, &username))) {
+            Ok(()) => {
+                if let Some(message) = self.inbox.iter_mut().find(|m| m.id == message_id) {
+                    message.is_read = true;
+                }
+            }
+            Err(e) => self.status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ Ğ¾Ñ‚Ğ¼ĞµÑ‚Ğ¸Ñ‚ÑŒ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğµ Ğ¿Ñ€Ğ¾Ñ‡Ğ¸Ñ‚Ğ°Ğ½Ğ½Ñ‹Ğ¼: {e:#}"),
+        }
+    }
+
+    fn load_inbox(&mut self) {
+        if self.inbox_loading {
+            self.show_inbox = true;
+            return;
+        }
+        let Some(user) = self.current_user.as_ref() else { return; };
+        let Some(db) = self.db.clone() else {
+            self.status = "Ğ¡Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ° Ğ¿Ğ¾Ğ´ĞºĞ»ÑÑ‡Ğ¸Ñ‚ĞµÑÑŒ Ğº Ğ±Ğ°Ğ·Ğµ Ğ´Ğ°Ğ½Ğ½Ñ‹Ñ….".into();
+            return;
+        };
+
+        let name = user.username.clone();
+        let (sender, receiver) = std::sync::mpsc::channel();
+        self.inbox_pending = Some(receiver);
+        self.inbox_loading = true;
+        self.show_inbox = true;
+        self.status = "Ğ—Ğ°Ğ³Ñ€ÑƒĞ·ĞºĞ° Ğ²Ñ…Ğ¾Ğ´ÑÑ‰Ğ¸Ñ… ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğ¹â€¦".into();
+
+        self.runtime.spawn(async move {
+            let result = db.inbox(&name).await.map_err(|error| format!("{error:#}"));
+            let _ = sender.send(result);
+        });
+    }
+
+    fn poll_inbox_load(&mut self, ctx: &egui::Context) {
+        let result = self.inbox_pending.as_ref().map(|receiver| receiver.try_recv());
+        match result {
+            Some(Ok(Ok(items))) => {
+                self.inbox = items;
+                self.inbox_pending = None;
+                self.inbox_loading = false;
+                self.status.clear();
+            }
+            Some(Ok(Err(error))) => {
+                self.inbox_pending = None;
+                self.inbox_loading = false;
+                self.status = format!("ĞÑˆĞ¸Ğ±ĞºĞ° Ğ·Ğ°Ğ³Ñ€ÑƒĞ·ĞºĞ¸ Ğ²Ñ…Ğ¾Ğ´ÑÑ‰Ğ¸Ñ…: {error}");
+            }
+            Some(Err(std::sync::mpsc::TryRecvError::Disconnected)) => {
+                self.inbox_pending = None;
+                self.inbox_loading = false;
+                self.status = "Ğ—Ğ°Ğ³Ñ€ÑƒĞ·ĞºĞ° Ğ²Ñ…Ğ¾Ğ´ÑÑ‰Ğ¸Ñ… Ğ¿Ñ€ĞµÑ€Ğ²Ğ°Ğ½Ğ°: Ğ·Ğ°Ğ´Ğ°Ñ‡Ğ° Ğ±Ğ°Ğ·Ñ‹ Ğ´Ğ°Ğ½Ğ½Ñ‹Ñ… Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞ¸Ğ»Ğ°ÑÑŒ Ğ½ĞµĞ¾Ğ¶Ğ¸Ğ´Ğ°Ğ½Ğ½Ğ¾.".into();
+            }
+            Some(Err(std::sync::mpsc::TryRecvError::Empty)) => {
+                ctx.request_repaint_after(Duration::from_millis(150));
+            }
+            None => {}
+        }
+    }
+
+    fn delete_inbox_message(&mut self, message_id: i64) {
+        let Some(username) = self.current_user.as_ref().map(|user| user.username.clone()) else { return; };
+        match self.run_db(|rt, db| rt.block_on(db.delete_private_message(message_id, &username))) {
+            Ok(1) => {
+                self.inbox.retain(|message| message.id != message_id);
+                self.status = "Ğ›Ğ¸Ñ‡Ğ½Ğ¾Ğµ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğµ ÑƒĞ´Ğ°Ğ»ĞµĞ½Ğ¾.".into();
+            }
+            Ok(_) => {
+                self.status = "Ğ¡Ğ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğµ ÑƒĞ¶Ğµ ÑƒĞ´Ğ°Ğ»ĞµĞ½Ğ¾ Ğ¸Ğ»Ğ¸ Ğ½Ğµ Ğ¿Ñ€Ğ¸Ğ½Ğ°Ğ´Ğ»ĞµĞ¶Ğ¸Ñ‚ Ñ‚ĞµĞºÑƒÑ‰ĞµĞ¼Ñƒ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»Ñ.".into();
+            }
+            Err(error) => self.status = format!("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ ÑƒĞ´Ğ°Ğ»Ğ¸Ñ‚ÑŒ Ğ»Ğ¸Ñ‡Ğ½Ğ¾Ğµ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğµ: {error:#}"),
+        }
+        self.confirm_delete_message = None;
+    }
+}
+
+impl TsChatApp {
+    fn ensure_legacy_ui_textures(&mut self, ctx: &egui::Context) {
+        if !self.ui_textures.is_empty() {
+            return;
+        }
+
+        let assets: [(&str, &[u8]); 27] = [
+            ("brand_logo", include_bytes!("../Resources/32323.png")),
+            ("theme_day", include_bytes!("../Resources/b_day.png")),
+            ("theme_night", include_bytes!("../Resources/b_night.png")),
+            ("chat_icon", include_bytes!("../assets/ICOCOS1.png")),
+            ("radio_start", include_bytes!("../assets/start_b.png")),
+            ("radio_pause", include_bytes!("../assets/pause_b.png")),
+            ("radio_stop", include_bytes!("../assets/stop_b.png")),
+            ("radio_sound_on", include_bytes!("../assets/sound_on.png")),
+            ("radio_sound_off", include_bytes!("../assets/sound_off.png")),
+            ("minimize", include_bytes!("../assets/remove.png")),
+            ("close", include_bytes!("../assets/clear_search.png")),
+            ("send_dark", include_bytes!("../assets/Send_mail.png")),
+            ("send_light", include_bytes!("../assets/Send_mail_b.png")),
+            ("attach_dark", include_bytes!("../assets/prikrep.png")),
+            ("attach_light", include_bytes!("../assets/prikrep_b.png")),
+            ("profile_dark", include_bytes!("../assets/profile.png")),
+            ("profile_light", include_bytes!("../assets/profile_b.png")),
+            ("edit_dark", include_bytes!("../assets/redakt.png")),
+            ("edit_light", include_bytes!("../assets/redakt_b.png")),
+            ("fonts_dark", include_bytes!("../assets/fontes.png")),
+            ("fonts_light", include_bytes!("../assets/fontes_b.png")),
+            ("clear_dark", include_bytes!("../assets/clear.png")),
+            ("clear_light", include_bytes!("../assets/clear_b.png")),
+            ("pm_dark", include_bytes!("../assets/lmseg.png")),
+            ("pm_light", include_bytes!("../assets/lmseg_b.png")),
+            ("radio_dark", include_bytes!("../assets/radio.png")),
+            ("radio_light", include_bytes!("../assets/radio_b.png")),
+        ];
+
+        let mut loaded = std::collections::HashMap::with_capacity(assets.len());
+        for (name, bytes) in assets {
+            let Ok(decoded) = image::load_from_memory(bytes) else { continue; };
+            let rgba = decoded.to_rgba8();
+            let size = [rgba.width() as usize, rgba.height() as usize];
+            let color = egui::ColorImage::from_rgba_unmultiplied(size, rgba.as_raw());
+            let texture = ctx.load_texture(
+                format!("tschat-legacy-{name}"),
+                color,
+                egui::TextureOptions::LINEAR,
+            );
+            loaded.insert(name.to_string(), texture);
+        }
+        self.ui_textures = loaded;
+    }
+
+    fn ensure_tavern_animation(&mut self, ctx: &egui::Context) {
+        if self.tavern_animation.is_none() {
+            self.tavern_animation = decode_gif_animation(
+                ctx,
+                "tschat-tavern-gif-frame",
+                include_bytes!("../Resources/222.gif"),
+            );
+        }
+    }
+
+    fn ensure_radio_animation(&mut self, ctx: &egui::Context) {
+        if self.radio_animation.is_none() {
+            self.radio_animation = decode_gif_animation(
+                ctx,
+                "tschat-radio-penguin-frame",
+                include_bytes!("../assets/pingvin.gif"),
+            );
+        }
+    }
+
+    fn advance_tavern_animation(&mut self, ctx: &egui::Context) {
+        let Some(animation) = self.tavern_animation.as_mut() else {
+            return;
+        };
+        if animation.frames.len() <= 1 {
+            return;
+        }
+
+        let now = Instant::now();
+        if now >= animation.next_frame_at {
+            animation.current_frame = (animation.current_frame + 1) % animation.frames.len();
+            let delay = animation.frame_durations[animation.current_frame];
+            animation.next_frame_at = now + delay;
+        }
+
+        let remaining = animation.next_frame_at.saturating_duration_since(Instant::now());
+        ctx.request_repaint_after(remaining.max(Duration::from_millis(1)));
+    }
+
+    fn advance_radio_animation(&mut self, ctx: &egui::Context) {
+        let Some(animation) = self.radio_animation.as_mut() else {
+            return;
+        };
+        if animation.frames.len() <= 1 {
+            return;
+        }
+
+        let now = Instant::now();
+        if now >= animation.next_frame_at {
+            animation.current_frame = (animation.current_frame + 1) % animation.frames.len();
+            let delay = animation.frame_durations[animation.current_frame];
+            animation.next_frame_at = now + delay;
+        }
+
+        let remaining = animation.next_frame_at.saturating_duration_since(Instant::now());
+        ctx.request_repaint_after(remaining.max(Duration::from_millis(1)));
+    }
+
+        fn draw_legacy_auth_screen(&mut self, ctx: &egui::Context, ui: &mut egui::Ui) {
+        let rect = ui.max_rect();
+        let bg = egui::Color32::from_rgb(13, 24, 20);
+        let surface = egui::Color32::from_rgb(22, 37, 31);
+        let surface_inner = egui::Color32::from_rgb(12, 24, 20);
+        let amber = egui::Color32::from_rgb(232, 170, 91);
+        let cream = egui::Color32::from_rgb(235, 231, 219);
+        let secondary = egui::Color32::from_rgb(159, 173, 163);
+        ui.painter().rect_filled(rect, 18.0, bg);
+
+        let bar = egui::Rect::from_min_size(rect.min, egui::vec2(rect.width(), 44.0));
+        let title_color = egui::Color32::from_rgb(11, 20, 17);
+        ui.painter().rect_filled(bar, 18.0, title_color);
+        ui.painter().rect_filled(egui::Rect::from_min_size(bar.min + egui::vec2(0.0, 18.0), egui::vec2(bar.width(), 26.0)), 0.0, title_color);
+        ui.painter().line_segment([bar.left_bottom(), bar.right_bottom()], egui::Stroke::new(1.0, egui::Color32::from_rgb(48, 66, 56)));
+        let drag_rect = egui::Rect::from_min_size(bar.min, egui::vec2((bar.width() - 110.0).max(0.0), bar.height()));
+        if ui.interact(drag_rect, egui::Id::new("auth-window-title-drag"), egui::Sense::click_and_drag()).drag_started() {
+            ctx.send_viewport_cmd(egui::ViewportCommand::StartDrag);
+        }
+        if let Some(animation) = &self.tavern_animation {
+            if let Some(frame) = animation.frames.get(animation.current_frame) {
+                let logo = egui::Rect::from_min_size(rect.min + egui::vec2(19.0, 9.0), egui::vec2(24.0, 24.0));
+                ui.put(logo, egui::Image::new((frame.id(), logo.size())));
+            }
+        }
+        ui.put(egui::Rect::from_min_size(rect.min + egui::vec2(52.0, 7.0), egui::vec2(56.0, 28.0)),
+            egui::Label::new(egui::RichText::new("TSchat").size(18.0).strong().color(amber)));
+        ui.painter().line_segment([egui::pos2(rect.left() + 111.0, bar.top() + 8.0), egui::pos2(rect.left() + 111.0, bar.bottom() - 8.0)], egui::Stroke::new(1.0, egui::Color32::from_rgb(66, 83, 70)));
+        ui.put(egui::Rect::from_min_size(rect.min + egui::vec2(123.0, 7.0), egui::vec2(190.0, 28.0)),
+            egui::Label::new(egui::RichText::new("Ğ¢Ğ°Ğ²ĞµÑ€Ğ½Ğ° ÑÑ‚Ñ€Ğ°Ğ½Ğ½Ğ¸ĞºĞ°").size(13.0).color(cream)));
+
+        let controls = [("close", "Ã—"), ("maximize", "â–¡"), ("min", "â€”")];
+        let mut x = rect.right() - 34.0;
+        for (kind, glyph) in controls {
+            let b = egui::Rect::from_min_size(egui::pos2(x, rect.top() + 8.0), egui::vec2(26.0, 25.0));
+            if ui.put(b, egui::Button::new(glyph).fill(egui::Color32::from_rgb(35, 47, 41))).clicked() {
+                match kind {
+                    "min" => ctx.send_viewport_cmd(egui::ViewportCommand::Minimized(true)),
+                    "maximize" => {
+                        let maximized = ctx.input(|input| input.viewport().maximized.unwrap_or(false));
+                        ctx.send_viewport_cmd(egui::ViewportCommand::Maximized(!maximized));
+                    }
+                    _ => ctx.send_viewport_cmd(egui::ViewportCommand::Close),
+                }
+            }
+            x -= 31.0;
+        }
+
+        let card_width = rect.width();
+        let card_height = (rect.height() - 44.0).max(0.0);
+        let card = egui::Rect::from_min_size(egui::pos2(rect.left(), rect.top() + 44.0), egui::vec2(card_width, card_height));
+        ui.painter().rect_filled(card, 18.0, surface);
+        ui.painter().rect_stroke(card, 18.0, egui::Stroke::new(1.0, egui::Color32::from_rgb(56, 77, 64)));
+
+        let left_width = card.width() * 0.493;
+        let left = egui::Rect::from_min_max(card.left_top(), egui::pos2(card.left() + left_width, card.bottom()));
+        let right = egui::Rect::from_min_max(egui::pos2(left.right(), card.top()), card.right_bottom());
+        ui.painter().line_segment([egui::pos2(left.right(), card.top() + 18.0), egui::pos2(left.right(), card.bottom() - 18.0)], egui::Stroke::new(1.0, egui::Color32::from_rgb(46, 68, 56)));
+
+        let registering = self.screen == Screen::Register;
+        let animation_rect = egui::Rect::from_center_size(egui::pos2(left.center().x, left.center().y - 78.0), egui::vec2(200.0, 160.0));
+        legacy_animated_image(ui, self.tavern_animation.as_ref(), animation_rect);
+        ui.put(egui::Rect::from_center_size(egui::pos2(left.center().x, left.center().y + 24.0), egui::vec2(left.width() - 34.0, 38.0)),
+            egui::Label::new(egui::RichText::new("ĞœĞµÑÑ‚Ğ¾ Ğ´Ğ»Ñ ÑĞ²Ğ¾Ğ¸Ñ…").size(25.0).strong().color(amber)).halign(egui::Align::Center));
+        ui.put(egui::Rect::from_center_size(egui::pos2(left.center().x, left.center().y + 54.0), egui::vec2(left.width() - 32.0, 54.0)),
+            egui::Label::new(egui::RichText::new("ĞĞµĞ±Ğ¾Ğ»ÑŒÑˆĞ¾Ğ¹ Ğ»Ğ¾ĞºĞ°Ğ»ÑŒĞ½Ñ‹Ğ¹ Ñ‡Ğ°Ñ‚,\nĞ³Ğ´Ğµ Ğ²ÑĞµĞ³Ğ´Ğ° Ğ¼Ğ¾Ğ¶Ğ½Ğ¾ ÑĞ¾Ğ±Ñ€Ğ°Ñ‚ÑŒÑÑ.").size(15.0).color(secondary)).halign(egui::Align::Center));
+
+        let form_x = right.left() + 20.0;
+        let form_width = right.width() - 40.0;
+        let top = right.top() + (right.height() - if registering { 390.0 } else { 330.0 }) * 0.5;
+        let heading = if registering { "Ğ¡Ğ¾Ğ·Ğ´Ğ°Ñ‚ÑŒ Ğ°ĞºĞºĞ°ÑƒĞ½Ñ‚" } else { "Ğ¡ Ğ²Ğ¾Ğ·Ğ²Ñ€Ğ°Ñ‰ĞµĞ½Ğ¸ĞµĞ¼" };
+        let subtitle = if registering { "ĞŸÑ€Ğ¸ÑĞ¾ĞµĞ´Ğ¸Ğ½ÑĞ¹Ñ‚ĞµÑÑŒ Ğº Ğ¢Ğ°Ğ²ĞµÑ€Ğ½Ğµ ÑÑ‚Ñ€Ğ°Ğ½Ğ½Ğ¸ĞºĞ°" } else { "Ğ’Ğ¾Ğ¹Ğ´Ğ¸Ñ‚Ğµ, Ñ‡Ñ‚Ğ¾Ğ±Ñ‹ Ğ¿Ñ€Ğ¾Ğ´Ğ¾Ğ»Ğ¶Ğ¸Ñ‚ÑŒ Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğµ" };
+        let compact_form = form_width < 285.0;
+        let heading_size = if compact_form { 22.0 } else { 27.0 };
+        let heading_height = if compact_form { 32.0 } else { 40.0 };
+        ui.put(egui::Rect::from_min_size(egui::pos2(form_x, top), egui::vec2(form_width, heading_height)),
+            egui::Label::new(egui::RichText::new(heading).size(heading_size).color(cream)).truncate());
+        let subtitle_y = top + heading_height + 3.0;
+        ui.put(egui::Rect::from_min_size(egui::pos2(form_x, subtitle_y), egui::vec2(form_width, 32.0)),
+            egui::Label::new(egui::RichText::new(subtitle).size(if compact_form { 12.0 } else { 14.0 }).color(secondary)).wrap());
+        let mut y = subtitle_y + 40.0;
+        let field = |ui: &mut egui::Ui, y: f32, label: &str, text: &mut String, secret: bool| {
+            ui.put(egui::Rect::from_min_size(egui::pos2(form_x, y), egui::vec2(form_width, 18.0)),
+                egui::Label::new(egui::RichText::new(label).size(12.0).color(secondary)));
+            ui.put(egui::Rect::from_min_size(egui::pos2(form_x, y + 19.0), egui::vec2(form_width, 29.0)),
+                egui::TextEdit::singleline(text).password(secret).desired_width(form_width));
+        };
+        field(ui, y, "Ğ˜Ğ¼Ñ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»Ñ", &mut self.username, false);
+        y += 56.0;
+        field(ui, y, if registering { "ĞŸÑ€Ğ¸Ğ´ÑƒĞ¼Ğ°Ğ¹Ñ‚Ğµ Ğ¿Ğ°Ñ€Ğ¾Ğ»ÑŒ" } else { "ĞŸĞ°Ñ€Ğ¾Ğ»ÑŒ" }, &mut self.password, true);
+        y += 56.0;
+        if registering {
+            field(ui, y, "Ğ­Ğ»ĞµĞºÑ‚Ñ€Ğ¾Ğ½Ğ½Ğ°Ñ Ğ¿Ğ¾Ñ‡Ñ‚Ğ°", &mut self.email, false);
+            y += 56.0;
+        }
+        let primary = egui::Rect::from_min_size(egui::pos2(form_x, y + 4.0), egui::vec2(form_width, 36.0));
+        if ui.put(primary, egui::Button::new(egui::RichText::new(if registering { "Ğ—Ğ°Ñ€ĞµĞ³Ğ¸ÑÑ‚Ñ€Ğ¸Ñ€Ğ¾Ğ²Ğ°Ñ‚ÑŒÑÑ" } else { "Ğ’Ğ¾Ğ¹Ñ‚Ğ¸" }).size(15.0).strong().color(egui::Color32::from_rgb(28, 32, 29))).fill(amber)).clicked() {
+            if registering { self.register(); } else { self.login(); }
+        }
+        let switch = egui::Rect::from_min_size(egui::pos2(form_x, y + 52.0), egui::vec2(form_width, 30.0));
+        if ui.put(switch, egui::Button::new(egui::RichText::new(if registering { "Ğ£Ğ¶Ğµ ĞµÑÑ‚ÑŒ Ğ°ĞºĞºĞ°ÑƒĞ½Ñ‚?  Ğ’Ğ¾Ğ¹Ñ‚Ğ¸" } else { "Ğ¡Ğ¾Ğ·Ğ´Ğ°Ñ‚ÑŒ Ğ°ĞºĞºĞ°ÑƒĞ½Ñ‚" }).size(13.0).color(cream)).fill(surface_inner)).clicked() {
+            self.screen = if registering { Screen::Login } else { Screen::Register };
+            self.status.clear();
+            self.email.clear();
+        }
+        if !self.status.is_empty() {
+            let color = if self.status.starts_with("ĞÑˆĞ¸Ğ±ĞºĞ°") || self.status.starts_with("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ") || self.status.starts_with("ĞŸÑ€Ğ¾Ğ²ĞµÑ€ÑŒÑ‚Ğµ") { egui::Color32::from_rgb(239, 117, 105) } else { egui::Color32::from_rgb(133, 202, 149) };
+            ui.put(egui::Rect::from_min_size(egui::pos2(form_x, y + 98.0), egui::vec2(form_width, 52.0)),
+                egui::Label::new(egui::RichText::new(self.status.clone()).size(11.0).color(color)).wrap());
+        }
+        ui.painter().rect_stroke(rect, 18.0, egui::Stroke::new(1.0, egui::Color32::from_rgb(56, 77, 64)));
+    }
+
+        fn draw_legacy_chat_screen(&mut self, ctx: &egui::Context, ui: &mut egui::Ui) {
+        let full = ui.max_rect();
+        let bg = egui::Color32::from_rgb(13, 23, 20);
+        let surface = egui::Color32::from_rgb(22, 37, 31);
+        let inset = egui::Color32::from_rgb(14, 27, 22);
+        let soft = egui::Color32::from_rgb(29, 47, 39);
+        let amber = egui::Color32::from_rgb(232, 170, 91);
+        let cream = egui::Color32::from_rgb(235, 231, 219);
+        let secondary = egui::Color32::from_rgb(157, 172, 161);
+        let green = egui::Color32::from_rgb(116, 198, 139);
+        ui.painter().rect_filled(full, 18.0, bg);
+
+        let title_h = 42.0;
+        let title = egui::Rect::from_min_size(full.min, egui::vec2(full.width(), title_h));
+        let title_color = egui::Color32::from_rgb(11, 20, 17);
+        ui.painter().rect_filled(title, 18.0, title_color);
+        ui.painter().rect_filled(egui::Rect::from_min_size(title.min + egui::vec2(0.0, 18.0), egui::vec2(title.width(), title_h - 18.0)), 0.0, title_color);
+        ui.painter().line_segment([title.left_bottom(), title.right_bottom()], egui::Stroke::new(1.0, egui::Color32::from_rgb(48, 67, 56)));
+        let drag_rect = egui::Rect::from_min_size(title.min, egui::vec2((title.width() - 110.0).max(0.0), title.height()));
+        if ui.interact(drag_rect, egui::Id::new("chat-window-title-drag"), egui::Sense::click_and_drag()).drag_started() {
+            ctx.send_viewport_cmd(egui::ViewportCommand::StartDrag);
+        }
+        if let Some(animation) = &self.tavern_animation {
+            if let Some(frame) = animation.frames.get(animation.current_frame) {
+                let logo = egui::Rect::from_min_size(full.min + egui::vec2(19.0, 8.0), egui::vec2(25.0, 25.0));
+                ui.put(logo, egui::Image::new((frame.id(), logo.size())));
+            }
+        }
+        ui.put(egui::Rect::from_min_size(full.min + egui::vec2(52.0, 6.0), egui::vec2(56.0, 28.0)),
+            egui::Label::new(egui::RichText::new("TSchat").size(17.0).strong().color(amber)));
+        ui.painter().line_segment([egui::pos2(full.left() + 111.0, title.top() + 8.0), egui::pos2(full.left() + 111.0, title.bottom() - 8.0)], egui::Stroke::new(1.0, egui::Color32::from_rgb(66, 83, 70)));
+        ui.put(egui::Rect::from_min_size(full.min + egui::vec2(123.0, 6.0), egui::vec2(145.0, 28.0)),
+            egui::Label::new(egui::RichText::new("Ğ¢Ğ°Ğ²ĞµÑ€Ğ½Ğ° ÑÑ‚Ñ€Ğ°Ğ½Ğ½Ğ¸ĞºĞ°").size(12.0).color(secondary)));
+        let mut x = full.right() - 34.0;
+        for (glyph, tooltip, action) in [("Ã—", "Ğ—Ğ°ĞºÑ€Ñ‹Ñ‚ÑŒ", "close"), ("â–¡", "Ğ Ğ°Ğ·Ğ²ĞµÑ€Ğ½ÑƒÑ‚ÑŒ", "maximize"), ("â€”", "Ğ¡Ğ²ĞµÑ€Ğ½ÑƒÑ‚ÑŒ", "min")] {
+            x -= 32.0;
+            let r = egui::Rect::from_min_size(egui::pos2(x, title.top() + 7.0), egui::vec2(27.0, 27.0));
+            if ui.put(r, egui::Button::new(egui::RichText::new(glyph).size(13.0).color(cream)).fill(egui::Color32::TRANSPARENT)).on_hover_text(tooltip).clicked() {
+                match action {
+                    "close" => ctx.send_viewport_cmd(egui::ViewportCommand::Close),
+                    "min" => ctx.send_viewport_cmd(egui::ViewportCommand::Minimized(true)),
+                    "maximize" => {
+                        let maximized = ctx.input(|input| input.viewport().maximized.unwrap_or(false));
+                        ctx.send_viewport_cmd(egui::ViewportCommand::Maximized(!maximized));
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        let margin = 0.0;
+        let gap = 0.0;
+        let nav_w = 60.0;
+        let list_w = 184.0;
+        let details_w = if self.profile_expanded { 170.0 } else { 0.0 };
+        let body_top = full.top() + title_h;
+        let body_h = (full.bottom() - body_top).max(0.0);
+        let nav = egui::Rect::from_min_size(egui::pos2(full.left(), body_top), egui::vec2(nav_w, body_h));
+        let chats = egui::Rect::from_min_size(egui::pos2(nav.right() + gap, body_top), egui::vec2(list_w, body_h));
+        let details_x = full.right() - margin - details_w;
+        let center_x = chats.right() + gap;
+        let center_w = (details_x - gap - center_x).max(0.0);
+        let main = egui::Rect::from_min_size(egui::pos2(center_x, body_top), egui::vec2(center_w, body_h));
+        let details = egui::Rect::from_min_size(egui::pos2(details_x, body_top), egui::vec2(details_w, body_h));
+        ui.painter().rect_filled(nav, 0.0, inset);
+        ui.painter().rect_filled(chats, 0.0, surface);
+        ui.painter().rect_filled(main, 0.0, egui::Color32::from_rgb(17, 32, 26));
+        if self.profile_expanded { ui.painter().rect_filled(details, 0.0, surface); }
+        for x in [nav.right(), chats.right(), main.right()] {
+            ui.painter().line_segment([egui::pos2(x, body_top), egui::pos2(x, full.bottom())], egui::Stroke::new(1.0, egui::Color32::from_rgb(46, 66, 55)));
+        }
+
+        let nav_icons = [("chat", self.selected_friend.is_none()), ("users", self.profile_expanded), ("bell", self.show_inbox), ("settings", self.quick_settings_open)];
+        for (i, (name, active)) in nav_icons.iter().enumerate() {
+            let b = egui::Rect::from_min_size(egui::pos2(nav.left() + 9.0, nav.top() + 10.0 + i as f32 * 48.0), egui::vec2(42.0, 42.0));
+            if ui.put(b, egui::Button::new("").fill(if *active { egui::Color32::from_rgb(91, 70, 44) } else { inset })).on_hover_text(match *name { "chat" => "ĞĞ±Ñ‰Ğ¸Ğ¹ Ñ‡Ğ°Ñ‚", "users" => "Ğ£Ñ‡Ğ°ÑÑ‚Ğ½Ğ¸ĞºĞ¸", "bell" => "Ğ’Ñ…Ğ¾Ğ´ÑÑ‰Ğ¸Ğµ", _ => "ĞĞ°ÑÑ‚Ñ€Ğ¾Ğ¹ĞºĞ¸" }).clicked() {
+                match *name {
+                    "chat" => self.selected_friend = None,
+                    "users" => self.profile_expanded = !self.profile_expanded,
+                    "bell" => self.load_inbox(),
+                    _ => self.quick_settings_open = !self.quick_settings_open,
+                }
+            }
+            paint_sketch_icon(ui.painter(), b.shrink(8.0), name, if *active { amber } else { cream });
+        }
+        if self.quick_settings_open {
+            let menu = egui::Rect::from_min_size(egui::pos2(nav.right() + 6.0, nav.top() + 187.0), egui::vec2(164.0, 102.0));
+            ui.painter().rect_filled(menu, 10.0, egui::Color32::from_rgb(22, 37, 31));
+            ui.painter().rect_stroke(menu, 10.0, egui::Stroke::new(1.0, egui::Color32::from_rgb(56, 77, 64)));
+            let theme_label = if self.dark_theme { "Ğ¡Ğ²ĞµÑ‚Ğ»Ğ°Ñ Ñ‚ĞµĞ¼Ğ°" } else { "Ğ¢Ñ‘Ğ¼Ğ½Ğ°Ñ Ñ‚ĞµĞ¼Ğ°" };
+            for (index, (label, action)) in [("Ğ Ğ°Ğ´Ğ¸Ğ¾", "radio"), ("ĞÑ„Ğ¾Ñ€Ğ¼Ğ»ĞµĞ½Ğ¸Ğµ", "style"), (theme_label, "theme")].iter().enumerate() {
+                let row = egui::Rect::from_min_size(menu.min + egui::vec2(6.0, 5.0 + index as f32 * 30.0), egui::vec2(menu.width() - 12.0, 27.0));
+                if ui.put(row, egui::Button::new(egui::RichText::new(*label).size(12.0).color(cream)).fill(egui::Color32::TRANSPARENT)).clicked() {
+                    match *action {
+                        "radio" => self.open_radio(),
+                        "style" => self.chat_style_open = true,
+                        "theme" => self.dark_theme = !self.dark_theme,
+                        _ => {}
+                    }
+                    self.quick_settings_open = false;
+                }
+            }
+        }
+        let avatar_rect = egui::Rect::from_min_size(egui::pos2(nav.center().x - 18.0, nav.bottom() - 58.0), egui::vec2(36.0, 36.0));
+        if let Some(texture) = &self.avatar_texture {
+            ui.put(avatar_rect, egui::Image::new((texture.id(), avatar_rect.size())));
+        } else {
+            ui.painter().circle_filled(avatar_rect.center(), 16.0, surface);
+            paint_sketch_icon(ui.painter(), avatar_rect.shrink(7.0), "profile", cream);
+        }
+        ui.painter().circle_filled(avatar_rect.right_bottom() - egui::vec2(3.0, 3.0), 5.0, green);
+
+        let pad = 12.0;
+        ui.put(egui::Rect::from_min_size(chats.min + egui::vec2(pad, 14.0), egui::vec2(130.0, 24.0)),
+            egui::Label::new(egui::RichText::new("Ğ§Ğ°Ñ‚Ñ‹").size(14.0).strong().color(cream)));
+        let plus = egui::Rect::from_min_size(egui::pos2(chats.right() - 34.0, chats.top() + 7.0), egui::vec2(26.0, 26.0));
+        if ui.put(plus, egui::Button::new(egui::RichText::new("+").size(18.0).color(cream)).fill(soft)).clicked() {
+            self.status = "Ğ›Ğ¸Ñ‡Ğ½Ñ‹Ğµ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ñ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ñ‹ Ñ‡ĞµÑ€ĞµĞ· ÑĞ¿Ğ¸ÑĞ¾Ğº ÑĞ¾Ğ±ĞµÑĞµĞ´Ğ½Ğ¸ĞºĞ¾Ğ².".into();
+        }
+        let selected = self.selected_friend.is_none();
+        let chat_item = egui::Rect::from_min_size(chats.min + egui::vec2(6.0, 50.0), egui::vec2(chats.width() - 12.0, 52.0));
+        if ui.put(chat_item, egui::Button::new("").fill(if selected { egui::Color32::from_rgb(122, 91, 53) } else { soft })).clicked() { self.selected_friend = None; }
+        ui.painter().circle_filled(egui::pos2(chat_item.left() + 22.0, chat_item.center().y), 14.0, egui::Color32::from_rgb(116, 123, 105));
+        paint_sketch_icon(ui.painter(), egui::Rect::from_center_size(egui::pos2(chat_item.left() + 22.0, chat_item.center().y), egui::vec2(22.0, 22.0)), "users", cream);
+        ui.put(egui::Rect::from_min_size(egui::pos2(chat_item.left() + 42.0, chat_item.top() + 7.0), egui::vec2(chats.width() - 78.0, 19.0)),
+            egui::Label::new(egui::RichText::new("ĞĞ±Ñ‰Ğ¸Ğ¹ Ñ‡Ğ°Ñ‚").size(12.0).strong().color(if selected { cream } else { cream })));
+        let latest_preview = self.chat_text.lines().rev().find_map(|line| line.split_once(": ").map(|(_, body)| body.trim())).unwrap_or("Ğ¢Ğ°Ğ²ĞµÑ€Ğ½Ğ°: Ğ¾Ğ±ÑÑƒĞ¶Ğ´ĞµĞ½Ğ¸Ñ Ğ¸ Ğ¿Ğ»Ğ°Ğ½Ñ‹");
+        ui.put(egui::Rect::from_min_size(egui::pos2(chat_item.left() + 42.0, chat_item.top() + 27.0), egui::vec2(chats.width() - 54.0, 17.0)),
+            egui::Label::new(egui::RichText::new(latest_preview.chars().take(25).collect::<String>()).size(10.0).color(secondary)).truncate());
+        let list_rect = egui::Rect::from_min_max(chats.min + egui::vec2(6.0, 108.0), chats.right_bottom() - egui::vec2(6.0, 8.0));
+        ui.allocate_ui_at_rect(list_rect, |list_ui| {
+            egui::ScrollArea::vertical().auto_shrink([false, false]).show(list_ui, |list_ui| {
+                for name in self.friends.clone() {
+                    let active = self.selected_friend.as_deref() == Some(name.as_str());
+                    let row_rect = egui::Rect::from_min_size(list_ui.cursor().min, egui::vec2(list_ui.available_width(), 48.0));
+                    let row = list_ui.put(row_rect, egui::Button::new("").fill(if active { egui::Color32::from_rgb(76, 61, 41) } else { surface }));
+                    list_ui.painter().circle_filled(egui::pos2(row_rect.left() + 18.0, row_rect.center().y), 12.0, egui::Color32::from_rgb(80, 105, 91));
+                    let initials = name.chars().next().unwrap_or('?').to_uppercase().to_string();
+                    list_ui.put(egui::Rect::from_center_size(egui::pos2(row_rect.left() + 18.0, row_rect.center().y), egui::vec2(20.0, 20.0)),
+                        egui::Label::new(egui::RichText::new(initials).size(11.0).strong().color(cream)).halign(egui::Align::Center));
+                    list_ui.put(egui::Rect::from_min_size(egui::pos2(row_rect.left() + 36.0, row_rect.top() + 5.0), egui::vec2(row_rect.width() - 42.0, 18.0)),
+                        egui::Label::new(egui::RichText::new(&name).size(12.0).strong().color(if active { amber } else { cream })));
+                    list_ui.put(egui::Rect::from_min_size(egui::pos2(row_rect.left() + 36.0, row_rect.top() + 24.0), egui::vec2(row_rect.width() - 42.0, 16.0)),
+                        egui::Label::new(egui::RichText::new("Ğ›Ğ¸Ñ‡Ğ½Ñ‹Ğµ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ñ").size(10.0).color(secondary)));
+                    if row.clicked() { self.selected_friend = Some(name.clone()); self.load_selected_profile(); }
+                    list_ui.add_space(3.0);
+                }
+            });
+        });
+
+        let title_bar = egui::Rect::from_min_size(main.min + egui::vec2(14.0, 10.0), egui::vec2(main.width() - 28.0, 39.0));
+        let room = egui::Rect::from_min_size(title_bar.min, egui::vec2(32.0, 32.0));
+        ui.painter().circle_filled(room.center(), 16.0, soft);
+        paint_sketch_icon(ui.painter(), room.shrink(6.0), "users", cream);
+        let more_rect = egui::Rect::from_min_size(egui::pos2(title_bar.right() - 31.0, title_bar.top() + 1.0), egui::vec2(30.0, 30.0));
+        let phone_rect = egui::Rect::from_min_size(egui::pos2(more_rect.left() - 38.0, more_rect.top()), egui::vec2(30.0, 30.0));
+        let search_rect = egui::Rect::from_min_size(egui::pos2(phone_rect.left() - 38.0, phone_rect.top()), egui::vec2(30.0, 30.0));
+        let title_text_width = (search_rect.left() - title_bar.left() - 54.0).max(54.0);
+        ui.put(egui::Rect::from_min_size(title_bar.min + egui::vec2(48.0, 0.0), egui::vec2(title_text_width, 23.0)),
+            egui::Label::new(egui::RichText::new("ĞĞ±Ñ‰Ğ¸Ğ¹ Ñ‡Ğ°Ñ‚").size(17.0).strong().color(cream)).truncate());
+        ui.put(egui::Rect::from_min_size(title_bar.min + egui::vec2(48.0, 22.0), egui::vec2(title_text_width, 16.0)),
+            egui::Label::new(egui::RichText::new(format!("{} ÑƒÑ‡Ğ°ÑÑ‚Ğ½Ğ¸ĞºĞ°", self.friends.len() + 1)).size(10.0).color(secondary)));
+        if ui.put(more_rect, egui::Button::new("").fill(soft)).clicked() { self.show_clear_chat_confirmation = true; }
+        paint_sketch_icon(ui.painter(), more_rect.shrink(7.0), "more", cream);
+        let search_resp = ui.put(search_rect, egui::Button::new("").fill(soft)).on_hover_text("ĞŸĞ¾Ğ¸ÑĞº Ğ¿Ğ¾ Ñ‡Ğ°Ñ‚Ñƒ");
+        paint_sketch_icon(ui.painter(), search_rect.shrink(6.0), "search", cream);
+        if search_resp.clicked() { self.status = "ĞŸĞ¾Ğ¸ÑĞº Ğ¿Ğ¾ Ğ¸ÑÑ‚Ğ¾Ñ€Ğ¸Ğ¸ ÑĞºĞ¾Ñ€Ğ¾ Ğ¿Ğ¾ÑĞ²Ğ¸Ñ‚ÑÑ.".into(); }
+        if ui.put(phone_rect, egui::Button::new("").fill(soft)).on_hover_text("Ğ“Ğ¾Ğ»Ğ¾ÑĞ¾Ğ²Ğ¾Ğ¹ Ğ²Ñ‹Ğ·Ğ¾Ğ²").clicked() {
+            #[cfg(feature = "voice")]
+            { self.voice_open = true; }
+            #[cfg(not(feature = "voice"))]
+            { self.status = "Ğ“Ğ¾Ğ»Ğ¾ÑĞ¾Ğ²Ñ‹Ğµ Ğ²Ñ‹Ğ·Ğ¾Ğ²Ñ‹ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ñ‹ Ğ² ÑĞ±Ğ¾Ñ€ĞºĞµ Ñ feature voice.".into(); }
+        }
+        paint_sketch_icon(ui.painter(), phone_rect.shrink(6.0), "phone", cream);
+        ui.painter().line_segment([egui::pos2(main.left() + 14.0, main.top() + 56.0), egui::pos2(main.right() - 14.0, main.top() + 56.0)], egui::Stroke::new(1.0, egui::Color32::from_rgb(46, 66, 55)));
+
+        let compose_h = 50.0;
+        let messages = egui::Rect::from_min_max(egui::pos2(main.left() + 6.0, main.top() + 90.0), egui::pos2(main.right() - 6.0, main.bottom() - compose_h - 20.0));
+        ui.painter().rect_filled(messages, 12.0, inset);
+        let today = egui::Rect::from_center_size(egui::pos2(main.center().x, main.top() + 72.0), egui::vec2(62.0, 22.0));
+        ui.painter().rect_filled(today, 11.0, surface);
+        ui.put(today, egui::Label::new(egui::RichText::new("Ğ¡ĞµĞ³Ğ¾Ğ´Ğ½Ñ").size(10.0).color(secondary)).halign(egui::Align::Center));
+        let smiles = self.smiley_textures.clone();
+        let styles = self.chat_styles.clone();
+        ui.allocate_ui_at_rect(messages.shrink(8.0), |content| {
+            egui::ScrollArea::vertical().stick_to_bottom(true).auto_shrink([false, false]).show(content, |content| {
+                for line in self.chat_text.lines() {
+                    if let Some((author, body)) = line.split_once(": ") {
+                        let is_self = self.current_user.as_ref().map(|user| user.username == author).unwrap_or(false);
+                        content.with_layout(if is_self { egui::Layout::right_to_left(egui::Align::Min) } else { egui::Layout::left_to_right(egui::Align::Min) }, |content| {
+                            egui::Frame::none().fill(if is_self { egui::Color32::from_rgb(88, 68, 44) } else { soft }).rounding(egui::Rounding::same(8.0)).inner_margin(egui::Margin::symmetric(14.0, 9.0)).show(content, |bubble| {
+                                bubble.set_max_width(messages.width() * 0.72);
+                                bubble.vertical(|bubble| {
+                                    bubble.label(egui::RichText::new(author).size(12.0).strong().color(if is_self { amber } else { egui::Color32::from_rgb(190, 198, 184) }));
+                                    show_chat_line(bubble, body, &smiles, &styles, true);
+                                });
+                            });
+                        });
+                    } else {
+                        content.horizontal(|content| {
+                            content.add_space(content.available_width() * 0.3);
+                            egui::Frame::none().fill(surface).rounding(egui::Rounding::same(8.0)).inner_margin(egui::Margin::symmetric(12.0, 6.0)).show(content, |system| {
+                                system.label(egui::RichText::new(line).size(12.0).color(secondary));
+                            });
+                        });
+                    }
+                    content.add_space(9.0);
+                }
+            });
+        });
+
+        let compose = egui::Rect::from_min_max(egui::pos2(main.left() + 6.0, main.bottom() - compose_h - 10.0), egui::pos2(main.right() - 6.0, main.bottom() - 10.0));
+        ui.painter().rect_filled(compose, 12.0, soft);
+        let attach = egui::Rect::from_min_size(compose.min + egui::vec2(4.0, 5.0), egui::vec2(34.0, 38.0));
+        if ui.put(attach, egui::Button::new("").fill(egui::Color32::TRANSPARENT)).on_hover_text("ĞŸÑ€Ğ¸ĞºÑ€ĞµĞ¿Ğ»ĞµĞ½Ğ¸Ğµ Ğ¸Ğ·Ğ¾Ğ±Ñ€Ğ°Ğ¶ĞµĞ½Ğ¸Ğ¹ Ğ² Ğ¾Ñ€Ğ¸Ğ³Ğ¸Ğ½Ğ°Ğ»ÑŒĞ½Ğ¾Ğ¼ ĞºĞ»Ğ¸ĞµĞ½Ñ‚Ğµ Ğ¾Ñ‚ĞºĞ»ÑÑ‡ĞµĞ½Ğ¾").clicked() {
+            self.status = "ĞŸÑ€Ğ¸ĞºÑ€ĞµĞ¿Ğ»ĞµĞ½Ğ¸Ğµ Ğ¸Ğ·Ğ¾Ğ±Ñ€Ğ°Ğ¶ĞµĞ½Ğ¸Ğ¹ Ğ² Ğ¾Ñ€Ğ¸Ğ³Ğ¸Ğ½Ğ°Ğ»ÑŒĞ½Ğ¾Ğ¼ ĞºĞ»Ğ¸ĞµĞ½Ñ‚Ğµ Ğ¾Ñ‚ĞºĞ»ÑÑ‡ĞµĞ½Ğ¾.".into();
+        }
+        paint_sketch_icon(ui.painter(), attach.shrink(8.0), "attach", cream);
+        let send = egui::Rect::from_min_size(egui::pos2(compose.right() - 42.0, compose.top() + 7.0), egui::vec2(34.0, 34.0));
+        if ui.put(send, egui::Button::new("").fill(amber)).clicked() { self.send_chat(); }
+        paint_sketch_icon(ui.painter(), send.shrink(5.0), "send", egui::Color32::from_rgb(24, 34, 28));
+        let emoji = egui::Rect::from_min_size(egui::pos2(send.left() - 38.0, compose.top() + 5.0), egui::vec2(30.0, 38.0));
+        if ui.put(emoji, egui::Button::new("").fill(egui::Color32::TRANSPARENT)).on_hover_text("Ğ¡Ğ¼Ğ°Ğ¹Ğ»Ğ¸ĞºĞ¸").clicked() { self.show_smileys = !self.show_smileys; }
+        paint_sketch_icon(ui.painter(), emoji.shrink(6.0), "smile", cream);
+        let input = egui::Rect::from_min_max(egui::pos2(attach.right() + 6.0, compose.top() + 5.0), egui::pos2(emoji.left() - 6.0, compose.bottom() - 5.0));
+        ui.put(input, egui::TextEdit::multiline(&mut self.draft).desired_rows(2).hint_text("Ğ¡Ğ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğµâ€¦").desired_width(input.width()));
+        if self.show_smileys {
+            let picker = egui::Rect::from_min_size(egui::pos2(compose.left() + 6.0, (compose.top() - 132.0).max(main.top() + 60.0)), egui::vec2(156.0, 124.0));
+            ui.painter().rect_filled(picker, 8.0, soft);
+            ui.painter().rect_stroke(picker, 8.0, egui::Stroke::new(1.0, egui::Color32::from_rgb(56, 77, 64)));
+            ui.allocate_ui_at_rect(picker, |picker_ui| {
+                egui::Grid::new("chat-smiley-picker").num_columns(4).spacing(egui::vec2(4.0, 4.0)).show(picker_ui, |picker_ui| {
+                    for (index, (code, texture)) in self.smiley_textures.clone().into_iter().enumerate() {
+                        if picker_ui.add(egui::Image::new((texture.id(), egui::vec2(28.0, 28.0))).sense(egui::Sense::click())).clicked() {
+                            self.add_smiley(&code);
+                            self.show_smileys = false;
+                        }
+                        if index % 4 == 3 { picker_ui.end_row(); }
+                    }
+                });
+            });
+        }
+        if !self.status.is_empty() {
+            let color = if self.status.starts_with("ĞÑˆĞ¸Ğ±ĞºĞ°") || self.status.starts_with("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ") { egui::Color32::from_rgb(239, 117, 105) } else { secondary };
+            ui.put(egui::Rect::from_min_size(egui::pos2(main.left() + 18.0, compose.top() - 21.0), egui::vec2(main.width() - 36.0, 18.0)),
+                egui::Label::new(egui::RichText::new(self.status.clone()).size(9.0).color(color)).truncate())
+                .on_hover_text(self.status.clone());
+        }
+
+        if self.profile_expanded {
+            ui.put(egui::Rect::from_min_size(details.min + egui::vec2(14.0, 12.0), egui::vec2(details.width() - 28.0, 24.0)),
+                egui::Label::new(egui::RichText::new("Ğ£Ñ‡Ğ°ÑÑ‚Ğ½Ğ¸Ğº").size(14.0).strong().color(cream)));
+            let avatar = egui::Rect::from_min_size(egui::pos2(details.left() + 14.0, details.top() + 48.0), egui::vec2(52.0, 52.0));
+            if let Some(texture) = &self.avatar_texture {
+                ui.put(avatar, egui::Image::new((texture.id(), avatar.size())));
+            } else {
+                ui.painter().circle_filled(avatar.center(), 26.0, egui::Color32::from_rgb(77, 95, 78));
+                if let Some(user) = &self.current_user {
+                    let initial = user.username.chars().next().unwrap_or('?').to_uppercase().to_string();
+                    ui.put(egui::Rect::from_center_size(avatar.center(), egui::vec2(28.0, 28.0)),
+                        egui::Label::new(egui::RichText::new(initial).size(18.0).strong().color(cream)).halign(egui::Align::Center));
+                }
+            }
+            if let Some(user) = &self.current_user {
+                ui.put(egui::Rect::from_min_size(egui::pos2(avatar.right() + 9.0, avatar.top() + 5.0), egui::vec2(details.width() - 84.0, 22.0)),
+                    egui::Label::new(egui::RichText::new(&user.username).size(12.0).strong().color(cream)).truncate());
+                ui.painter().circle_filled(egui::pos2(avatar.right() + 13.0, avatar.top() + 37.0), 3.5, green);
+                ui.put(egui::Rect::from_min_size(egui::pos2(avatar.right() + 21.0, avatar.top() + 28.0), egui::vec2(75.0, 18.0)),
+                    egui::Label::new(egui::RichText::new(if self.connected { "Ğ’ ÑĞµÑ‚Ğ¸" } else { "ĞĞµ Ğ² ÑĞµÑ‚Ğ¸" }).size(10.0).color(secondary)));
+            }
+            ui.painter().line_segment([egui::pos2(details.left() + 12.0, details.top() + 118.0), egui::pos2(details.right() - 12.0, details.top() + 118.0)], egui::Stroke::new(1.0, egui::Color32::from_rgb(46, 66, 55)));
+            for (index, (icon, label, action)) in [
+                ("profile", "ĞŸÑ€Ğ¾Ñ„Ğ¸Ğ»ÑŒ", "profile"),
+                ("bell", "Ğ£Ğ²ĞµĞ´Ğ¾Ğ¼Ğ»ĞµĞ½Ğ¸Ñ", "inbox"),
+                ("file", "Ğ¤Ğ°Ğ¹Ğ»Ñ‹", "files"),
+                ("link", "Ğ¡ÑÑ‹Ğ»ĞºĞ¸", "links"),
+                ("users", "ĞĞ±Ñ‰Ğ¸Ğµ Ğ³Ñ€ÑƒĞ¿Ğ¿Ñ‹", "groups"),
+            ].iter().enumerate() {
+                let row = egui::Rect::from_min_size(egui::pos2(details.left() + 8.0, details.top() + 126.0 + index as f32 * 34.0), egui::vec2(details.width() - 16.0, 30.0));
+                if ui.interact(row, egui::Id::new(("profile-menu-row", index)), egui::Sense::click()).clicked() {
+                    match *action {
+                        "profile" => self.edit_profile_open = true,
+                        "inbox" => self.load_inbox(),
+                        "files" => self.status = "Ğ’Ğ»Ğ¾Ğ¶ĞµĞ½Ğ¸Ñ Ğ¸Ğ·Ğ¾Ğ±Ñ€Ğ°Ğ¶ĞµĞ½Ğ¸Ğ¹ Ğ¿Ğ¾ĞºĞ° Ğ½ĞµĞ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ñ‹.".into(),
+                        "links" => self.status = "Ğ¡Ğ¾Ñ…Ñ€Ğ°Ğ½Ñ‘Ğ½Ğ½Ñ‹Ğµ ÑÑÑ‹Ğ»ĞºĞ¸ Ğ¿Ğ¾ĞºĞ° Ğ½ĞµĞ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ñ‹.".into(),
+                        _ => self.status = "Ğ”Ğ¾ÑÑ‚ÑƒĞ¿ĞµĞ½ Ñ‚Ğ¾Ğ»ÑŒĞºĞ¾ Ğ¾Ğ±Ñ‰Ğ¸Ğ¹ Ñ‡Ğ°Ñ‚.".into(),
+                    }
+                }
+                paint_sketch_icon(ui.painter(), egui::Rect::from_min_size(row.min + egui::vec2(8.0, 4.0), egui::vec2(22.0, 22.0)), icon, cream);
+                ui.painter().text(
+                    egui::pos2(row.left() + 46.0, row.center().y),
+                    egui::Align2::LEFT_CENTER,
+                    *label,
+                    egui::FontId::proportional(11.0),
+                    cream,
+                );
+                if *action == "groups" {
+                    let badge = egui::Rect::from_min_size(egui::pos2(row.right() - 23.0, row.top() + 4.0), egui::vec2(19.0, 21.0));
+                    ui.painter().rect_filled(badge, 6.0, egui::Color32::from_rgb(122, 91, 53));
+                    ui.put(badge, egui::Label::new(egui::RichText::new("1").size(10.0).color(cream)).halign(egui::Align::Center));
+                }
+            }
+        }
+        ui.painter().rect_stroke(full, 18.0, egui::Stroke::new(1.0, egui::Color32::from_rgb(56, 77, 64)));
+    }
+
+    fn show_legacy_profile_window(&mut self, ctx: &egui::Context) {
+        if !self.edit_profile_open {
+            return;
+        }
+        let mut open = self.edit_profile_open;
+        let mut close_requested = false;
+        egui::Window::new("Ğ ĞµĞ´Ğ°ĞºÑ‚Ğ¸Ñ€Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ¿Ñ€Ğ¾Ñ„Ğ¸Ğ»Ñ")
+            .id(egui::Id::new("legacy-edit-profile-window"))
+            .title_bar(false)
+            .collapsible(false)
+            .resizable(false)
+            .fixed_size([720.0, 480.0])
+            .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+            .frame(egui::Frame::none())
+            .open(&mut open)
+            .show(ctx, |ui| {
+                let rect = ui.max_rect();
+                let origin = rect.min;
+                let dark = self.dark_theme;
+                let background = egui::Color32::from_rgb(13, 24, 20);
+                let surface = egui::Color32::from_rgb(22, 37, 31);
+                let inset = egui::Color32::from_rgb(12, 24, 20);
+                let border = egui::Color32::from_rgb(56, 77, 64);
+                let amber = egui::Color32::from_rgb(232, 170, 91);
+                let cream = egui::Color32::from_rgb(235, 231, 219);
+                let secondary = egui::Color32::from_rgb(159, 173, 163);
+                let foreground = if dark { cream } else { egui::Color32::from_rgb(35, 46, 39) };
+                let painter = ui.painter().clone();
+                painter.rect_filled(rect, 16.0, background);
+                let title = egui::Rect::from_min_size(origin, egui::vec2(rect.width(), 48.0));
+                painter.rect_filled(title, 16.0, egui::Color32::from_rgb(11, 20, 17));
+                painter.rect_filled(egui::Rect::from_min_size(title.min + egui::vec2(0.0, 18.0), egui::vec2(title.width(), 30.0)), 0.0, egui::Color32::from_rgb(11, 20, 17));
+                painter.line_segment([title.left_bottom(), title.right_bottom()], egui::Stroke::new(1.0, border));
+                painter.text(origin + egui::vec2(22.0, 24.0), egui::Align2::LEFT_CENTER, "ĞŸÑ€Ğ¾Ñ„Ğ¸Ğ»ÑŒ", egui::FontId::proportional(18.0), cream);
+                painter.text(origin + egui::vec2(103.0, 24.0), egui::Align2::LEFT_CENTER, "Ğ›Ğ¸Ñ‡Ğ½Ñ‹Ğµ Ğ´Ğ°Ğ½Ğ½Ñ‹Ğµ Ğ¸ Ñ„Ğ¾Ñ‚Ğ¾Ğ³Ñ€Ğ°Ñ„Ğ¸Ñ", egui::FontId::proportional(12.0), secondary);
+                let close = egui::Rect::from_min_size(egui::pos2(rect.right() - 42.0, rect.top() + 7.0), egui::vec2(32.0, 32.0));
+                if ui.put(close, egui::Button::new(egui::RichText::new("Ã—").size(19.0).color(cream)).fill(surface)).clicked() {
+                    close_requested = true;
+                }
+
+                let card = legacy_rect(origin, 14.0, 62.0, 692.0, 346.0);
+                painter.rect_filled(card, 12.0, surface);
+                painter.rect_stroke(card, 12.0, egui::Stroke::new(1.0, border));
+                let avatar_frame = egui::Rect::from_center_size(egui::pos2(origin.x + 106.0, origin.y + 183.0), egui::vec2(136.0, 136.0));
+                painter.circle_filled(avatar_frame.center(), 68.0, inset);
+                if let Some(texture) = &self.avatar_texture {
+                    ui.put(avatar_frame, egui::Image::new((texture.id(), avatar_frame.size())));
+                } else {
+                    paint_sketch_icon(ui.painter(), avatar_frame.shrink(45.0), "profile", cream);
+                }
+                painter.circle_stroke(avatar_frame.center(), 68.0, egui::Stroke::new(2.0, amber));
+                painter.text(egui::pos2(origin.x + 106.0, origin.y + 266.0), egui::Align2::CENTER_CENTER, "Ğ¤Ğ¾Ñ‚Ğ¾ Ğ¿Ñ€Ğ¾Ñ„Ğ¸Ğ»Ñ", egui::FontId::proportional(13.0), cream);
+                if ui.put(legacy_rect(origin, 33.0, 291.0, 146.0, 36.0), egui::Button::new(egui::RichText::new("Ğ¡Ğ¼ĞµĞ½Ğ¸Ñ‚ÑŒ Ñ„Ğ¾Ñ‚Ğ¾").size(12.0).color(cream)).fill(inset)).clicked() {
+                    self.choose_avatar();
+                }
+
+                let field = |ui: &mut egui::Ui, x: f32, y: f32, label: &str, value: &mut String, secret: bool| {
+                    legacy_text(ui, legacy_rect(origin, x, y, 220.0, 20.0), label, secondary, 12.0);
+                    legacy_text_edit(ui, legacy_rect(origin, x, y + 22.0, 220.0, 34.0), value, "", secret, foreground);
+                };
+                field(ui, 210.0, 84.0, "ĞĞ°ÑÑ‚Ğ¾ÑÑ‰ĞµĞµ Ğ¸Ğ¼Ñ", &mut self.profile_name, false);
+                field(ui, 456.0, 84.0, "ĞĞ¸ĞºĞ½ĞµĞ¹Ğ¼", &mut self.profile_username, false);
+                field(ui, 210.0, 157.0, "ĞŸĞ¾Ñ‡Ñ‚Ğ°", &mut self.profile_email, false);
+                field(ui, 456.0, 157.0, "Ğ¢ĞµĞ»ĞµÑ„Ğ¾Ğ½", &mut self.profile_mobile, false);
+                painter.text(origin + egui::vec2(210.0, 232.0), egui::Align2::LEFT_CENTER, "Ğ¡Ğ¼ĞµĞ½Ğ¸Ñ‚ÑŒ Ğ¿Ğ°Ñ€Ğ¾Ğ»ÑŒ (Ğ½ĞµĞ¾Ğ±ÑĞ·Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ğ¾)", egui::FontId::proportional(12.0), secondary);
+                field(ui, 210.0, 252.0, "ĞĞ¾Ğ²Ñ‹Ğ¹ Ğ¿Ğ°Ñ€Ğ¾Ğ»ÑŒ", &mut self.new_password, true);
+                field(ui, 456.0, 252.0, "ĞŸĞ¾Ğ²Ñ‚Ğ¾Ñ€Ğ¸Ñ‚Ğµ Ğ¿Ğ°Ñ€Ğ¾Ğ»ÑŒ", &mut self.repeat_password, true);
+
+                if legacy_button(
+                    ui,
+                    legacy_rect(origin, 452.0, 425.0, 240.0, 38.0),
+                    "Ğ¡Ğ¾Ñ…Ñ€Ğ°Ğ½Ğ¸Ñ‚ÑŒ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ñ",
+                    amber,
+                    egui::Color32::from_rgb(28, 32, 29),
+                    14.0,
+                ).clicked() {
+                    self.save_profile();
+                    if !self.status.starts_with("ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ") && !self.status.starts_with("Ğ˜Ğ¼Ñ,") {
+                        self.edit_profile_open = false;
+                    }
+                }
+                painter.rect_stroke(rect.shrink(0.5), 16.0, egui::Stroke::new(1.0, border));
+            });
+        if close_requested { open = false; }
+        self.edit_profile_open = open && self.edit_profile_open;
+    }
+
+    fn show_legacy_chat_style_window(&mut self, ctx: &egui::Context) {
+        if !self.chat_style_open {
+            return;
+        }
+        let mut open = self.chat_style_open;
+        let mut close_requested = false;
+        let mut save_requested = false;
+
+        egui::Window::new("ĞÑ„Ğ¾Ñ€Ğ¼Ğ»ĞµĞ½Ğ¸Ğµ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğ¹")
+            .id(egui::Id::new("legacy-chat-style-window"))
+            .title_bar(false)
+            .collapsible(false)
+            .resizable(false)
+            .fixed_size([420.0, 292.0])
+            .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+            .frame(egui::Frame::none())
+            .open(&mut open)
+            .show(ctx, |ui| {
+                let rect = ui.max_rect();
+                let origin = rect.min;
+                let bg = if self.dark_theme { egui::Color32::BLACK } else { egui::Color32::WHITE };
+                let fg = if self.dark_theme { egui::Color32::WHITE } else { egui::Color32::BLACK };
+                let border = if self.dark_theme { egui::Color32::DARK_GRAY } else { egui::Color32::GRAY };
+                ui.painter().rect_filled(rect, 0.0, bg);
+                ui.painter().rect_filled(
+                    legacy_rect(origin, 0.0, 0.0, 420.0, 35.0),
+                    0.0,
+                    egui::Color32::from_rgb(0, 0, 128),
+                );
+                legacy_static_image(ui, &self.ui_textures, "chat_icon", legacy_rect(origin, 0.0, 0.0, 35.0, 35.0));
+                if let Some(response) = legacy_image_button(
+                    ui,
+                    &self.ui_textures,
+                    "close",
+                    legacy_rect(origin, 379.0, 0.0, 35.0, 35.0),
+                ) {
+                    if response.clicked() { close_requested = true; }
+                }
+                legacy_text(ui, legacy_rect(origin, 48.0, 5.0, 300.0, 25.0), "ĞÑ„Ğ¾Ñ€Ğ¼Ğ»ĞµĞ½Ğ¸Ğµ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğ¹", egui::Color32::WHITE, 16.0);
+
+                legacy_group(ui, legacy_rect(origin, 18.0, 47.0, 384.0, 178.0), bg, border);
+
+                legacy_text(ui, legacy_rect(origin, 32.0, 59.0, 112.0, 24.0), "Ğ¦Ğ²ĞµÑ‚ Ñ‚ĞµĞºÑÑ‚Ğ°", fg, 13.0);
+                ui.allocate_ui_at_rect(legacy_rect(origin, 160.0, 56.0, 70.0, 28.0), |color_ui| {
+                    color_ui.color_edit_button_srgba(&mut self.chat_style_color);
+                });
+
+                legacy_text(ui, legacy_rect(origin, 32.0, 96.0, 112.0, 24.0), "Ğ¨Ñ€Ğ¸Ñ„Ñ‚", fg, 13.0);
+                ui.allocate_ui_at_rect(legacy_rect(origin, 160.0, 90.0, 220.0, 28.0), |font_ui| {
+                    egui::ComboBox::from_id_salt("legacy-chat-font")
+                        .width(210.0)
+                        .selected_text(&self.chat_style_font)
+                        .show_ui(font_ui, |ui| {
+                            for font in ["Candara", "Arial", "Tahoma", "Verdana", "Consolas"] {
+                                ui.selectable_value(&mut self.chat_style_font, font.to_string(), font);
+                            }
+                        });
+                });
+
+                legacy_text(
+                    ui,
+                    legacy_rect(origin, 32.0, 135.0, 112.0, 24.0),
+                    format!("Ğ Ğ°Ğ·Ğ¼ĞµÑ€: {} pt", self.chat_style_size),
+                    fg,
+                    13.0,
+                );
+                ui.allocate_ui_at_rect(legacy_rect(origin, 160.0, 130.0, 220.0, 30.0), |size_ui| {
+                    size_ui.add(egui::Slider::new(&mut self.chat_style_size, 10..=36).show_value(false));
+                });
+
+                legacy_text(ui, legacy_rect(origin, 32.0, 176.0, 112.0, 24.0), "ĞĞ°Ñ‡ĞµÑ€Ñ‚Ğ°Ğ½Ğ¸Ğµ", fg, 13.0);
+                ui.allocate_ui_at_rect(legacy_rect(origin, 160.0, 169.0, 220.0, 28.0), |style_ui| {
+                    egui::ComboBox::from_id_salt("legacy-chat-style")
+                        .width(210.0)
+                        .selected_text(&self.chat_style_effect)
+                        .show_ui(style_ui, |ui| {
+                            for effect in ["Regular", "Bold", "Italic", "Underline", "Strikeout"] {
+                                ui.selectable_value(&mut self.chat_style_effect, effect.to_string(), effect);
+                            }
+                        });
+                });
+
+                legacy_text(ui, legacy_rect(origin, 32.0, 235.0, 110.0, 22.0), "ĞŸÑ€Ğ¸Ğ¼ĞµÑ€", fg, 13.0);
+                let preview_style = ChatStyle {
+                    color: legacy_color_hex(self.chat_style_color),
+                    font: self.chat_style_font.clone(),
+                    font_size: self.chat_style_size,
+                    font_style: self.chat_style_effect.clone(),
+                };
+                let preview_rect = legacy_rect(origin, 150.0, 229.0, 230.0, 30.0);
+                legacy_group(ui, preview_rect, bg, border);
+                ui.put(
+                    legacy_rect(origin, 158.0, 231.0, 216.0, 26.0),
+                    egui::Label::new(styled_rich_text("ĞŸÑ€Ğ¸Ğ²ĞµÑ‚! Ğ­Ñ‚Ğ¾ Ğ¿Ñ€Ğ¸Ğ¼ĞµÑ€ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ñ.", Some(&preview_style), self.dark_theme)),
+                );
+
+                if legacy_button(
+                    ui,
+                    legacy_rect(origin, 215.0, 263.0, 165.0, 25.0),
+                    "Ğ¡Ğ¾Ñ…Ñ€Ğ°Ğ½Ğ¸Ñ‚ÑŒ",
+                    egui::Color32::BLACK,
+                    egui::Color32::WHITE,
+                    14.0,
+                ).clicked() {
+                    save_requested = true;
+                }
+            });
+
+        if close_requested { open = false; }
+        self.chat_style_open = open && self.chat_style_open;
+        if save_requested {
+            self.save_chat_style();
+            self.chat_style_open = false;
+        }
+    }
+}
+
+
+impl TsChatApp {
+    fn show_legacy_friend_profile_window(&mut self, ctx: &egui::Context) {
+        if !self.show_friend_profile {
+            return;
+        }
+        let mut open = self.show_friend_profile;
+        let mut close_requested = false;
+        let mut send_requested = false;
+        let profile = self.friend_profile.clone();
+
+        egui::Window::new("ĞŸÑ€Ğ¾Ñ„Ğ¸Ğ»ÑŒ Ğ´Ñ€ÑƒĞ³Ğ°")
+            .id(egui::Id::new("legacy-friend-profile-window"))
+            .title_bar(false)
+            .collapsible(false)
+            .resizable(false)
+            .fixed_size([595.0, 356.0])
+            .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+            .frame(egui::Frame::none())
+            .open(&mut open)
+            .show(ctx, |ui| {
+                let rect = ui.max_rect();
+                let origin = rect.min;
+                let dark = self.dark_theme;
+                let bg = if dark { egui::Color32::BLACK } else { egui::Color32::WHITE };
+                let fg = if dark { egui::Color32::WHITE } else { egui::Color32::BLACK };
+                ui.painter().rect_filled(rect, 0.0, bg);
+
+                ui.painter().rect_filled(
+                    legacy_rect(origin, 0.0, 0.0, 595.0, 35.0),
+                    0.0,
+                    egui::Color32::from_rgb(0, 0, 128),
+                );
+                legacy_static_image(ui, &self.ui_textures, "chat_icon", legacy_rect(origin, 1.0, 0.0, 35.0, 35.0));
+                legacy_static_image(ui, &self.ui_textures, "minimize", legacy_rect(origin, 516.0, 0.0, 35.0, 35.0));
+                if let Some(response) = legacy_image_button(
+                    ui,
+                    &self.ui_textures,
+                    "close",
+                    legacy_rect(origin, 557.0, 0.0, 35.0, 35.0),
+                ) {
+                    if response.clicked() {
+                        close_requested = true;
+                    }
+                }
+
+                ui.painter().rect_filled(legacy_rect(origin, 0.0, 36.0, 595.0, 36.0), 0.0, bg);
+                legacy_text(ui, legacy_rect(origin, 12.0, 40.0, 200.0, 26.0), "ĞŸÑ€Ğ¾Ñ„Ğ¸Ğ»ÑŒ Ğ´Ñ€ÑƒĞ³Ğ°", fg, 16.0);
+
+                legacy_group(ui, legacy_rect(origin, 13.0, 78.0, 569.0, 266.0), bg, egui::Color32::DARK_GRAY);
+
+                let avatar_rect = legacy_rect(origin, 34.0, 97.0, 150.0, 150.0);
+                if let Some(texture) = &self.friend_avatar_texture {
+                    ui.painter().image(
+                        texture.id(),
+                        avatar_rect,
+                        egui::Rect::from_min_max(egui::Pos2::ZERO, egui::pos2(1.0, 1.0)),
+                        egui::Color32::WHITE,
+                    );
+                } else {
+                    ui.painter().rect_filled(avatar_rect, 0.0, egui::Color32::DARK_GRAY);
+                }
+
+                legacy_group(ui, legacy_rect(origin, 203.0, 91.0, 363.0, 238.0), bg, egui::Color32::DARK_GRAY);
+                if let Some(user) = profile.as_ref() {
+                    let labels = [
+                        ("ĞĞ°ÑÑ‚Ğ¾ÑÑ‰ĞµĞµ Ğ¸Ğ¼Ñ", &user.display_name, 107.0),
+                        ("ĞĞ¸ĞºĞ½ĞµĞ¹Ğ¼", &user.username, 155.0),
+                        ("ĞŸĞ¾Ñ‡Ñ‚Ğ°", &user.email, 199.0),
+                        ("Ğ¢ĞµĞ»ĞµÑ„Ğ¾Ğ½", &user.mobile, 293.0),
+                    ];
+                    for (label, value, y) in labels {
+                        legacy_text(ui, legacy_rect(origin, 209.0, y, 132.0, 23.0), label, fg, 11.0);
+                        legacy_text(ui, legacy_rect(origin, 347.0, y, 205.0, 23.0), value, fg, 11.0);
+                    }
+                }
+
+                let send_icon = if dark { "send_dark" } else { "send_light" };
+                if let Some(response) = legacy_image_button(
+                    ui,
+                    &self.ui_textures,
+                    send_icon,
+                    legacy_rect(origin, 82.0, 253.0, 50.0, 50.0),
+                ) {
+                    if response.clicked() {
+                        send_requested = true;
+                    }
+                }
+                let send_label = legacy_text(
+                    ui,
+                    legacy_rect(origin, 21.0, 306.0, 180.0, 23.0),
+                    "ĞÑ‚Ğ¿Ñ€Ğ°Ğ²Ğ¸Ñ‚ÑŒ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğµ",
+                    fg,
+                    11.0,
+                );
+                if send_label.clicked() {
+                    send_requested = true;
+                }
+            });
+
+        if close_requested {
+            open = false;
+        }
+        self.show_friend_profile = open && self.show_friend_profile;
+
+        if send_requested {
+            if let Some(user) = profile {
+                self.selected_friend = Some(user.username);
+                self.private_subject.clear();
+                self.private_text.clear();
+                self.private_message_open = true;
+                self.show_friend_profile = false;
+            }
+        }
+    }
+
+    fn show_legacy_private_message_window(&mut self, ctx: &egui::Context) {
+        if !self.private_message_open {
+            return;
+        }
+        let Some(recipient) = self.selected_friend.clone() else {
+            self.private_message_open = false;
+            self.status = "Ğ’Ñ‹Ğ±ĞµÑ€Ğ¸Ñ‚Ğµ ÑĞ¾Ğ±ĞµÑĞµĞ´Ğ½Ğ¸ĞºĞ° Ğ¿ĞµÑ€ĞµĞ´ Ğ¾Ñ‚Ğ¿Ñ€Ğ°Ğ²ĞºĞ¾Ğ¹ Ğ»Ğ¸Ñ‡Ğ½Ğ¾Ğ³Ğ¾ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ñ.".into();
+            return;
+        };
+
+        let mut open = self.private_message_open;
+        let mut close_requested = false;
+        let mut send_requested = false;
+
+        egui::Window::new(format!("Ğ›Ğ¸Ñ‡Ğ½Ğ¾Ğµ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğµ Ğ´Ğ»Ñ: {recipient}"))
+            .id(egui::Id::new("legacy-private-message-window"))
+            .title_bar(false)
+            .collapsible(false)
+            .resizable(false)
+            .fixed_size([643.0, 430.0])
+            .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+            .frame(egui::Frame::none())
+            .open(&mut open)
+            .show(ctx, |ui| {
+                let rect = ui.max_rect();
+                let origin = rect.min;
+                let dark = self.dark_theme;
+                let bg = if dark { egui::Color32::BLACK } else { egui::Color32::WHITE };
+                let fg = if dark { egui::Color32::WHITE } else { egui::Color32::BLACK };
+                ui.painter().rect_filled(rect, 0.0, bg);
+
+                ui.painter().rect_filled(
+                    legacy_rect(origin, 0.0, 0.0, 643.0, 35.0),
+                    0.0,
+                    egui::Color32::from_rgb(0, 0, 128),
+                );
+                legacy_static_image(ui, &self.ui_textures, "chat_icon", legacy_rect(origin, 1.0, 0.0, 35.0, 35.0));
+                legacy_static_image(ui, &self.ui_textures, "minimize", legacy_rect(origin, 564.0, 0.0, 35.0, 35.0));
+                if let Some(response) = legacy_image_button(
+                    ui,
+                    &self.ui_textures,
+                    "close",
+                    legacy_rect(origin, 605.0, 0.0, 35.0, 35.0),
+                ) {
+                    if response.clicked() {
+                        close_requested = true;
+                    }
+                }
+
+                ui.painter().rect_filled(legacy_rect(origin, 0.0, 35.0, 643.0, 36.0), 0.0, bg);
+                legacy_text(
+                    ui,
+                    legacy_rect(origin, 12.0, 39.0, 330.0, 26.0),
+                    "ĞÑ‚Ğ¿Ñ€Ğ°Ğ²Ğ¸Ñ‚ÑŒ Ğ»Ğ¸Ñ‡Ğ½Ğ¾Ğµ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğµ",
+                    fg,
+                    16.0,
+                );
+                legacy_text(
+                    ui,
+                    legacy_rect(origin, 18.0, 93.0, 260.0, 26.0),
+                    "Ğ¢ĞµĞ¼Ğ° ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ñ",
+                    fg,
+                    12.0,
+                );
+                ui.put(
+                    legacy_rect(origin, 18.0, 122.0, 606.0, 30.0),
+                    egui::TextEdit::singleline(&mut self.private_subject)
+                        .desired_width(606.0)
+                        .hint_text("Ğ¢ĞµĞ¼Ğ°")
+                        .text_color(egui::Color32::BLACK),
+                );
+                legacy_text(
+                    ui,
+                    legacy_rect(origin, 18.0, 167.0, 260.0, 26.0),
+                    "Ğ¢ĞµĞºÑÑ‚ ÑĞ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ñ",
+                    fg,
+                    12.0,
+                );
+                ui.put(
+                    legacy_rect(origin, 18.0, 196.0, 606.0, 159.0),
+                    egui::TextEdit::multiline(&mut self.private_text)
+                        .desired_width(606.0)
+                        .desired_rows(7)
+                        .hint_text("Ğ¡Ğ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğµ...")
+                        .text_color(egui::Color32::BLACK),
+                );
+
+                let send_icon = if dark { "send_dark" } else { "send_light" };
+                if let Some(response) = legacy_image_button(
+                    ui,
+                    &self.ui_textures,
+                    send_icon,
+                    legacy_rect(origin, 574.0, 361.0, 50.0, 50.0),
+                ) {
+                    if response.clicked() {
+                        send_requested = true;
+                    }
+                }
+                legacy_text(
+                    ui,
+                    legacy_rect(origin, 18.0, 371.0, 400.0, 22.0),
+                    format!("ĞŸĞ¾Ğ»ÑƒÑ‡Ğ°Ñ‚ĞµĞ»ÑŒ: {recipient}"),
+                    fg,
+                    10.0,
+                );
+            });
+
+        if close_requested {
+            open = false;
+        }
+        if send_requested {
+            self.send_private();
+            if self.status.starts_with("Ğ¡Ğ¾Ğ¾Ğ±Ñ‰ĞµĞ½Ğ¸Ğµ Ğ¾Ñ‚Ğ¿Ñ€Ğ°Ğ²Ğ»ĞµĞ½Ğ¾ Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»Ñ ") {
+                open = false;
+            }
+        }
+        self.private_message_open = open && self.private_message_open;
+    }
+}
+
+impl eframe::App for TsChatApp {
+
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        self.poll_chat_refresh(ctx);
         self.poll_inbox_load(ctx);
 
         if self.screen == Screen::Chat {
