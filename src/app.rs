@@ -1210,6 +1210,7 @@ impl TsChatApp {
         let mut edit_url_requested = false;
         let mut toggle_mute_requested = false;
         let paused = self.radio_player.as_ref().map(RadioPlayback::is_paused).unwrap_or(true);
+        let player_present = self.radio_player.is_some();
         let playing = self.radio_player.is_some() && !paused;
         let connecting = self.radio_pending.is_some();
         let displayed_radio_status = self.radio_status.clone();
@@ -1355,7 +1356,7 @@ impl TsChatApp {
                                     start_request = Some((station.url.trim().to_string(), station.name.clone()));
                                 }
                             }
-                            if controls.add_enabled(player_present_for_radio(self.radio_player.is_some()), egui::Button::new(if paused { "▶" } else { "Ⅱ" }).min_size(egui::vec2(46.0, 38.0))).clicked() {
+                            if controls.add_enabled(player_present, egui::Button::new(if paused { "▶" } else { "Ⅱ" }).min_size(egui::vec2(46.0, 38.0))).clicked() {
                                 pause_requested = true;
                             }
                             if controls.add_enabled(self.radio_player.is_some() || connecting, egui::Button::new("■").min_size(egui::vec2(46.0, 38.0))).clicked() {
@@ -1420,11 +1421,9 @@ impl TsChatApp {
                     egui::pos2(station_rect.left() + 16.0, station_rect.bottom() - 103.0),
                     egui::vec2(station_rect.width() - 32.0, 42.0),
                 );
-                ui.painter().text(
-                    status_rect.left_top(),
-                    egui::Align2::LEFT_TOP,
-                    egui::WidgetText::from(displayed_radio_status.clone()).into_galley(ui, Some(false), status_rect.width(), egui::TextStyle::Small),
-                    status_color,
+                ui.put(
+                    status_rect,
+                    egui::Label::new(egui::RichText::new(displayed_radio_status.clone()).size(11.0).color(status_color)).wrap(),
                 );
 
                 let sound_label = if muted { "Звук выключен" } else { "Громкость" };
