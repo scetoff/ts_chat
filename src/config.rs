@@ -31,27 +31,35 @@ pub struct RadioStation {
 
 impl Default for RadioConfig {
     fn default() -> Self {
-        let names = [
-            "Музыка без АП",
-            "Русский рок",
-            "Европа Плюс",
-            "Radio Cafe",
-            "Дорожное радио",
-            "Старое Радио",
-            "VIP MIX Radio",
-            "Record Dubstep",
-            "Chillout Radio",
-            "Радио Джаз",
-            "Радио Книга",
-            "Супердискотека 90-х",
-            "Ambient Sleeping Pill",
-            "DrumandBass.FM",
-            "Tecktonik",
+        let stations = [
+            ("Музыка без АП", ""),
+            ("Русский рок", ""),
+            ("Европа Плюс", "https://europaplus.hostingradio.ru:8030/ep128"),
+            ("Radio Cafe", ""),
+            ("Дорожное радио", "https://dorognoe.hostingradio.ru/dorognoe"),
+            ("Старое Радио", ""),
+            ("VIP MIX Radio", ""),
+            ("Record Dubstep", ""),
+            ("Chillout Radio", ""),
+            ("Радио Джаз", ""),
+            ("Радио Книга", ""),
+            ("Супердискотека 90-х", ""),
+            ("Ambient Sleeping Pill", ""),
+            ("DrumandBass.FM", ""),
+            ("Tecktonik", ""),
+            ("Радио Шансон", "https://chanson.hostingradio.ru:8041/chanson128.mp3"),
+            ("DFM радио", "https://dfm.hostingradio.ru/dfm128.mp3"),
+            ("Радио Рекорд · основной эфир", "https://radiorecord.hostingradio.ru/rr_main96.aacp"),
+            ("Наше радио", "https://nashe1.hostingradio.ru/nashe-128.mp3"),
+            ("НАШЕ · Панки хой!", "https://nashe1.hostingradio.ru:18000/nashepunks.mp3"),
+            ("Радио JAZZ 89.1", "https://nashe1.hostingradio.ru/jazz-128.mp3"),
+            ("Lo-Fi Hip-Hop · Chill", "https://stream.zeno.fm/0r0xa792kwzuv"),
+            ("Nightwave Plaza", "https://radio.plaza.one/mp3"),
         ];
         Self {
-            stations: names.iter().map(|name| RadioStation {
+            stations: stations.iter().map(|(name, url)| RadioStation {
                 name: (*name).to_string(),
-                url: String::new(),
+                url: (*url).to_string(),
             }).collect(),
         }
     }
