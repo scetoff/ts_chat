@@ -588,6 +588,47 @@ impl TsChatApp {
         }
     }
 
+    fn random_tavern_avatar_base64() -> anyhow::Result<String> {
+        let sheet = image::load_from_memory(include_bytes!("../assets/tavern_avatar_sheet.png"))?.to_rgba8();
+        let cell_width = sheet.width() / 5;
+        let cell_height = sheet.height() / 2;
+        anyhow::ensure!(cell_width > 0 && cell_height > 0, "Спрайт-лист аватаров имеет неверный размер");
+
+        use std::hash::{BuildHasher, Hash, Hasher};
+        let mut random = std::collections::hash_map::RandomState::new().build_hasher();
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)?
+            .as_nanos()
+            .hash(&mut random);
+        let index = (random.finish() % 10) as u32;
+        let column = index % 5;
+        let row = index / 5;
+        let cell_size = cell_width.min(cell_height);
+        let inset = (cell_size / 40).max(2);
+        let crop_size = cell_size.saturating_sub(inset * 2);
+        let x = column * cell_width + (cell_width - crop_size) / 2;
+        let y = row * cell_height + (cell_height - crop_size) / 2;
+        let cropped = image::imageops::crop_imm(&sheet, x, y, crop_size, crop_size).to_image();
+        let mut avatar = image::imageops::resize(&cropped, 256, 256, image::imageops::FilterType::Lanczos3);
+
+        let center = 127.5_f32;
+        let radius_squared = 127.0_f32 * 127.0_f32;
+        for y in 0..256 {
+            for x in 0..256 {
+                let dx = x as f32 - center;
+                let dy = y as f32 - center;
+                if dx * dx + dy * dy > radius_squared {
+                    avatar.get_pixel_mut(x, y).0[3] = 0;
+                }
+            }
+        }
+
+        let mut png = Cursor::new(Vec::new());
+        avatar.write_to(&mut png, image::ImageFormat::Png)?;
+        use base64::Engine;
+        Ok(base64::engine::general_purpose::STANDARD.encode(png.into_inner()))
+    }
+
     fn register(&mut self) {
         if self.username.trim().is_empty() || self.password.is_empty() || self.email.trim().is_empty() {
             self.status = "Заполните никнейм, пароль и почту.".into(); return;
@@ -603,8 +644,11 @@ impl TsChatApp {
             Ok(hash) => hash,
             Err(error) => { self.status = format!("Не удалось защитить пароль: {error:#}"); return; }
         };
-        // Empty avatar is allowed by the legacy schema; the user can upload one from profile settings.
-        match self.run_db(|rt, db| rt.block_on(db.register(&username, &hash, &email, ""))) {
+        let avatar = match Self::random_tavern_avatar_base64() {
+            Ok(avatar) => avatar,
+            Err(error) => { self.status = format!("Не удалось подготовить аватарку: {error:#}"); return; }
+        };
+        match self.run_db(|rt, db| rt.block_on(db.register(&username, &hash, &email, &avatar))) {
             Ok(()) => { self.status = "Аккаунт создан. Теперь выполните вход.".into(); self.screen = Screen::Login; }
             Err(e) => self.status = format!("Не удалось создать аккаунт: {e:#}"),
         }
@@ -1712,6 +1756,7 @@ impl TsChatApp {
                 ui.label(egui::RichText::new("TSchat").size(19.0).strong().color(accent));
                 ui.label(egui::RichText::new("Таверна странника").size(14.0).color(if dark { egui::Color32::from_rgb(205, 213, 207) } else { egui::Color32::from_rgb(70, 80, 74) }));
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                    ui.add_space(12.0);
                     if ui.button("×").on_hover_text("Закрыть").clicked() { ctx.send_viewport_cmd(egui::ViewportCommand::Close); }
                     if ui.button("—").on_hover_text("Свернуть").clicked() { ctx.send_viewport_cmd(egui::ViewportCommand::Minimized(true)); }
                     if ui.button(if dark { "☀" } else { "☾" }).on_hover_text("Сменить тему").clicked() { self.dark_theme = !self.dark_theme; }
@@ -1721,9 +1766,10 @@ impl TsChatApp {
             ui.add_space(18.0);
             ui.horizontal(|ui| {
                 ui.add_space(24.0);
-                egui::Frame::none().fill(card).inner_margin(20.0).show(ui, |ui| {
+                egui::Frame::none().fill(card).rounding(egui::Rounding::same(14.0)).inner_margin(20.0).show(ui, |ui| {
                     ui.set_min_width(340.0);
                     ui.set_max_width(340.0);
+                    ui.set_min_height(330.0);
                     ui.vertical_centered(|ui| {
                         let (rect, _) = ui.allocate_exact_size(egui::vec2(175.0, 145.0), egui::Sense::hover());
                         legacy_animated_image(ui, self.tavern_animation.as_ref(), rect);
@@ -1735,9 +1781,10 @@ impl TsChatApp {
                     });
                 });
                 ui.add_space(18.0);
-                egui::Frame::none().fill(card).inner_margin(24.0).show(ui, |ui| {
+                egui::Frame::none().fill(card).rounding(egui::Rounding::same(14.0)).inner_margin(20.0).show(ui, |ui| {
                     ui.set_min_width(350.0);
                     ui.set_max_width(390.0);
+                    ui.set_min_height(330.0);
                     ui.vertical(|ui| {
                         let registering = self.screen == Screen::Register;
                         ui.label(egui::RichText::new(if registering { "Создать аккаунт" } else { "С возвращением" }).size(24.0).strong());
@@ -1793,6 +1840,7 @@ impl TsChatApp {
                 ui.separator();
                 ui.label(egui::RichText::new(if self.connected { "● В сети" } else { "● Не подключено" }).size(12.0).color(if self.connected { egui::Color32::from_rgb(115, 190, 137) } else { secondary }));
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                    ui.add_space(12.0);
                     if ui.button("×").on_hover_text("Закрыть").clicked() { ctx.send_viewport_cmd(egui::ViewportCommand::Close); }
                     if ui.button("—").on_hover_text("Свернуть").clicked() { ctx.send_viewport_cmd(egui::ViewportCommand::Minimized(true)); }
                     if ui.button(if dark { "☀" } else { "☾" }).on_hover_text("Сменить тему").clicked() { self.dark_theme = !self.dark_theme; }
@@ -1809,7 +1857,7 @@ impl TsChatApp {
             ui.add_space(8.0);
 
             ui.horizontal(|ui| {
-                egui::Frame::none().fill(card).inner_margin(14.0).show(ui, |ui| {
+                egui::Frame::none().fill(card).rounding(egui::Rounding::same(12.0)).inner_margin(14.0).show(ui, |ui| {
                     let main_width = (ui.available_width() - if self.profile_expanded { 270.0 } else { 0.0 }).max(360.0);
                     ui.set_min_width(main_width);
                     ui.set_max_width(main_width);
@@ -1820,7 +1868,7 @@ impl TsChatApp {
                             ui.label(egui::RichText::new("Сообщения видны участникам Таверны").size(12.0).color(secondary));
                         });
                         ui.add_space(10.0);
-                        egui::Frame::none().fill(if dark { egui::Color32::from_rgb(23, 31, 28) } else { egui::Color32::from_rgb(248, 247, 243) }).inner_margin(12.0).show(ui, |ui| {
+                        egui::Frame::none().fill(if dark { egui::Color32::from_rgb(23, 31, 28) } else { egui::Color32::from_rgb(248, 247, 243) }).rounding(egui::Rounding::same(10.0)).inner_margin(12.0).show(ui, |ui| {
                             ui.set_min_height((ui.available_height() - 145.0).max(220.0));
                             let smileys = self.smiley_textures.clone();
                             let chat_styles = self.chat_styles.clone();
@@ -1857,7 +1905,7 @@ impl TsChatApp {
                 });
                 if self.profile_expanded {
                     ui.add_space(10.0);
-                    egui::Frame::none().fill(card).inner_margin(14.0).show(ui, |ui| {
+                    egui::Frame::none().fill(card).rounding(egui::Rounding::same(12.0)).inner_margin(14.0).show(ui, |ui| {
                         ui.set_min_width(220.0);
                         ui.set_max_width(250.0);
                         ui.vertical(|ui| {
