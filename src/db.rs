@@ -44,6 +44,14 @@ fn is_mysql_connection_limit_error(error: &sqlx::Error) -> bool {
     ) || is_mysql_connection_limit_message(&error.to_string())
 }
 
+fn is_mysql_connection_limit_anyhow(error: &anyhow::Error) -> bool {
+    error.chain().any(|cause| {
+        cause.downcast_ref::<sqlx::Error>()
+            .map(is_mysql_connection_limit_error)
+            .unwrap_or_else(|| is_mysql_connection_limit_message(&cause.to_string()))
+    })
+}
+
 fn is_duplicate_key_error(error: &sqlx::Error) -> bool {
     matches!(
         error,
@@ -86,12 +94,38 @@ impl Database {
             // Do not pin one MySQL session per open desktop window. Shared hosts
             // enforce max_user_connections across every instance and client.
             // The pool reconnects on demand after a short idle period.
-            .idle_timeout(Some(Duration::from_secs(8)))
+            .idle_timeout(Some(Duration::from_secs(2)))
             .acquire_timeout(Duration::from_secs(15))
             .test_before_acquire(true)
             .connect_with(options.clone())
             .await
             .context("Не удалось подключиться к MySQL")
+    }
+
+    /// Shared MySQL accounts often have a very small connection cap. Retry
+    /// initial pool creation so another client's short query or an idle pool
+    /// can release its session before registration/login fails.
+    async fn create_pool_with_retry(options: &MySqlConnectOptions) -> Result<MySqlPool> {
+        let mut last_error = None;
+        for attempt in 0..5 {
+            match Self::create_pool(options).await {
+                Ok(pool) => return Ok(pool),
+                Err(error) if is_transient_connection_error(&error) && attempt < 4 => {
+                    last_error = Some(error);
+                    let delay = [1, 2, 4, 6][attempt];
+                    tokio::time::sleep(Duration::from_secs(delay)).await;
+                }
+                Err(error) => {
+                    if is_mysql_connection_limit_anyhow(&error) {
+                        return Err(error.context(
+                            "MySQL временно отклоняет подключение из-за лимита max_user_connections. TSchat повторил попытку 5 раз; закройте приложение или панели управления БД на других устройствах и повторите регистрацию",
+                        ));
+                    }
+                    return Err(error);
+                }
+            }
+        }
+        Err(last_error.unwrap_or_else(|| anyhow::anyhow!("Не удалось подключиться к MySQL после повторных попыток")))
     }
 
     /// Connect using an explicit URL for the guarded disposable-database integration test.
@@ -101,7 +135,7 @@ impl Database {
         let connect_options = url.parse::<MySqlConnectOptions>()?
             .ssl_mode(MySqlSslMode::Required)
             .charset("utf8mb4");
-        let pool = Self::create_pool(&connect_options).await?;
+        let pool = Self::create_pool_with_retry(&connect_options).await?;
         Ok(Self { pool })
     }
 
