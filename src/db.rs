@@ -83,10 +83,10 @@ impl Database {
         MySqlPoolOptions::new()
             .max_connections(1)
             .min_connections(0)
-            // Keep one idle connection instead of opening/closing one every few
-            // seconds. Shared MySQL hosts may briefly count just-closed sessions
-            // against max_user_connections.
-            .idle_timeout(None)
+            // Do not pin one MySQL session per open desktop window. Shared hosts
+            // enforce max_user_connections across every instance and client.
+            // The pool reconnects on demand after a short idle period.
+            .idle_timeout(Some(Duration::from_secs(8)))
             .acquire_timeout(Duration::from_secs(15))
             .test_before_acquire(true)
             .connect_with(options.clone())
