@@ -2116,7 +2116,7 @@ impl TsChatApp {
                     if let Some((author, body)) = line.split_once(": ") {
                         let is_self = self.current_user.as_ref().map(|user| user.username == author).unwrap_or(false);
                         content.with_layout(if is_self { egui::Layout::right_to_left(egui::Align::Min) } else { egui::Layout::left_to_right(egui::Align::Min) }, |content| {
-                            egui::Frame::none().fill(if is_self { egui::Color32::from_rgb(88, 68, 44) } else { soft }).rounding(egui::Rounding::same(14.0)).inner_margin(egui::Margin::symmetric(14.0, 9.0)).show(content, |bubble| {
+                            egui::Frame::none().fill(if is_self { egui::Color32::from_rgb(88, 68, 44) } else { soft }).rounding(egui::Rounding::same(14.0)).inner_margin(egui::Margin::symmetric(14, 9)).show(content, |bubble| {
                                 bubble.set_max_width(messages.width() * 0.72);
                                 bubble.vertical(|bubble| {
                                     bubble.label(egui::RichText::new(author).size(12.0).strong().color(if is_self { amber } else { egui::Color32::from_rgb(190, 198, 184) }));
@@ -2127,7 +2127,7 @@ impl TsChatApp {
                     } else {
                         content.horizontal(|content| {
                             content.add_space(content.available_width() * 0.3);
-                            egui::Frame::none().fill(surface).rounding(egui::Rounding::same(12.0)).inner_margin(egui::Margin::symmetric(12.0, 6.0)).show(content, |system| {
+                            egui::Frame::none().fill(surface).rounding(egui::Rounding::same(12.0)).inner_margin(egui::Margin::symmetric(12, 6)).show(content, |system| {
                                 system.label(egui::RichText::new(line).size(12.0).color(secondary));
                             });
                         });
