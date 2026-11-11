@@ -2242,7 +2242,7 @@ legacy_static_image(
                 legacy_group(ui, preview_rect, bg, border);
                 ui.put(
                     legacy_rect(origin, 158.0, 231.0, 216.0, 26.0),
-                    egui::Label::new(styled_rich_text("Привет! Это пример сообщения.", Some(&preview_style))),
+                    egui::Label::new(styled_rich_text("Привет! Это пример сообщения.", Some(&preview_style), self.dark_theme)),
                 );
 
                 if legacy_button(
