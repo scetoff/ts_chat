@@ -286,7 +286,7 @@ fn paint_sketch_icon(painter: &egui::Painter, rect: egui::Rect, icon: &str, colo
         }
         "minimize" => { line(c + egui::vec2(-6.0, 0.0), c + egui::vec2(6.0, 0.0)); }
         "maximize" => { painter.rect_stroke(egui::Rect::from_center_size(c, egui::vec2(11.0, 11.0)), 1.0, stroke); }
-        _ => painter.circle_stroke(c, 7.0, stroke),
+        _ => { painter.circle_stroke(c, 7.0, stroke); }
     }
 }
 
