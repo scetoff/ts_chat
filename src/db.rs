@@ -538,6 +538,18 @@ impl Database {
         Ok(rows.into_iter().map(|r| r.get("username")).collect())
     }
 
+    /// Return legacy accounts which still have no profile image. The caller
+    /// assigns a random image from the bundled tavern avatar set and persists
+    /// it using the same shared pool as all other database operations.
+    pub async fn users_missing_avatar(&self) -> Result<Vec<String>> {
+        let rows = sqlx::query(
+            "SELECT username FROM tb_users WHERE dp IS NULL OR TRIM(dp) = '' ORDER BY id"
+        )
+        .fetch_all(&self.pool)
+        .await?;
+        Ok(rows.into_iter().map(|row| row.get("username")).collect())
+    }
+
     pub async fn user_by_name(&self, username: &str) -> Result<Option<User>> {
         let row = sqlx::query(
             "SELECT id, username, email, name, dp, mobile, chatcolor, chatfont, chatfontsize, chatfontstyle FROM tb_users WHERE username = ?"
