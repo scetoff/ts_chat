@@ -1903,7 +1903,8 @@ impl TsChatApp {
                         let selected = self.selected_friend.is_none();
                         let chat_item = egui::Button::new(egui::RichText::new("◉  Общий чат").strong().color(if selected { accent } else { secondary }))
                             .fill(if selected { inset } else { surface });
-                        if list.add_sized([list.available_width(), 42.0], chat_item).clicked() {
+                        let chat_item_width = list.available_width();
+                        if list.add_sized([chat_item_width, 42.0], chat_item).clicked() {
                             self.selected_friend = None;
                         }
                         list.label(egui::RichText::new("УЧАСТНИКИ").size(10.0).color(secondary).strong());
@@ -1927,7 +1928,7 @@ impl TsChatApp {
                     chat.set_min_height(body_height);
                     chat.vertical(|chat| {
                         chat.horizontal(|chat| {
-                            let title = if let Some(name) = &self.selected_friend { name.as_str() } else { "Общий чат" };
+                            let title = "Общий чат";
                             chat.label(egui::RichText::new(title).size(19.0).strong());
                             chat.label(egui::RichText::new(format!("{} участника", self.friends.len() + 1)).size(11.0).color(secondary));
                             chat.with_layout(egui::Layout::right_to_left(egui::Align::Center), |chat| {
