@@ -97,6 +97,15 @@ impl Database {
             .idle_timeout(Some(Duration::from_secs(2)))
             .acquire_timeout(Duration::from_secs(15))
             .test_before_acquire(true)
+            // Also ask MySQL to reap this session if the client disappears
+            // without a clean TCP shutdown. SESSION scope needs no global
+            // administrator privilege and affects only TSchat's connection.
+            .after_connect(|connection, _| Box::pin(async move {
+                sqlx::query("SET SESSION wait_timeout = 90")
+                    .execute(&mut *connection)
+                    .await?;
+                Ok(())
+            }))
             .connect_with(options.clone())
             .await
             .context("Не удалось подключиться к MySQL")
