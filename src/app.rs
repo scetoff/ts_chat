@@ -1001,22 +1001,22 @@ impl TsChatApp {
             (":nice:", include_bytes!("../assets/smileys/16.png")),
         ];
         assets.extend([
-            (":tavern_keeper_01:", include_bytes!("../assets/stickers/bartender_male/01.png")),
-            (":tavern_keeper_02:", include_bytes!("../assets/stickers/bartender_male/02.png")),
-            (":tavern_keeper_03:", include_bytes!("../assets/stickers/bartender_male/03.png")),
-            (":tavern_keeper_04:", include_bytes!("../assets/stickers/bartender_male/04.png")),
-            (":tavern_keeper_05:", include_bytes!("../assets/stickers/bartender_male/05.png")),
-            (":tavern_keeper_06:", include_bytes!("../assets/stickers/bartender_male/06.png")),
-            (":tavern_keeper_07:", include_bytes!("../assets/stickers/bartender_male/07.png")),
-            (":tavern_keeper_08:", include_bytes!("../assets/stickers/bartender_male/08.png")),
-            (":tavern_keeper_09:", include_bytes!("../assets/stickers/bartender_male/09.png")),
-            (":tavern_keeper_10:", include_bytes!("../assets/stickers/bartender_male/10.png")),
-            (":tavern_keeper_11:", include_bytes!("../assets/stickers/bartender_male/11.png")),
-            (":tavern_keeper_12:", include_bytes!("../assets/stickers/bartender_male/12.png")),
-            (":tavern_keeper_13:", include_bytes!("../assets/stickers/bartender_male/13.png")),
-            (":tavern_keeper_14:", include_bytes!("../assets/stickers/bartender_male/14.png")),
-            (":tavern_keeper_15:", include_bytes!("../assets/stickers/bartender_male/15.png")),
-            (":tavern_keeper_16:", include_bytes!("../assets/stickers/bartender_male/16.png")),
+            (":tavern_keeper_01:", &include_bytes!("../assets/stickers/bartender_male/01.png")[..]),
+            (":tavern_keeper_02:", &include_bytes!("../assets/stickers/bartender_male/02.png")[..]),
+            (":tavern_keeper_03:", &include_bytes!("../assets/stickers/bartender_male/03.png")[..]),
+            (":tavern_keeper_04:", &include_bytes!("../assets/stickers/bartender_male/04.png")[..]),
+            (":tavern_keeper_05:", &include_bytes!("../assets/stickers/bartender_male/05.png")[..]),
+            (":tavern_keeper_06:", &include_bytes!("../assets/stickers/bartender_male/06.png")[..]),
+            (":tavern_keeper_07:", &include_bytes!("../assets/stickers/bartender_male/07.png")[..]),
+            (":tavern_keeper_08:", &include_bytes!("../assets/stickers/bartender_male/08.png")[..]),
+            (":tavern_keeper_09:", &include_bytes!("../assets/stickers/bartender_male/09.png")[..]),
+            (":tavern_keeper_10:", &include_bytes!("../assets/stickers/bartender_male/10.png")[..]),
+            (":tavern_keeper_11:", &include_bytes!("../assets/stickers/bartender_male/11.png")[..]),
+            (":tavern_keeper_12:", &include_bytes!("../assets/stickers/bartender_male/12.png")[..]),
+            (":tavern_keeper_13:", &include_bytes!("../assets/stickers/bartender_male/13.png")[..]),
+            (":tavern_keeper_14:", &include_bytes!("../assets/stickers/bartender_male/14.png")[..]),
+            (":tavern_keeper_15:", &include_bytes!("../assets/stickers/bartender_male/15.png")[..]),
+            (":tavern_keeper_16:", &include_bytes!("../assets/stickers/bartender_male/16.png")[..]),
         ]);
 
         let mut textures = Vec::with_capacity(assets.len());
@@ -1464,7 +1464,7 @@ impl TsChatApp {
         let playing = self.radio_player.is_some() && !paused;
         let connecting = self.radio_pending.is_some();
         let audio_level = self.radio_player.as_ref().map(RadioPlayback::level).unwrap_or(0.0);
-        let displayed_radio_status = self.radio_status.clone();
+        let current_volume = self.radio_volume;
         let stations = &mut self.radio_stations;
         let selected = &mut self.selected_radio_station;
         let volume = &mut self.radio_volume;
@@ -1473,7 +1473,7 @@ impl TsChatApp {
         let covers = self.radio_cover_textures.clone();
         let current_track = self.radio_player.as_ref().and_then(RadioPlayback::track_title);
         let time = ctx.input(|input| input.time) as f32;
-        let reactive_level = if playing && !self.radio_muted { (audio_level * self.radio_volume * 4.0).clamp(0.06, 1.0) } else { 0.0 };
+        let reactive_level = if playing && !self.radio_muted { (audio_level * current_volume * 4.0).clamp(0.06, 1.0) } else { 0.0 };
         ctx.request_repaint_after(Duration::from_millis(33));
 
         egui::Window::new("Радио таверны")
