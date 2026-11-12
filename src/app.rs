@@ -60,7 +60,11 @@ pub struct TsChatApp {
     radio_pending: Option<(std::sync::mpsc::Receiver<Result<RadioPlayback, String>>, String)>,
     radio_animation: Option<AnimatedGif>,
     radio_window_pos: egui::Pos2,
+    radio_cover_textures: Vec<egui::TextureHandle>,
+    radio_favorites: std::collections::HashSet<usize>,
     smiley_textures: Vec<(String, egui::TextureHandle)>,
+    selected_sticker_pack: usize,
+    window_positions: std::collections::HashMap<&'static str, egui::Pos2>,
     command_status: String,
     show_clear_chat_confirmation: bool,
     radio_autoplay_pending: Option<usize>,
@@ -150,7 +154,7 @@ fn normalize_legacy_welcome(chat: &str) -> String {
 
 fn styled_rich_text<'a>(text: &'a str, style: Option<&ChatStyle>, dark_theme: bool) -> egui::RichText {
     let Some(style) = style else {
-        return egui::RichText::new(text).size(15.0);
+        return egui::RichText::new(text).size(16.0);
     };
     // Keep user-selected sizes, but make the legacy 16px default more readable.
     let display_size = (style.font_size + 2).clamp(10, 50);
@@ -177,9 +181,13 @@ fn styled_rich_text<'a>(text: &'a str, style: Option<&ChatStyle>, dark_theme: bo
     rich
 }
 
-const SMILEY_CODES: [&str; 16] = [
+const SMILEY_CODES: [&str; 32] = [
     ":fuu:", ":beer:", ":sorry:", ":read:", ":girl:", ":lich:", ":sing:", ":haha:",
     ":allbear:", ":say:", ":money:", ":no:", ":king:", ":go:", ":good:", ":nice:",
+    ":tavern_keeper_01:", ":tavern_keeper_02:", ":tavern_keeper_03:", ":tavern_keeper_04:",
+    ":tavern_keeper_05:", ":tavern_keeper_06:", ":tavern_keeper_07:", ":tavern_keeper_08:",
+    ":tavern_keeper_09:", ":tavern_keeper_10:", ":tavern_keeper_11:", ":tavern_keeper_12:",
+    ":tavern_keeper_13:", ":tavern_keeper_14:", ":tavern_keeper_15:", ":tavern_keeper_16:",
 ];
 
 fn show_chat_line(
@@ -538,6 +546,7 @@ impl Default for TsChatApp {
             friend_profile: None, show_friend_profile: false,
             radio_open: false,
             radio_window_pos: egui::pos2(100.0, 70.0),
+            radio_favorites: std::collections::HashSet::new(),
             radio_stations,
             selected_radio_station: 0,
             radio_volume: 0.75,
@@ -547,7 +556,10 @@ impl Default for TsChatApp {
             radio_player: None,
             radio_pending: None,
             radio_animation: None,
+            radio_cover_textures: Vec::new(),
             smiley_textures: Vec::new(),
+            selected_sticker_pack: 0,
+            window_positions: std::collections::HashMap::new(),
             command_status: String::new(),
             show_clear_chat_confirmation: false,
             radio_autoplay_pending: None,
@@ -970,7 +982,7 @@ impl TsChatApp {
 
     fn ensure_smiley_textures(&mut self, ctx: &egui::Context) {
         if self.smiley_textures.len() == SMILEY_CODES.len() { return; }
-        let assets: [(&str, &[u8]); 16] = [
+        let mut assets: Vec<(&str, &[u8])> = vec![
             (":fuu:", include_bytes!("../assets/smileys/1.png")),
             (":beer:", include_bytes!("../assets/smileys/2.png")),
             (":sorry:", include_bytes!("../assets/smileys/3.png")),
@@ -988,6 +1000,24 @@ impl TsChatApp {
             (":good:", include_bytes!("../assets/smileys/15.png")),
             (":nice:", include_bytes!("../assets/smileys/16.png")),
         ];
+        assets.extend([
+            (":tavern_keeper_01:", include_bytes!("../assets/stickers/bartender_male/01.png")),
+            (":tavern_keeper_02:", include_bytes!("../assets/stickers/bartender_male/02.png")),
+            (":tavern_keeper_03:", include_bytes!("../assets/stickers/bartender_male/03.png")),
+            (":tavern_keeper_04:", include_bytes!("../assets/stickers/bartender_male/04.png")),
+            (":tavern_keeper_05:", include_bytes!("../assets/stickers/bartender_male/05.png")),
+            (":tavern_keeper_06:", include_bytes!("../assets/stickers/bartender_male/06.png")),
+            (":tavern_keeper_07:", include_bytes!("../assets/stickers/bartender_male/07.png")),
+            (":tavern_keeper_08:", include_bytes!("../assets/stickers/bartender_male/08.png")),
+            (":tavern_keeper_09:", include_bytes!("../assets/stickers/bartender_male/09.png")),
+            (":tavern_keeper_10:", include_bytes!("../assets/stickers/bartender_male/10.png")),
+            (":tavern_keeper_11:", include_bytes!("../assets/stickers/bartender_male/11.png")),
+            (":tavern_keeper_12:", include_bytes!("../assets/stickers/bartender_male/12.png")),
+            (":tavern_keeper_13:", include_bytes!("../assets/stickers/bartender_male/13.png")),
+            (":tavern_keeper_14:", include_bytes!("../assets/stickers/bartender_male/14.png")),
+            (":tavern_keeper_15:", include_bytes!("../assets/stickers/bartender_male/15.png")),
+            (":tavern_keeper_16:", include_bytes!("../assets/stickers/bartender_male/16.png")),
+        ]);
 
         let mut textures = Vec::with_capacity(assets.len());
         for (code, bytes) in assets {
@@ -1367,6 +1397,31 @@ impl TsChatApp {
         }
     }
 
+    fn ensure_radio_cover_textures(&mut self, ctx: &egui::Context) {
+        if self.radio_cover_textures.len() == 24 { return; }
+        let covers: [&[u8]; 24] = [
+            include_bytes!("../assets/radio/01.png"), include_bytes!("../assets/radio/02.png"),
+            include_bytes!("../assets/radio/03.png"), include_bytes!("../assets/radio/04.png"),
+            include_bytes!("../assets/radio/05.png"), include_bytes!("../assets/radio/06.png"),
+            include_bytes!("../assets/radio/07.png"), include_bytes!("../assets/radio/08.png"),
+            include_bytes!("../assets/radio/09.png"), include_bytes!("../assets/radio/10.png"),
+            include_bytes!("../assets/radio/11.png"), include_bytes!("../assets/radio/12.png"),
+            include_bytes!("../assets/radio/13.png"), include_bytes!("../assets/radio/14.png"),
+            include_bytes!("../assets/radio/15.png"), include_bytes!("../assets/radio/16.png"),
+            include_bytes!("../assets/radio/17.png"), include_bytes!("../assets/radio/18.png"),
+            include_bytes!("../assets/radio/19.png"), include_bytes!("../assets/radio/20.png"),
+            include_bytes!("../assets/radio/21.png"), include_bytes!("../assets/radio/22.png"),
+            include_bytes!("../assets/radio/23.png"), include_bytes!("../assets/radio/24.png"),
+        ];
+        self.radio_cover_textures = covers.iter().enumerate().filter_map(|(index, bytes)| {
+            let decoded = image::load_from_memory(bytes).ok()?;
+            let rgba = decoded.to_rgba8();
+            let size = [rgba.width() as usize, rgba.height() as usize];
+            let color = egui::ColorImage::from_rgba_unmultiplied(size, rgba.as_raw());
+            Some(ctx.load_texture(format!("tschat-radio-cover-{index}"), color, egui::TextureOptions::LINEAR))
+        }).collect();
+    }
+
     fn show_radio_window(&mut self, ctx: &egui::Context) {
         let pending_result = self.radio_pending.as_ref()
             .map(|(receiver, station_name)| (receiver.try_recv(), station_name.clone()));
@@ -1392,8 +1447,7 @@ impl TsChatApp {
         }
 
         if !self.radio_open { return; }
-        self.ensure_radio_animation(ctx);
-        self.advance_radio_animation(ctx);
+        self.ensure_radio_cover_textures(ctx);
 
         let mut open = self.radio_open;
         let mut drag_delta = egui::Vec2::ZERO;
@@ -1404,247 +1458,154 @@ impl TsChatApp {
         let mut stop_requested = false;
         let mut pause_requested = false;
         let mut edit_url_requested = false;
-        let mut toggle_mute_requested = false;
+        let mut toggle_favorite_requested = false;
         let paused = self.radio_player.as_ref().map(RadioPlayback::is_paused).unwrap_or(true);
         let player_present = self.radio_player.is_some();
         let playing = self.radio_player.is_some() && !paused;
         let connecting = self.radio_pending.is_some();
+        let audio_level = self.radio_player.as_ref().map(RadioPlayback::level).unwrap_or(0.0);
         let displayed_radio_status = self.radio_status.clone();
         let stations = &mut self.radio_stations;
         let selected = &mut self.selected_radio_station;
         let volume = &mut self.radio_volume;
         let muted = self.radio_muted;
 
-        // The dial is intentionally animated while the radio window is open.
-        // This keeps the tuner feeling alive even before playback starts.
+        let covers = self.radio_cover_textures.clone();
+        let current_track = self.radio_player.as_ref().and_then(RadioPlayback::track_title);
+        let time = ctx.input(|input| input.time) as f32;
+        let reactive_level = if playing && !self.radio_muted { (audio_level * self.radio_volume * 4.0).clamp(0.06, 1.0) } else { 0.0 };
         ctx.request_repaint_after(Duration::from_millis(33));
-        let time = ctx.input(|input| input.time);
-        let phase = (time * if playing { 0.72 } else { 0.16 }) as f32;
-        let pulse = ((time * if playing { 2.4 } else { 0.8 }).sin() as f32 + 1.0) * 0.5;
 
         egui::Window::new("Радио таверны")
             .id(egui::Id::new("legacy-radio-window"))
             .title_bar(false)
             .collapsible(false)
             .resizable(false)
-            .fixed_size([720.0, 570.0])
+            .fixed_size([760.0, 620.0])
             .current_pos(self.radio_window_pos)
             .movable(false)
             .frame(egui::Frame::none())
             .open(&mut open)
             .show(ctx, |ui| {
-                let bg = egui::Color32::from_rgb(16, 27, 23);
-                let panel = egui::Color32::from_rgb(25, 40, 34);
-                let panel_soft = egui::Color32::from_rgb(30, 48, 40);
+                let bg = egui::Color32::from_rgb(13, 24, 20);
+                let panel = egui::Color32::from_rgb(22, 37, 31);
+                let panel_soft = egui::Color32::from_rgb(29, 47, 39);
+                let border = egui::Color32::from_rgb(48, 68, 56);
                 let amber = egui::Color32::from_rgb(232, 170, 91);
                 let cream = egui::Color32::from_rgb(235, 231, 219);
-                let muted_text = egui::Color32::from_rgb(160, 174, 163);
-                let green = egui::Color32::from_rgb(129, 205, 145);
+                let secondary = egui::Color32::from_rgb(159, 173, 163);
                 let rect = ui.max_rect();
-                ui.painter().rect_filled(rect, 18.0, bg);
-
-                let header = ui.allocate_rect(
-                    egui::Rect::from_min_size(rect.min + egui::vec2(14.0, 8.0), egui::vec2(rect.width() - 28.0, 38.0)),
-                    egui::Sense::drag(),
-                );
-                if header.dragged() { drag_delta = ctx.input(|input| input.pointer.delta()); }
-                ui.painter().text(
-                    header.rect.left_center() + egui::vec2(2.0, 0.0),
-                    egui::Align2::LEFT_CENTER,
-                    "♫",
-                    egui::FontId::proportional(23.0),
-                    amber,
-                );
-                ui.painter().text(
-                    header.rect.left_center() + egui::vec2(32.0, 0.0),
-                    egui::Align2::LEFT_CENTER,
-                    "Радио таверны",
-                    egui::FontId::proportional(19.0),
-                    cream,
-                );
-                let close_rect = egui::Rect::from_min_size(
-                    egui::pos2(header.rect.right() - 34.0, header.rect.top() + 1.0),
-                    egui::vec2(32.0, 30.0),
-                );
-                if ui.put(close_rect, egui::Button::new(egui::RichText::new("×").size(21.0)).fill(panel_soft)).clicked() {
-                    close_requested = true;
-                }
-                ui.painter().line_segment(
-                    [egui::pos2(rect.left() + 16.0, rect.top() + 51.0), egui::pos2(rect.right() - 16.0, rect.top() + 51.0)],
-                    egui::Stroke::new(1.0, egui::Color32::from_rgb(47, 67, 57)),
-                );
-
-                let body_top = rect.top() + 64.0;
-                let dial_rect = egui::Rect::from_min_max(
-                    egui::pos2(rect.left() + 18.0, body_top),
-                    egui::pos2(rect.left() + 428.0, rect.bottom() - 18.0),
-                );
-                let station_rect = egui::Rect::from_min_max(
-                    egui::pos2(rect.left() + 442.0, body_top),
-                    egui::pos2(rect.right() - 18.0, rect.bottom() - 18.0),
-                );
-                ui.painter().rect_filled(dial_rect, 16.0, panel);
-                ui.painter().rect_filled(station_rect, 16.0, panel);
-
-                let station_name = stations.get(*selected).map(|station| station.name.as_str()).unwrap_or("Выберите станцию");
-                ui.painter().text(
-                    egui::pos2(dial_rect.center().x, dial_rect.top() + 27.0),
-                    egui::Align2::CENTER_CENTER,
-                    station_name,
-                    egui::FontId::proportional(18.0),
-                    cream,
-                );
-                ui.painter().text(
-                    egui::pos2(dial_rect.center().x, dial_rect.top() + 51.0),
-                    egui::Align2::CENTER_CENTER,
-                    if playing { "В ЭФИРЕ" } else if connecting { "НАСТРОЙКА ВОЛНЫ…" } else { "ГОТОВО К ПРИЁМУ" },
-                    egui::FontId::proportional(10.0),
-                    if playing { green } else { muted_text },
-                );
-
-                let center = egui::pos2(dial_rect.center().x, dial_rect.top() + 214.0);
                 let painter = ui.painter().clone();
-                let base_radius = 112.0;
-                for (index, extra) in [16.0_f32, 9.0, 2.0].iter().enumerate() {
-                    let alpha = (18.0 + pulse * 20.0) as u8;
-                    painter.circle_stroke(
-                        center,
-                        base_radius + *extra + if playing { pulse * 3.0 } else { 0.0 },
-                        egui::Stroke::new(if index == 0 { 7.0 } else { 2.0 }, egui::Color32::from_rgba_unmultiplied(232, 170, 91, alpha)),
-                    );
-                }
-                painter.circle_filled(center, base_radius - 5.0, egui::Color32::from_rgb(18, 31, 26));
-                painter.circle_stroke(center, base_radius - 5.0, egui::Stroke::new(1.0, egui::Color32::from_rgb(79, 101, 83)));
-                for index in 0..48 {
-                    let angle = phase + index as f32 * std::f32::consts::TAU / 48.0;
-                    let major = index % 4 == 0;
-                    let outer = base_radius - 15.0;
-                    let inner = outer - if major { 12.0 } else { 6.0 };
-                    let from = egui::pos2(center.x + angle.cos() * inner, center.y + angle.sin() * inner);
-                    let to = egui::pos2(center.x + angle.cos() * outer, center.y + angle.sin() * outer);
-                    painter.line_segment(
-                        [from, to],
-                        egui::Stroke::new(if major { 2.0 } else { 1.0 }, if major { amber } else { egui::Color32::from_rgb(107, 130, 111) }),
-                    );
-                }
-                let sweep_angle = phase * 1.7 - std::f32::consts::FRAC_PI_2;
-                let needle_end = egui::pos2(center.x + sweep_angle.cos() * 73.0, center.y + sweep_angle.sin() * 73.0);
-                painter.line_segment([center, needle_end], egui::Stroke::new(2.5, amber));
-                painter.circle_filled(center, 7.0, amber);
-                painter.circle_stroke(center, 11.0, egui::Stroke::new(1.0, egui::Color32::from_rgb(255, 216, 156)));
-                painter.text(
-                    egui::pos2(center.x, center.y + 43.0),
-                    egui::Align2::CENTER_CENTER,
-                    if playing { "●  LIVE" } else if connecting { "◌  …" } else { "◦  OFFLINE" },
-                    egui::FontId::proportional(11.0),
-                    if playing { green } else { muted_text },
-                );
+                painter.rect_filled(rect, 18.0, bg);
+                painter.rect_stroke(rect, 18.0, egui::Stroke::new(1.0, border));
 
-                let control_top = dial_rect.top() + 358.0;
-                ui.allocate_ui_at_rect(
-                    egui::Rect::from_min_size(egui::pos2(dial_rect.left() + 24.0, control_top), egui::vec2(dial_rect.width() - 48.0, 48.0)),
-                    |controls| {
-                        controls.horizontal(|controls| {
-                            let selected_station = stations.get(*selected);
-                            let can_start = selected_station.is_some();
-                            if controls.add_enabled(can_start, egui::Button::new(if playing { "Перезапустить" } else { "▶  Слушать" }).fill(amber).min_size(egui::vec2(116.0, 38.0))).clicked() {
-                                if let Some(station) = stations.get(*selected) {
-                                    start_request = Some((station.url.trim().to_string(), station.name.clone()));
-                                }
-                            }
-                            if controls.add_enabled(player_present, egui::Button::new(if paused { "▶" } else { "Ⅱ" }).min_size(egui::vec2(46.0, 38.0))).clicked() {
-                                pause_requested = true;
-                            }
-                            if controls.add_enabled(self.radio_player.is_some() || connecting, egui::Button::new("■").min_size(egui::vec2(46.0, 38.0))).clicked() {
-                                stop_requested = true;
-                            }
-                            if controls.add_enabled(can_start, egui::Button::new("⚙").min_size(egui::vec2(46.0, 38.0))).clicked() {
-                                edit_url_requested = true;
-                            }
-                        });
-                    },
-                );
+                let header = egui::Rect::from_min_size(rect.min + egui::vec2(14.0, 7.0), egui::vec2(rect.width() - 28.0, 38.0));
+                let drag = ui.interact(egui::Rect::from_min_max(header.min, egui::pos2(header.right() - 42.0, header.bottom())), egui::Id::new("radio-title-drag"), egui::Sense::click_and_drag());
+                if drag.dragged() { drag_delta = ctx.input(|input| input.pointer.delta()); }
+                painter.text(header.left_center() + egui::vec2(2.0, 0.0), egui::Align2::LEFT_CENTER, "♫", egui::FontId::proportional(22.0), amber);
+                painter.text(header.left_center() + egui::vec2(32.0, 0.0), egui::Align2::LEFT_CENTER, "Радио", egui::FontId::proportional(19.0), cream);
+                let close_rect = egui::Rect::from_min_size(egui::pos2(header.right() - 34.0, header.top() + 3.0), egui::vec2(30.0, 29.0));
+                if ui.put(close_rect, egui::Button::new(egui::RichText::new("×").size(21.0).color(cream)).fill(panel_soft)).clicked() { close_requested = true; }
+                painter.line_segment([egui::pos2(rect.left() + 16.0, rect.top() + 50.0), egui::pos2(rect.right() - 16.0, rect.top() + 50.0)], egui::Stroke::new(1.0, border));
 
-                ui.painter().text(
-                    egui::pos2(station_rect.left() + 18.0, station_rect.top() + 24.0),
-                    egui::Align2::LEFT_CENTER,
-                    "СТАНЦИИ",
-                    egui::FontId::proportional(11.0),
-                    muted_text,
-                );
-                ui.painter().text(
-                    egui::pos2(station_rect.right() - 18.0, station_rect.top() + 24.0),
-                    egui::Align2::RIGHT_CENTER,
-                    format!("{} в эфире", stations.len()),
-                    egui::FontId::proportional(10.0),
-                    muted_text,
-                );
-                let list_rect = egui::Rect::from_min_max(
-                    egui::pos2(station_rect.left() + 10.0, station_rect.top() + 45.0),
-                    egui::pos2(station_rect.right() - 10.0, station_rect.bottom() - 114.0),
-                );
+                let body = egui::Rect::from_min_max(egui::pos2(rect.left() + 16.0, rect.top() + 62.0), rect.right_bottom() - egui::vec2(16.0, 16.0));
+                let left = egui::Rect::from_min_max(body.min, egui::pos2(body.left() + 306.0, body.bottom()));
+                let right = egui::Rect::from_min_max(egui::pos2(left.right() + 12.0, body.top()), body.max);
+                painter.rect_filled(left, 14.0, panel);
+                painter.rect_filled(right, 14.0, panel);
+                painter.rect_stroke(left, 14.0, egui::Stroke::new(1.0, border));
+                painter.rect_stroke(right, 14.0, egui::Stroke::new(1.0, border));
+
+                let list_header = egui::Rect::from_min_size(left.min + egui::vec2(14.0, 10.0), egui::vec2(left.width() - 28.0, 38.0));
+                painter.text(list_header.left_center(), egui::Align2::LEFT_CENTER, "◉   Радио", egui::FontId::proportional(16.0), cream);
+                let add_rect = egui::Rect::from_min_size(egui::pos2(list_header.right() - 34.0, list_header.top() + 2.0), egui::vec2(32.0, 32.0));
+                if ui.put(add_rect, egui::Button::new(egui::RichText::new("+").size(20.0).color(cream)).fill(panel_soft)).on_hover_text("Настроить URL выбранной станции").clicked() { edit_url_requested = true; }
+                painter.line_segment([egui::pos2(left.left() + 12.0, left.top() + 54.0), egui::pos2(left.right() - 12.0, left.top() + 54.0)], egui::Stroke::new(1.0, border));
+
+                let list_rect = egui::Rect::from_min_max(egui::pos2(left.left() + 8.0, left.top() + 62.0), egui::pos2(left.right() - 8.0, left.bottom() - 10.0));
                 ui.allocate_ui_at_rect(list_rect, |list_ui| {
                     egui::ScrollArea::vertical().auto_shrink([false, false]).show(list_ui, |list_ui| {
                         for (index, station) in stations.iter().enumerate() {
-                            let response = list_ui.add_sized(
-                                [list_ui.available_width(), 42.0],
-                                egui::Button::new(
-                                    egui::RichText::new(format!("♫   {}", station.name))
-                                        .size(13.0)
-                                        .color(if *selected == index { egui::Color32::from_rgb(255, 205, 129) } else { cream }),
-                                )
-                                .fill(if *selected == index { egui::Color32::from_rgb(84, 69, 45) } else { panel_soft })
-                                .stroke(egui::Stroke::new(1.0, egui::Color32::from_rgb(48, 68, 56))),
-                            );
+                            let row = egui::Rect::from_min_size(list_ui.cursor().min, egui::vec2(list_ui.available_width(), 54.0));
+                            let active = *selected == index;
+                            let response = list_ui.put(row, egui::Button::new("").fill(if active { egui::Color32::from_rgb(91, 70, 44) } else { panel }));
+                            if let Some(texture) = covers.get(index.min(covers.len().saturating_sub(1))) {
+                                let thumb = egui::Rect::from_min_size(row.min + egui::vec2(8.0, 6.0), egui::vec2(42.0, 42.0));
+                                list_ui.put(thumb, egui::Image::new((texture.id(), thumb.size())));
+                                list_ui.painter().rect_stroke(thumb, 6.0, egui::Stroke::new(1.0, if active { amber } else { border }));
+                            }
+                            list_ui.put(egui::Rect::from_min_size(row.min + egui::vec2(60.0, 7.0), egui::vec2(row.width() - 68.0, 20.0)),
+                                egui::Label::new(egui::RichText::new(&station.name).size(13.0).strong().color(cream)).truncate());
+                            let subtitle = if active && playing { "Сейчас в эфире" } else if station.url.trim().is_empty() { "Настройте адрес потока" } else { "Радиостанция" };
+                            list_ui.put(egui::Rect::from_min_size(row.min + egui::vec2(60.0, 29.0), egui::vec2(row.width() - 68.0, 17.0)),
+                                egui::Label::new(egui::RichText::new(subtitle).size(11.0).color(secondary)));
+                            if active && playing {
+                                list_ui.painter().text(row.right_center() - egui::vec2(12.0, 0.0), egui::Align2::RIGHT_CENTER, "▮▮▮", egui::FontId::proportional(11.0), amber);
+                            }
                             if response.clicked() {
                                 *selected = index;
                                 start_request = Some((station.url.trim().to_string(), station.name.clone()));
                             }
+                            list_ui.add_space(4.0);
                         }
                     });
                 });
 
-                let status_color = if displayed_radio_status.starts_with("Не удалось")
-                    || displayed_radio_status.starts_with("В config.toml")
-                {
-                    egui::Color32::from_rgb(255, 125, 115)
-                } else if playing {
-                    green
-                } else {
-                    muted_text
-                };
-                let status_rect = egui::Rect::from_min_size(
-                    egui::pos2(station_rect.left() + 16.0, station_rect.bottom() - 103.0),
-                    egui::vec2(station_rect.width() - 32.0, 42.0),
-                );
-                ui.put(
-                    status_rect,
-                    egui::Label::new(egui::RichText::new(displayed_radio_status.clone()).size(11.0).color(status_color)).wrap(),
-                );
+                let station_name = stations.get(*selected).map(|station| station.name.as_str()).unwrap_or("Выберите станцию");
+                let cover = covers.get((*selected).min(covers.len().saturating_sub(1)));
+                let image_rect = egui::Rect::from_min_size(right.min + egui::vec2(18.0, 16.0), egui::vec2(right.width() - 36.0, 205.0));
+                let glow = if playing && !muted { ((reactive_level + 0.08 * (time * 7.0).sin().abs()).clamp(0.0, 1.0) * 210.0) as u8 } else { 28 };
+                for (extra, width, alpha) in [(6.0, 7.0, glow / 4), (3.0, 3.0, glow / 2), (0.0, 1.5, glow)] {
+                    painter.rect_stroke(image_rect.expand(extra), 12.0, egui::Stroke::new(width, egui::Color32::from_rgba_unmultiplied(232, 170, 91, alpha)));
+                }
+                if let Some(texture) = cover {
+                    ui.put(image_rect, egui::Image::new((texture.id(), image_rect.size())));
+                }
+                painter.rect_stroke(image_rect, 10.0, egui::Stroke::new(1.0, egui::Color32::from_rgb(89, 92, 66)));
+                painter.text(egui::pos2(right.left() + 20.0, image_rect.bottom() + 28.0), egui::Align2::LEFT_CENTER, station_name, egui::FontId::proportional(21.0), cream);
+                painter.text(egui::pos2(right.left() + 20.0, image_rect.bottom() + 56.0), egui::Align2::LEFT_CENTER, "Сейчас в эфире:", egui::FontId::proportional(12.0), secondary);
+                let track = current_track.as_deref().unwrap_or(if playing { "Прямой эфир" } else if connecting { "Подключение…" } else { "Остановлено" });
+                painter.text(egui::pos2(right.left() + 20.0, image_rect.bottom() + 78.0), egui::Align2::LEFT_CENTER, track, egui::FontId::proportional(15.0), cream);
 
-                let sound_label = if muted { "Звук выключен" } else { "Громкость" };
-                ui.allocate_ui_at_rect(
-                    egui::Rect::from_min_size(
-                        egui::pos2(station_rect.left() + 14.0, station_rect.bottom() - 54.0),
-                        egui::vec2(station_rect.width() - 28.0, 36.0),
-                    ),
-                    |volume_ui| {
-                        volume_ui.horizontal(|volume_ui| {
-                            if volume_ui.button(if muted { "◌" } else { "◖" }).clicked() {
-                                toggle_mute_requested = true;
-                            }
-                            volume_ui.label(egui::RichText::new(sound_label).size(11.0).color(muted_text));
-                            volume_ui.add_sized(
-                                [105.0, 22.0],
-                                egui::Slider::new(volume, 0.0..=1.0).show_value(false),
-                            );
-                            volume_ui.label(egui::RichText::new(format!("{:.0}%", *volume * 100.0)).size(10.0).color(cream));
-                        });
-                    },
-                );
-            });
+                let wave = egui::Rect::from_min_size(egui::pos2(right.left() + 18.0, image_rect.bottom() + 102.0), egui::vec2(right.width() - 36.0, 32.0));
+                let wave_response = ui.interact(wave, egui::Id::new("radio-volume-waveform"), egui::Sense::hover()).on_hover_text("Визуализатор уровня звука · прокрутка меняет громкость");
+                if wave_response.hovered() {
+                    let scroll = ctx.input(|input| input.smooth_scroll_delta.y);
+                    if scroll.abs() > 0.0 { *volume = (*volume + scroll.signum() * 0.04).clamp(0.0, 1.0); }
+                }
+                for index in 0..42 {
+                    let x = wave.left() + 4.0 + index as f32 * (wave.width() - 8.0) / 42.0;
+                    let music = (time * 8.0 + index as f32 * 0.57).sin().abs() * 0.32
+                        + (time * 3.1 - index as f32 * 0.19).cos().abs() * 0.2;
+                    let amplitude = if playing && !muted { (0.08 + reactive_level * (0.3 + music)).clamp(0.06, 1.0) } else { 0.12 };
+                    let h = 3.0 + amplitude * (26.0 * (1.0 - ((index as f32 / 41.0) * 2.0 - 1.0).abs() * 0.28));
+                    let line = [egui::pos2(x, wave.center().y - h / 2.0), egui::pos2(x, wave.center().y + h / 2.0)];
+                    painter.line_segment(line, egui::Stroke::new(3.0, if playing && !muted { amber } else { egui::Color32::from_rgb(78, 94, 78) }));
+                }
 
-        if close_requested { open = false; }
+                let control_y = wave.bottom() + 28.0;
+                let controls = egui::Rect::from_min_size(egui::pos2(right.center().x - 108.0, control_y), egui::vec2(216.0, 48.0));
+                let previous = egui::Rect::from_min_size(controls.min, egui::vec2(48.0, 44.0));
+                if ui.put(previous, egui::Button::new(egui::RichText::new("◀|").size(18.0).color(cream)).fill(panel_soft)).clicked() && !stations.is_empty() {
+                    *selected = if *selected == 0 { stations.len() - 1 } else { *selected - 1 };
+                    if let Some(station) = stations.get(*selected) { start_request = Some((station.url.trim().to_string(), station.name.clone())); }
+                }
+                let play = egui::Rect::from_min_size(egui::pos2(controls.center().x - 24.0, controls.top()), egui::vec2(52.0, 44.0));
+                if ui.put(play, egui::Button::new(egui::RichText::new(if playing { "Ⅱ" } else { "▶" }).size(20.0).color(egui::Color32::from_rgb(28, 32, 29))).fill(amber)).clicked() {
+                    if player_present { pause_requested = true; }
+                    else if let Some(station) = stations.get(*selected) { start_request = Some((station.url.trim().to_string(), station.name.clone())); }
+                }
+                let stop = egui::Rect::from_min_size(egui::pos2(controls.right() - 48.0, controls.top()), egui::vec2(48.0, 44.0));
+                if ui.put(stop, egui::Button::new(egui::RichText::new("■").size(18.0).color(cream)).fill(panel_soft)).clicked() { stop_requested = true; }
+
+                let info = egui::Rect::from_min_size(egui::pos2(right.left() + 18.0, right.bottom() - 50.0), egui::vec2(right.width() - 68.0, 36.0));
+                if ui.put(info, egui::Button::new(egui::RichText::new("ⓘ   О станции").size(12.0).color(cream)).fill(panel_soft)).clicked() {
+                    self.radio_status = format!("{} · {}", station_name, if playing { track } else { "Станция выбрана" });
+                }
+                let favorite = egui::Rect::from_min_size(egui::pos2(right.right() - 48.0, info.top()), egui::vec2(36.0, 36.0));
+                let favorite_mark = if self.radio_favorites.contains(&*selected) { "♥" } else { "♡" };
+                if ui.put(favorite, egui::Button::new(egui::RichText::new(favorite_mark).size(18.0).color(amber)).fill(panel_soft)).clicked() { toggle_favorite_requested = true; }
+            });        if close_requested { open = false; }
         self.radio_window_pos += drag_delta;
         self.radio_open = open && self.radio_open;
         if !self.radio_open {
@@ -1658,8 +1619,10 @@ impl TsChatApp {
         if edit_url_requested {
             self.radio_url_editor_open = true;
         }
-        if toggle_mute_requested {
-            self.radio_muted = !self.radio_muted;
+        if toggle_favorite_requested {
+            if !self.radio_favorites.remove(&self.selected_radio_station) {
+                self.radio_favorites.insert(self.selected_radio_station);
+            }
         }
         if let Some(player) = self.radio_player.as_ref() {
             player.set_volume(if self.radio_muted { 0.0 } else { self.radio_volume });
@@ -1915,6 +1878,17 @@ impl TsChatApp {
 }
 
 impl TsChatApp {
+    fn floating_window_position(&mut self, ctx: &egui::Context, key: &'static str, size: egui::Vec2) -> egui::Pos2 {
+        *self.window_positions.entry(key).or_insert_with(|| ctx.screen_rect().center() - size * 0.5)
+    }
+
+    fn floating_window_drag_delta(ui: &mut egui::Ui, ctx: &egui::Context, key: &'static str) -> egui::Vec2 {
+        let rect = ui.max_rect();
+        let drag_rect = egui::Rect::from_min_size(rect.min, egui::vec2((rect.width() - 46.0).max(0.0), 40.0));
+        let response = ui.interact(drag_rect, egui::Id::new(("tschat-floating-drag", key)), egui::Sense::click_and_drag());
+        if response.dragged() { ctx.input(|input| input.pointer.delta()) } else { egui::Vec2::ZERO }
+    }
+
     fn ensure_legacy_ui_textures(&mut self, ctx: &egui::Context) {
         if !self.ui_textures.is_empty() {
             return;
@@ -2107,17 +2081,17 @@ impl TsChatApp {
         let mut y = subtitle_y + 40.0;
         let field = |ui: &mut egui::Ui, y: f32, label: &str, text: &mut String, secret: bool| {
             ui.put(egui::Rect::from_min_size(egui::pos2(form_x, y), egui::vec2(form_width, 18.0)),
-                egui::Label::new(egui::RichText::new(label).size(12.0).color(secondary)));
-            ui.put(egui::Rect::from_min_size(egui::pos2(form_x, y + 19.0), egui::vec2(form_width, 29.0)),
+                egui::Label::new(egui::RichText::new(label).size(13.0).color(secondary)));
+            ui.put(egui::Rect::from_min_size(egui::pos2(form_x, y + 21.0), egui::vec2(form_width, 32.0)),
                 egui::TextEdit::singleline(text).password(secret).desired_width(form_width));
         };
         field(ui, y, "Имя пользователя", &mut self.username, false);
-        y += 56.0;
+        y += 60.0;
         field(ui, y, if registering { "Придумайте пароль" } else { "Пароль" }, &mut self.password, true);
-        y += 56.0;
+        y += 60.0;
         if registering {
             field(ui, y, "Электронная почта", &mut self.email, false);
-            y += 56.0;
+            y += 60.0;
         }
         let primary = egui::Rect::from_min_size(egui::pos2(form_x, y + 4.0), egui::vec2(form_width, 36.0));
         if ui.put(primary, egui::Button::new(egui::RichText::new(if registering { "Зарегистрироваться" } else { "Войти" }).size(15.0).strong().color(egui::Color32::from_rgb(28, 32, 29))).fill(amber)).clicked() {
@@ -2364,12 +2338,23 @@ impl TsChatApp {
         let input = egui::Rect::from_min_max(egui::pos2(attach.right() + 6.0, compose.top() + 5.0), egui::pos2(emoji.left() - 6.0, compose.bottom() - 5.0));
         ui.put(input, egui::TextEdit::multiline(&mut self.draft).desired_rows(2).hint_text("Сообщение…").desired_width(input.width()));
         if self.show_smileys {
-            let picker = egui::Rect::from_min_size(egui::pos2(compose.left() + 6.0, (compose.top() - 132.0).max(main.top() + 60.0)), egui::vec2(156.0, 124.0));
+            let picker = egui::Rect::from_min_size(egui::pos2(compose.left() + 6.0, (compose.top() - 176.0).max(main.top() + 48.0)), egui::vec2(204.0, 168.0));
             ui.painter().rect_filled(picker, 8.0, soft);
             ui.painter().rect_stroke(picker, 8.0, egui::Stroke::new(1.0, egui::Color32::from_rgb(56, 77, 64)));
             ui.allocate_ui_at_rect(picker, |picker_ui| {
+                picker_ui.horizontal(|picker_ui| {
+                    for (pack, label) in [(0, "Барменша"), (1, "Трактирщик")] {
+                        let selected = self.selected_sticker_pack == pack;
+                        if picker_ui.add(egui::Button::new(egui::RichText::new(label).size(11.0).color(if selected { amber } else { cream }))
+                            .fill(if selected { egui::Color32::from_rgb(84, 69, 45) } else { soft })
+                            .stroke(egui::Stroke::new(1.0, egui::Color32::from_rgb(48, 68, 56)))).clicked() {
+                            self.selected_sticker_pack = pack;
+                        }
+                    }
+                });
                 egui::Grid::new("chat-smiley-picker").num_columns(4).spacing(egui::vec2(4.0, 4.0)).show(picker_ui, |picker_ui| {
-                    for (index, (code, texture)) in self.smiley_textures.clone().into_iter().enumerate() {
+                    let start = self.selected_sticker_pack * 16;
+                    for (index, (code, texture)) in self.smiley_textures[start..start + 16].to_vec().into_iter().enumerate() {
                         if picker_ui.add(egui::Image::new((texture.id(), egui::vec2(28.0, 28.0))).sense(egui::Sense::click())).clicked() {
                             self.add_smiley(&code);
                             self.show_smileys = false;
@@ -2449,16 +2434,19 @@ impl TsChatApp {
         }
         let mut open = self.edit_profile_open;
         let mut close_requested = false;
+        let mut drag_delta = egui::Vec2::ZERO;
+        let window_pos = self.floating_window_position(ctx, "profile-editor", egui::vec2(720.0, 480.0));
         egui::Window::new("Редактирование профиля")
             .id(egui::Id::new("legacy-edit-profile-window"))
             .title_bar(false)
             .collapsible(false)
             .resizable(false)
             .fixed_size([720.0, 480.0])
-            .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+            .current_pos(window_pos)
             .frame(egui::Frame::none())
             .open(&mut open)
             .show(ctx, |ui| {
+                drag_delta = Self::floating_window_drag_delta(ui, ctx, "profile-editor");
                 let rect = ui.max_rect();
                 let origin = rect.min;
                 let dark = self.dark_theme;
@@ -2527,6 +2515,7 @@ impl TsChatApp {
                 painter.rect_stroke(rect.shrink(0.5), 16.0, egui::Stroke::new(1.0, border));
             });
         if close_requested { open = false; }
+        self.window_positions.insert("profile-editor", window_pos + drag_delta);
         self.edit_profile_open = open && self.edit_profile_open;
     }
 
@@ -2537,6 +2526,8 @@ impl TsChatApp {
         let mut open = self.chat_style_open;
         let mut close_requested = false;
         let mut save_requested = false;
+        let mut drag_delta = egui::Vec2::ZERO;
+        let window_pos = self.floating_window_position(ctx, "chat-style", egui::vec2(420.0, 292.0));
 
         egui::Window::new("Оформление сообщений")
             .id(egui::Id::new("legacy-chat-style-window"))
@@ -2544,10 +2535,11 @@ impl TsChatApp {
             .collapsible(false)
             .resizable(false)
             .fixed_size([420.0, 292.0])
-            .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+            .current_pos(window_pos)
             .frame(egui::Frame::none())
             .open(&mut open)
             .show(ctx, |ui| {
+                drag_delta = Self::floating_window_drag_delta(ui, ctx, "chat-style");
                 let rect = ui.max_rect();
                 let origin = rect.min;
                 let bg = if self.dark_theme { egui::Color32::BLACK } else { egui::Color32::WHITE };
@@ -2639,6 +2631,7 @@ impl TsChatApp {
             });
 
         if close_requested { open = false; }
+        self.window_positions.insert("chat-style", window_pos + drag_delta);
         self.chat_style_open = open && self.chat_style_open;
         if save_requested {
             self.save_chat_style();
@@ -2657,6 +2650,8 @@ impl TsChatApp {
         let mut close_requested = false;
         let mut send_requested = false;
         let profile = self.friend_profile.clone();
+        let mut drag_delta = egui::Vec2::ZERO;
+        let window_pos = self.floating_window_position(ctx, "friend-profile", egui::vec2(595.0, 356.0));
 
         egui::Window::new("Профиль друга")
             .id(egui::Id::new("legacy-friend-profile-window"))
@@ -2664,10 +2659,11 @@ impl TsChatApp {
             .collapsible(false)
             .resizable(false)
             .fixed_size([595.0, 356.0])
-            .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+            .current_pos(window_pos)
             .frame(egui::Frame::none())
             .open(&mut open)
             .show(ctx, |ui| {
+                drag_delta = Self::floating_window_drag_delta(ui, ctx, "friend-profile");
                 let rect = ui.max_rect();
                 let origin = rect.min;
                 let dark = self.dark_theme;
@@ -2750,6 +2746,7 @@ impl TsChatApp {
         if close_requested {
             open = false;
         }
+        self.window_positions.insert("friend-profile", window_pos + drag_delta);
         self.show_friend_profile = open && self.show_friend_profile;
 
         if send_requested {
@@ -2776,6 +2773,8 @@ impl TsChatApp {
         let mut open = self.private_message_open;
         let mut close_requested = false;
         let mut send_requested = false;
+        let mut drag_delta = egui::Vec2::ZERO;
+        let window_pos = self.floating_window_position(ctx, "private-message", egui::vec2(643.0, 430.0));
 
         egui::Window::new(format!("Личное сообщение для: {recipient}"))
             .id(egui::Id::new("legacy-private-message-window"))
@@ -2783,10 +2782,11 @@ impl TsChatApp {
             .collapsible(false)
             .resizable(false)
             .fixed_size([643.0, 430.0])
-            .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+            .current_pos(window_pos)
             .frame(egui::Frame::none())
             .open(&mut open)
             .show(ctx, |ui| {
+                drag_delta = Self::floating_window_drag_delta(ui, ctx, "private-message");
                 let rect = ui.max_rect();
                 let origin = rect.min;
                 let dark = self.dark_theme;
@@ -2879,11 +2879,16 @@ impl TsChatApp {
                 open = false;
             }
         }
+        self.window_positions.insert("private-message", window_pos + drag_delta);
         self.private_message_open = open && self.private_message_open;
     }
 }
 
 impl eframe::App for TsChatApp {
+
+    fn clear_color(&self, _visuals: &egui::Visuals) -> [f32; 4] {
+        [0.0, 0.0, 0.0, 0.0]
+    }
 
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         self.poll_chat_refresh(ctx);
@@ -2929,9 +2934,8 @@ impl eframe::App for TsChatApp {
         visuals.widgets.active.rounding = egui::Rounding::same(6.0);
         ctx.set_visuals(visuals);
 
-        let canvas = if self.dark_theme { egui::Color32::BLACK } else { egui::Color32::WHITE };
         egui::CentralPanel::default()
-            .frame(egui::Frame::none().fill(canvas).inner_margin(0.0))
+            .frame(egui::Frame::none().fill(egui::Color32::TRANSPARENT).inner_margin(0.0))
             .show(ctx, |ui| {
                 match self.screen {
                     Screen::Login | Screen::Register => self.draw_legacy_auth_screen(ctx, ui),
@@ -2950,16 +2954,19 @@ impl eframe::App for TsChatApp {
             let mut delete_requested = None;
             let mut reply_requested: Option<(String, String)> = None;
             let mut open = self.show_inbox;
+            let mut drag_delta = egui::Vec2::ZERO;
+            let window_pos = self.floating_window_position(ctx, "inbox", egui::vec2(540.0, 500.0));
             egui::Window::new("Входящие сообщения")
                 .id(egui::Id::new("tschat-inbox-window"))
                 .title_bar(false)
                 .collapsible(false)
                 .resizable(false)
                 .fixed_size([540.0, 500.0])
-                .anchor(egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)
+                .current_pos(window_pos)
                 .frame(egui::Frame::none())
                 .open(&mut open)
                 .show(ctx, |ui| {
+                    drag_delta = Self::floating_window_drag_delta(ui, ctx, "inbox");
                     let rect = ui.max_rect();
                     let origin = rect.min;
                     let background = egui::Color32::from_rgb(13, 24, 20);
@@ -3038,6 +3045,7 @@ impl eframe::App for TsChatApp {
                     });
                     painter.rect_stroke(rect.shrink(0.5), 16.0, egui::Stroke::new(1.0, border));
                 });
+            self.window_positions.insert("inbox", window_pos + drag_delta);
             if !open { close_inbox = true; }
             if close_inbox {
                 self.show_inbox = false;

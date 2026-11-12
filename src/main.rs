@@ -16,6 +16,7 @@ fn main() -> eframe::Result<()> {
             .with_min_inner_size([560.0, 520.0])
             .with_title("TSchat")
             .with_decorations(false)
+            .with_transparent(true)
             .with_resizable(false),
         ..Default::default()
     };

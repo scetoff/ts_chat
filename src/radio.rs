@@ -1,7 +1,7 @@
 use anyhow::{Context, Result};
 use icy_metadata::{IcyHeaders, IcyMetadataReader, RequestIcyMetadata};
-use rodio::{Decoder, DeviceSinkBuilder, MixerDeviceSink, Player};
-use std::{io::BufReader, num::NonZeroUsize, time::Duration};
+use rodio::{Decoder, DeviceSinkBuilder, MixerDeviceSink, Player, Source};
+use std::{io::BufReader, num::NonZeroUsize, sync::{Arc, Mutex, atomic::{AtomicU32, Ordering}}, time::Duration};
 use stream_download::{
     http::{reqwest::Client, HttpStream},
     source::DecodeError,
@@ -31,6 +31,45 @@ fn mime_hint(url: &url::Url) -> &'static str {
 pub struct RadioPlayback {
     _output: MixerDeviceSink,
     player: Player,
+    level: Arc<AtomicU32>,
+    track_title: Arc<Mutex<String>>,
+}
+
+struct MeteredSource<S> {
+    source: S,
+    level: Arc<AtomicU32>,
+    sum_squares: f64,
+    samples: u32,
+}
+
+impl<S> Iterator for MeteredSource<S>
+where
+    S: Source<Item = f32>,
+{
+    type Item = f32;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let sample = self.source.next()?;
+        self.sum_squares += f64::from(sample) * f64::from(sample);
+        self.samples += 1;
+        if self.samples >= 1024 {
+            let rms = (self.sum_squares / f64::from(self.samples)).sqrt() as f32;
+            self.level.store(rms.to_bits(), Ordering::Relaxed);
+            self.sum_squares = 0.0;
+            self.samples = 0;
+        }
+        Some(sample)
+    }
+}
+
+impl<S> Source for MeteredSource<S>
+where
+    S: Source<Item = f32>,
+{
+    fn current_span_len(&self) -> Option<usize> { self.source.current_span_len() }
+    fn channels(&self) -> rodio::ChannelCount { self.source.channels() }
+    fn sample_rate(&self) -> rodio::SampleRate { self.source.sample_rate() }
+    fn total_duration(&self) -> Option<Duration> { self.source.total_duration() }
 }
 
 impl RadioPlayback {
@@ -90,10 +129,20 @@ impl RadioPlayback {
             }
         };
 
+        let track_title = Arc::new(Mutex::new(String::new()));
+        let metadata_target = track_title.clone();
         let metadata_reader = IcyMetadataReader::new(
             reader,
             icy_headers.metadata_interval(),
-            |_metadata| {},
+            move |metadata| {
+                if let Ok(metadata) = metadata {
+                    if let Some(title) = metadata.stream_title().filter(|title| !title.trim().is_empty()) {
+                        if let Ok(mut current) = metadata_target.lock() {
+                            *current = title.to_string();
+                        }
+                    }
+                }
+            },
         );
 
         // Decoder::try_from performs synchronous reads. Run it on Tokio's
@@ -126,10 +175,16 @@ impl RadioPlayback {
         .context("Не удалось открыть устройство вывода звука Windows")?;
         let player = Player::connect_new(output.mixer());
         player.set_volume(volume.clamp(0.0, 1.0));
-        player.append(decoder);
+        let level = Arc::new(AtomicU32::new(0.0_f32.to_bits()));
+        player.append(MeteredSource {
+            source: decoder,
+            level: level.clone(),
+            sum_squares: 0.0,
+            samples: 0,
+        });
         player.play();
 
-        Ok(Self { _output: output, player })
+        Ok(Self { _output: output, player, level, track_title })
     }
 
     pub fn set_volume(&self, volume: f32) {
@@ -146,6 +201,14 @@ impl RadioPlayback {
 
     pub fn is_paused(&self) -> bool {
         self.player.is_paused()
+    }
+
+    pub fn level(&self) -> f32 {
+        f32::from_bits(self.level.load(Ordering::Relaxed)).clamp(0.0, 1.0)
+    }
+
+    pub fn track_title(&self) -> Option<String> {
+        self.track_title.lock().ok().map(|title| title.clone()).filter(|title| !title.is_empty())
     }
 
     pub fn stop(&self) {
